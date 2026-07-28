@@ -52,9 +52,10 @@
 -   [x] Verify UART IQ/telemetry flow against BASE 1.1.9
 -   [x] Identify UART baud-rate change to 1,500,000
 -   [x] Verify ATU tune flag and Linux boot handshake
+-   [x] Recover UART flow packet layout and metadata producers
 -   [ ] Correlate remaining commands with BASE 1.1.9 consumers
 -   [ ] Responses
--   [ ] Telemetry
+-   [ ] Recover telemetry physical-unit calibration and special I2C windows
 
 ## DSP
 
@@ -79,6 +80,7 @@
 
 -   [ ] Export functions from Ghidra
 -   [ ] Export call graph
+-   [x] Export direct function callers
 -   [x] Export raw interrupt table
 -   [ ] Export globals
 -   [ ] Find peripheral register accesses

@@ -259,6 +259,61 @@ through the USART6 data register at `0x40011404`.
 The total size, magic, sample count, metadata placement, and CRC
 placement exactly match `x6100_flow_t` in X6100Control.
 
+### Packet layout
+
+The following byte layout is independently present in BASE 1.1.9.
+Historical field names are retained where the producer behavior agrees
+with X6100Control; no firmware symbols have been renamed from these
+labels.
+
+| Offset | Size | Field | BASE evidence | Confidence |
+| ---: | ---: | --- | --- | --- |
+| `0x0000` | 4 | magic | constant `0xAA5555AA` | VERIFIED |
+| `0x0004` | `0x1000` | 512 complex-float IQ samples | copied by `FUN_08023c88` | VERIFIED |
+| `0x1004` | 4 | flags | snapshot of accumulator at `0x20001420` | VERIFIED |
+| `0x1008` | 1 | reserved | retained by packet builder | VERIFIED |
+| `0x1009` | 1 | TX power, tenths | `TIM3_IRQHandler` saturates `FUN_0802442c() * 10` to 8 bits | HIGH CONFIDENCE |
+| `0x100A` | 1 | VSWR, tenths | `TIM3_IRQHandler` saturates `FUN_08024454() * 10` to 8 bits | HIGH CONFIDENCE |
+| `0x100B` | 1 | ALC level | converted from `FUN_08024440()` to an 8-bit value | HIGH CONFIDENCE |
+| `0x100C` | 1 | external voltage | producer scales an internal measurement by `0.01` | HIGH CONFIDENCE |
+| `0x100D` | 1 | battery voltage | producer scales an internal measurement by `0.01` | HIGH CONFIDENCE |
+| `0x100E` | 1 | battery capacity | battery monitor converts its percentage-like value to 8 bits | HIGH CONFIDENCE |
+| `0x100F` | 1 | reserved | copied with the preceding three bytes | VERIFIED layout |
+| `0x1010` | 4 | ATU parameters | three bytes supplied by the ATU sequence; high byte retained | HIGH CONFIDENCE |
+| `0x1014` | 12 | reserved | no packet-builder writes observed | HIGH CONFIDENCE |
+| `0x1020` | 4 | hardware key code | written only through `FUN_08033968`, called by key-input functions | HIGH CONFIDENCE |
+| `0x1024` | 4 | CRC32 | CRC over the preceding `0x409` words | VERIFIED |
+
+X6100Control interprets the voltage bytes in tenths of a volt and TX
+power, VSWR, and ALC in tenths of their displayed units. The BASE-side
+scaling and byte locations agree, but the physical-unit calibration of
+the measurement producers has not yet been recovered.
+
+### Flow flags
+
+`FUN_08033974(mask, state)` is the sole observed modifier of the
+32-bit flag accumulator. Its callers establish:
+
+| Mask | Historical label | BASE 1.1.9 behavior | Confidence |
+| ---: | --- | --- | --- |
+| `0x00000001` | resync | no setter call observed | HYPOTHESIS: unused |
+| `0x00000002` | TX | set and cleared by the RX/TX hardware-switching path | VERIFIED |
+| `0x00000004` | charger enabled | cleared around ATU operation, then restored | HIGH CONFIDENCE |
+| `0x00000008` | external power present | follows the same state that supplies external/battery voltage telemetry | HIGH CONFIDENCE |
+| `0x00000010` | charging active | controlled by battery-management thresholds and charger GPIO state | HIGH CONFIDENCE |
+
+Mask `0x10` is present in BASE 1.1.9 but absent from the historical
+four-bit X6100Control declaration. Linux implementations should preserve
+and expose the complete 32-bit flags word rather than assuming that only
+bits 0–3 can be set.
+
+Reusable evidence exports:
+
+- `analysis/flow/packet_tail_refs.csv`;
+- `analysis/flow/metadata_source_refs.csv`;
+- `analysis/flow/metadata_setter_callers.csv`;
+- `analysis/flow/hkey_setter_callers.csv`.
+
 UART flow packet compatibility between the reviewed historical
 implementation and BASE 1.1.9: VERIFIED.
 
