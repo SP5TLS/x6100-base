@@ -1,0 +1,11 @@
+08030fc4  push {r4,lr}
+08030fc6  mov.w r4,#0x1000
+08030fca  movt r4,#0x4002
+08030fce  ldr r3,[r4,#0x14]
+08030fd0  bic r3,r3,#0x400
+08030fd4  str r3,[r4,#0x14]
+08030fd6  bl 0x080349bc
+08030fda  ldr r3,[r4,#0x14]
+08030fdc  orr r3,r3,#0x400
+08030fe0  str r3,[r4,#0x14]
+08030fe2  pop {r4,pc}

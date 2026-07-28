@@ -91,12 +91,12 @@
 -   [x] Map PF13/PF14 to KEY tip/ring contacts
 -   [x] Recover TX-request arbitration and hardware-PTT GPIO
 -   [ ] Map PB9/PA11/PD0 to physical TX controls
--   [ ] Compare disconnected key-ratio control with other BASE versions
 -   [x] RX/TX block-boundary handoff and first digital input gain
 -   [x] Recover TX ALC topology, limits, and final complex scaling
 -   [x] Correlate ADC1 directional-detector inputs with TX-power/VSWR telemetry
 -   [ ] Recover absolute RF-power units and identify ADC1 channel 2
--   [ ] PA control
+-   [x] Recover PA bias-device protocol and ordered RX/TX hardware controls
+-   [ ] Identify PA-control IC and resolve individual enable/routing GPIO nets
 -   [x] Trace VSWR measurement into the antenna-tuner search
 -   [x] Recover ATU state packing, relay-bit permutation, and search phases
 -   [x] Recover ATU result publication and register-17 reapplication path

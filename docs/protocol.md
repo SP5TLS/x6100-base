@@ -226,6 +226,19 @@ historical key-ratio field, but BASE 1.1.9 does not apply the decoded
 value to its keyer. The active ratio remains fixed at startup value
 `3.0`: HIGH CONFIDENCE. See `docs/tx_pipeline.md`.
 
+### Register 41: PA bias codes
+
+Address: `0x00A4`
+
+The low 16 bits are copied to external bias-control channel 0 and the
+high 16 bits to channel 1. Channel 0 is associated with the PA drive
+stage and channel 1 with the final stage: VERIFIED packing and channel
+routing; HIGH CONFIDENCE stage identities.
+
+The device is on I2C1 at address byte `0xC6` (7-bit address `0x63`).
+The transaction framing and the complete ordered RX/TX hardware
+sequence are documented in `docs/pa_control.md`.
+
 ### Register 53: power-synchronization setting
 
 Address: `0x00D4`

@@ -140,14 +140,20 @@ byte 2 = value
 ```
 
 The transaction format and use by PA calibration are VERIFIED. The
+object accepts two channels, uses I2C1 address byte `0xC6` (7-bit
+address `0x63`), and pulses PE10 after a changed write: VERIFIED. The
 external device identity is unknown; describing it as an external
-multi-channel bias-control device is HIGH CONFIDENCE.
+two-channel bias-control device is HIGH CONFIDENCE.
 
 The calibration path changes two cached channels and samples ADC2
 getter index 1. Diagnostic strings identify the two calibrated
 quantities as `PA_drive_stage_current` and `PA_final_stage_current`.
 Those associations are HIGH CONFIDENCE, while the external IC and
 physical voltage/current transfer functions remain unknown.
+
+The complete object layout, startup command sequence, channel roles,
+and ordered RX/TX GPIO transitions are documented in
+`docs/pa_control.md`.
 
 ## Internal DAC
 
@@ -199,4 +205,4 @@ write has been identified: HIGH CONFIDENCE.
 - Recover the physical units for ADC2 indices 0 and 1.
 - Identify the ADC2 channel 14 consumer or external role.
 - Identify the external PA bias-control device and its transfer
-  function.
+  function from board or bus evidence.

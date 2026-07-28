@@ -109,6 +109,8 @@ names are not yet known:
 | PG15 | sampled and debounced by TIM2 | VERIFIED |
 | PG4 | sampled during normal operation and awaited during final shutdown | VERIFIED |
 | PE8, PE9, PE11, PE14, PE15 | changed during startup, PA calibration, DSP operation, or shutdown | VERIFIED |
+| PE10 | low-delay-high pulse after external PA-bias device writes | VERIFIED |
+| PE2, PE8, PE9, PE12, PG11, PD3, PD4 | ordered RX/TX hardware transition group | VERIFIED |
 | PD2, PD3, PD4 | sequenced low during shutdown | VERIFIED |
 | PF11 | read by the charger/battery startup loop | VERIFIED |
 | PF13 | controlled by the charger/battery startup loop | VERIFIED |
@@ -117,6 +119,10 @@ names are not yet known:
 PB2 is a timing/debug marker candidate because it brackets the complete
 DSP interrupt body: HIGH CONFIDENCE. Its electrical destination is
 unknown.
+
+The precise RX/TX levels and ordering of the PA-related group, and the
+I2C1 bias-control device associated with PE10, are documented in
+`docs/pa_control.md`. Individual physical net names remain unresolved.
 
 The main routine clears PD4, waits five seconds, clears PD3, waits three
 seconds, then clears PD2 before its final shutdown wait. Interpretation

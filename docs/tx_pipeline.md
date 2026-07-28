@@ -373,7 +373,9 @@ indirectly by `FUN_0802145C`. Consequently BASE 1.1.9 generates the
 second element at three times the first-element duration regardless of
 register 34's upper half: HIGH CONFIDENCE. This appears to be an
 unimplemented or disconnected control field, not permission to remove
-the field from a compatible protocol.
+the field from a compatible protocol. Cross-version investigation is
+intentionally deferred because this protocol-only setting does not
+block hardware-compatible reimplementation.
 
 Field and state evidence:
 
@@ -532,7 +534,6 @@ implementation: VERIFIED.
   corner.
 - Correlate PB9, PA11, and PD0 with body PTT, microphone PTT, ACC
   `TRX`, or any remaining internal sources.
-- Compare the disconnected key-ratio field with other BASE versions.
 - Recover the absolute RF-power calibration unit and identify the
   physical role of ADC1 channel 2.
 - Determine the source and exact purpose of common Q31 correction

@@ -1,0 +1,8 @@
+0802d148  ldr r3,[r0,#0x14]
+0802d14a  cbz r2,0x0802d152
+0802d14c  orrs r1,r3
+0802d14e  str r1,[r0,#0x14]
+0802d150  bx lr
+0802d152  bic.w r3,r3,r1
+0802d156  str r3,[r0,#0x14]
+0802d158  bx lr

@@ -1,0 +1,13 @@
+offset,value,interpretation,confidence
+0x00,0x000000C6,I2C address byte (7-bit address 0x63),VERIFIED
+0x04,0x00000002,accepted channel count,VERIFIED
+0x08,0x00001388,object constant and write timeout 5000,VERIFIED
+0x0C,0x00000400,initial value later replaced by startup readback,VERIFIED
+0x10,0x00000000,channel 0 cached value,VERIFIED
+0x14,0x00000000,channel 1 cached value,VERIFIED
+0x18,0x00000000,unused generic cache slot at startup,VERIFIED
+0x1C,0x00000000,unused generic cache slot at startup,VERIFIED
+0x20,0x08030F25,Thumb I2C1 write callback at 0x08030F24,VERIFIED
+0x24,0x08030FE5,Thumb I2C1 read callback at 0x08030FE4,VERIFIED
+0x28,0x08030FC5,Thumb PE10 low-delay-high callback at 0x08030FC4,VERIFIED
+0x2C,0x00000840,unresolved object constant,VERIFIED value
