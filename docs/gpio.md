@@ -137,11 +137,25 @@ path. Exact mappings are documented in `docs/rf_switching.md`.
 
 ## Inputs serviced by TIM3
 
-TIM3 debounces six GPIO-backed input descriptors and updates a shared
-status bitfield. The handler behavior is VERIFIED, but the descriptor
-initialization has not yet been fully correlated with the physical pins.
-Front-panel, PTT, RF-protection, and charger interpretations therefore
-remain HYPOTHESES rather than pin names.
+TIM3 debounces seven active-low GPIO-backed input descriptors:
+
+| Pin | Mask | Debounce reload | Stable flag |
+| --- | ---: | ---: | ---: |
+| PB9 | `0x0200` | 10 | `0x20000182` |
+| PE3 | `0x0008` | 10 | `0x20000196` |
+| PF14 | `0x4000` | 1 | `0x200001AA` |
+| PF13 | `0x2000` | 1 | `0x200001BE` |
+| PA11 | `0x0800` | 1 | `0x200001D2` |
+| PA12 | `0x1000` | 1 | `0x200001E6` |
+| PD0 | `0x0001` | 1 | `0x200001FA` |
+
+Descriptor values, active level, debounce state machine, and stable
+destinations: VERIFIED.
+
+PF14 and PF13 feed the two CW paddle inputs. PA11 and PD0 feed the
+aggregated immediate-key/PTT path: VERIFIED software routing. Exact
+external connector contacts and final straight-key/PTT labels remain
+unresolved. See `docs/tx_pipeline.md`.
 
 ## Reimplementation implications
 
@@ -155,7 +169,8 @@ remain HYPOTHESES rather than pin names.
 
 ## Remaining work
 
-- Recover the six TIM3 input descriptors and their exact pins.
+- Assign final physical roles and connector contacts to all seven TIM3
+  inputs.
 - Correlate shifted RF-control bits with frequency ranges and hardware
   filters.
 - Identify power, PA-enable, charger, and reset nets from the board

@@ -1,0 +1,5 @@
+stable_flag,gpio,pin_mask,active_level,debounce_ticks,cw_use,confidence
+0x200001AA,PF14,0x4000,low,1,paddle_input_0,VERIFIED
+0x200001BE,PF13,0x2000,low,1,paddle_input_1,VERIFIED
+0x200001D2,PA11,0x0800,low,1,latched_immediate_key_source,VERIFIED
+0x200001FA,PD0,0x0001,low,1,immediate_key_source,VERIFIED

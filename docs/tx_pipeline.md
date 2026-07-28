@@ -232,8 +232,27 @@ The three input bits have these algorithmic roles:
 5. Bits 0 and 1 come from two control-state flags. Bit 2 is synthesized
 from additional control and transition flags. Thus the CW processor
 consumes a software-aggregated key state, not a GPIO register directly:
-VERIFIED. Correlating those upstream flags with final connector pins
-remains open.
+VERIFIED.
+
+TIM3 supplies the upstream flags from active-low GPIO descriptors:
+
+| CW role | Stable flag | MCU pin | Debounce |
+| --- | ---: | --- | ---: |
+| paddle input 0 | `0x200001AA` | PF14 | 1 TIM3 tick |
+| paddle input 1 | `0x200001BE` | PF13 | 1 TIM3 tick |
+| latched immediate-key source | `0x200001D2` | PA11 | 1 TIM3 tick |
+| immediate-key source | `0x200001FA` | PD0 | 1 TIM3 tick |
+
+GPIO ports, masks, active-low polarity, debounce counts, stable flags,
+and their CW consumers: VERIFIED. `FUN_0802A8A4` copies PF14/PF13
+directly to key-state bits 0/1. It forms bit 2 from PD0 or a latched PA11
+transition after both paddles are released: VERIFIED.
+
+PF14 and PF13 are therefore the two paddle inputs: HIGH CONFIDENCE.
+PD0 and PA11 participate in the immediate-key/PTT path, but assigning
+either one a final connector label such as straight key, microphone
+PTT, or accessory PTT requires schematic or connector measurements.
+Those physical labels remain HYPOTHESIS.
 
 The keyer structure begins at `0x200082EC`. Its byte at `+9`
 (`0x200082F5`) drives the monitor envelope, while byte `+10`
@@ -300,6 +319,12 @@ Field and state evidence:
 
 - `analysis/tx_filters/cw_keyer_fields.csv`;
 - `analysis/tx_filters/cw_key_input_refs.csv`;
+- `analysis/tx_filters/cw_control_loop_callers.csv`;
+- `analysis/tx_filters/cw_gpio_mapping.csv`;
+- `analysis/tx_filters/cw_gpio_descriptor_data.csv`;
+- `analysis/tx_filters/cw_gpio_descriptor_refs.csv`;
+- `analysis/tx_filters/cw_upstream_flag_refs.csv`;
+- `analysis/tx_filters/cw_upstream_extended_refs.csv`;
 - `analysis/tx_filters/cw_qsk_ratio_refs.csv`.
 
 Mode 6 computes an affine audio value using two initialized parameters
@@ -439,8 +464,8 @@ implementation: VERIFIED.
 - Determine why the table's nominal 3 kHz selection produces roughly
   `-7.16 dB` at exactly 3 kHz rather than a conventional `-3 dB`
   corner.
-- Correlate the software-aggregated paddle and straight-key flags with
-  physical connector pins.
+- Correlate PF13/PF14/PA11/PD0 with external connector contacts and
+  distinguish straight key from PTT sources.
 - Compare the disconnected key-ratio field with other BASE versions.
 - Recover the absolute RF-power calibration unit and identify the
   physical role of ADC1 channel 2.

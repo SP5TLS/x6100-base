@@ -87,7 +87,8 @@
 -   [x] Recover CW RF/monitor envelope timing and tone/level fields
 -   [x] Recover CW software key-state generator and register-33 fields
 -   [x] Recover QSK hold units and audit key-ratio application
--   [ ] Map CW input flags to connector pins
+-   [x] Map CW input flags to STM32 GPIO pins
+-   [ ] Map PF13/PF14/PA11/PD0 to external connector contacts
 -   [ ] Compare disconnected key-ratio control with other BASE versions
 -   [x] RX/TX block-boundary handoff and first digital input gain
 -   [x] Recover TX ALC topology, limits, and final complex scaling
