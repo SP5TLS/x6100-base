@@ -120,6 +120,9 @@ register base. The event handler reads I2C status registers, implements
 a multi-byte address state machine, and transfers data between the I2C
 data register and several RAM-backed regions or circular buffers.
 
+`FUN_08033d64` initializes the same peripheral for 400 kHz operation
+with 7-bit own address `0x72`.
+
 Peripheral identity and event-driven slave state machine: VERIFIED.
 
 Interpretation as the Linux control register service: VERIFIED by

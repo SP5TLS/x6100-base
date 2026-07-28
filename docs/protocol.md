@@ -39,7 +39,7 @@ X6100Control uses two transports:
 
 | Purpose | Linux device | Parameters | 1.1.9 status |
 | --- | --- | --- | --- |
-| Control register file | `/dev/i2c-0` | slave address `0x72` | HIGH CONFIDENCE address; VERIFIED I2C3 register-file behavior |
+| Control register file | `/dev/i2c-0` | slave address `0x72` | VERIFIED |
 | IQ and telemetry flow | `/dev/ttyS1` | 1,152,000 baud, raw | MEDIUM CONFIDENCE pending BASE-side framing verification |
 
 ## I2C control framing
@@ -61,6 +61,25 @@ byte becomes the high address byte and the second becomes the low
 address byte. Subsequent bytes are stored sequentially into RAM.
 
 Framing and byte order: VERIFIED for BASE 1.1.9.
+
+### BASE I2C3 initialization
+
+`FUN_08033d64` initializes I2C3 at `0x40005C00` with:
+
+| Property | Value |
+| --- | ---: |
+| Clock rate | 400,000 Hz |
+| Own-address field | `0x00E4` |
+| 7-bit slave address | `0x72` |
+| ACK | enabled |
+| Addressing mode | 7 bit |
+
+The STM32 peripheral stores the 7-bit own address shifted left by one,
+so `0xE4 >> 1` gives `0x72`. The same function configures PA8 and PC9
+for I2C3 alternate function and enables the event/error interrupt path.
+
+I2C3 peripheral and Linux-visible slave-address identification:
+VERIFIED.
 
 ### Bulk control write
 
@@ -139,6 +158,40 @@ are currently HIGH CONFIDENCE rather than final symbol names.
 Unlisted entries remain unnamed. They must not be assumed unused
 without checking BASE 1.1.9.
 
+## Semantics verified in BASE 1.1.9
+
+### Register 12: operation flags
+
+Address: `0x0030`
+
+X6100Control historical label: `sple_atue_trx`
+
+`FUN_0802adf4` reads bit `0x00002000` from this register while running
+an ATU-related sequence and waits for the bit to clear before returning.
+X6100Control assigns the same bit to `x6100_atu_tune`.
+
+Register 12 bit `0x00002000` means ATU tune active/requested: VERIFIED.
+
+Other register 12 bits retain HIGH CONFIDENCE historical meanings until
+their individual consumers are checked.
+
+### Register 55: Linux boot handshake
+
+Address: `0x00DC`
+
+X6100Control historical label: `last`
+
+`FUN_0802d7e8` returns register 55. During early boot,
+`FUN_08032500` repeatedly checks bit `0x00100000`; when it becomes set,
+the preliminary service loop exits, I2C3 is temporarily shut down, and
+the main initialization path continues. X6100Control initializes
+register 55 to `0x00100001`.
+
+Register 55 bit `0x00100000` is a Linux-to-BASE boot-ready/continue
+handshake: VERIFIED.
+
+The meaning of register 55 bit 0 remains unknown.
+
 ## I2C direction-dependent address spaces
 
 The same 16-bit address selects different RAM windows depending on
@@ -186,8 +239,7 @@ USART/DMA producer is recovered.
 
 ## Remaining work
 
-- Find and document I2C3 initialization, including its own address.
-- Correlate all 56 control words with BASE-side consumers.
+- Correlate the remaining control words with BASE-side consumers.
 - Determine the meanings of the read and special I2C windows.
 - Locate the UART packet builder and verify its 1.1.9 structure.
 - Compare command additions or changed bitfields between 1.1.6 and

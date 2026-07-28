@@ -37,3 +37,17 @@ independently agree.
 - CCMRAM allocation and initialization;
 - heap and runtime stack boundaries;
 - any retained or backup-memory regions.
+
+## Headless analysis model
+
+`ghidra_scripts/MapSTM32F427Memory.java` adds uninitialized analysis
+blocks for:
+
+| Block | Start | End (exclusive) | Permissions |
+| --- | ---: | ---: | --- |
+| CCMRAM | `0x10000000` | `0x10010000` | read/write |
+| SRAM | `0x20000000` | `0x20030000` | read/write |
+
+These blocks contain no invented initialization data. They allow Ghidra
+to create references to addresses used by the firmware while the actual
+initial values continue to come only from the recovered `.data` copy.

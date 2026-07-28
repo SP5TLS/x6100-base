@@ -50,7 +50,8 @@
 
 -   [x] I2C3 control transport and framing
 -   [ ] Verify UART IQ/telemetry flow against BASE 1.1.9
--   [ ] Commands
+-   [x] Verify ATU tune flag and Linux boot handshake
+-   [ ] Correlate remaining commands with BASE 1.1.9 consumers
 -   [ ] Responses
 -   [ ] Telemetry
 
