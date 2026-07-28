@@ -1,0 +1,10 @@
+08023f20  movw r3,#0x8590
+08023f24  movt r3,#0x2000
+08023f28  ldrb r2,[r3,#0x1f]
+08023f2a  cmp r2,r0
+08023f2c  beq 0x08023f38
+08023f2e  ldr r2,[r3,#0x24]
+08023f30  strb r0,[r3,#0x1f]
+08023f32  orr r2,r2,#0x8
+08023f36  str r2,[r3,#0x24]
+08023f38  bx lr

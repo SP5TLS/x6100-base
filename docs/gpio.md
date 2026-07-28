@@ -123,6 +123,8 @@ unknown.
 The precise RX/TX levels and ordering of the PA-related group, and the
 I2C1 bias-control device associated with PE10, are documented in
 `docs/pa_control.md`. Individual physical net names remain unresolved.
+The hardware-variant PA callback is now resolved to PCA9535 output bit
+1 on one variant and PD14 on the other: VERIFIED.
 
 The main routine clears PD4, waits five seconds, clears PD3, waits three
 seconds, then clears PD2 before its final shutdown wait. Interpretation

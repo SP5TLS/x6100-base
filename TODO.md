@@ -96,6 +96,7 @@
 -   [x] Correlate ADC1 directional-detector inputs with TX-power/VSWR telemetry
 -   [ ] Recover absolute RF-power units and identify ADC1 channel 2
 -   [x] Recover PA bias-device protocol and ordered RX/TX hardware controls
+-   [x] Resolve hardware-variant PA callback to PCA9535 bit 1 / PD14
 -   [ ] Identify PA-control IC and resolve individual enable/routing GPIO nets
 -   [x] Trace VSWR measurement into the antenna-tuner search
 -   [x] Recover ATU state packing, relay-bit permutation, and search phases

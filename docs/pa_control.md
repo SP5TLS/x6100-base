@@ -103,17 +103,17 @@ levels.
 ### Enter RX / disable TX
 
 1. PE12 high.
-2. Board-variant callback at `0x2000C6CC` called with `0`.
+2. Board-variant PA-control callback called with `0`.
 3. Bias channel 0 set to zero.
 4. Bias channel 1 set to zero.
 5. PE9 high.
 6. PE8 low.
 7. PG11 low.
 8. PE2 low.
-9. `FUN_08023f20(0)`.
+9. Internal DSP/control state is changed by `FUN_08023f20(0)`.
 10. PD3 high.
 11. PD4 low.
-12. `FUN_08033974(2, 0)`.
+12. Internal state bit `0x2` is cleared by `FUN_08033974`.
 
 ### Enter TX / enable PA
 
@@ -121,21 +121,39 @@ After the mode-dependent audio/DSP preparation:
 
 1. Bias channel 0 receives the cached drive-stage code.
 2. Bias channel 1 receives the cached final-stage code.
-3. Board-variant callback at `0x2000C6CC` called with `1`.
+3. Board-variant PA-control callback called with `1`.
 4. PE9 low.
 5. PE8 high.
 6. PG11 high.
 7. PE2 high.
 8. PD3 low.
 9. PD4 high.
-10. `FUN_08033974(2, 1)`.
+10. Internal state bit `0x2` is set by `FUN_08033974`.
 
 The order, levels, and bias-channel writes are VERIFIED. Treating the
-group as PA/RF enable and routing controls is HIGH CONFIDENCE, but
+GPIO group as PA/RF enable and routing controls is HIGH CONFIDENCE, but
 assigning individual relay, gate-bias, or supply-enable net names is
-still a HYPOTHESIS without schematic or measurements. The indirect
-callback also has hardware-variant implementations, so it must not be
-replaced by a guessed fixed GPIO.
+still a HYPOTHESIS without schematic or measurements.
+
+## Board-variant PA-control callback
+
+`FUN_0803131c` assigns the callback stored at `0x2000C6CC` according to
+the detected hardware variant:
+
+| Variant implementation | Effect of argument `0` / `1` | Confidence |
+| --- | --- | --- |
+| `FUN_08031120` | clear/set output bit 1 in the PCA9535-compatible I2C2 expander at 7-bit address `0x20`, then commit the output word | VERIFIED |
+| `FUN_080312bc` | clear/set GPIOD ODR bit 14 (PD14) directly | VERIFIED |
+
+Thus this callback is one logical board signal implemented either as
+PCA9535 output 1 or PD14: VERIFIED. Its participation in every RX/TX
+transition makes a PA/RF enable or routing role HIGH CONFIDENCE. Its
+exact physical net and active semantics beyond the observed RX=`0`,
+TX=`1` remain unknown.
+
+`FUN_08023f20` and `FUN_08033974`, although adjacent to the GPIO writes,
+only update RAM state/dirty bits; they are not direct hardware
+operations: VERIFIED.
 
 The startup safe state in `FUN_0802a5d0` agrees with the RX sequence:
 both bias values are zero, PE12/PE9/PD3 are high, and
@@ -160,7 +178,7 @@ RX transition. This correspondence is VERIFIED.
 - Identify the external two-channel device from PCB markings or bus
   capture and recover its electrical transfer function.
 - Resolve PE2, PE8, PE9, PE12, PG11, PD3, and PD4 to schematic nets.
-- Resolve both implementations of the `0x2000C6CC` board-variant
-  callback.
+- Assign the PCA9535 output-1 / PD14 logical signal to its physical
+  board net.
 - Measure the required settling time represented by the PE10 callback
   argument `10`.
