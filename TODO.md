@@ -54,6 +54,8 @@
 -   [x] Verify ATU tune flag and Linux boot handshake
 -   [x] Recover UART flow packet layout and metadata producers
 -   [x] Trace `vfoa_freq`/`vfob_freq` through LO synthesizer programming
+-   [x] Resolve the BASE 1.1.9 frequency-path selector (constant 1)
+-   [x] Recover output-4 harmonic-avoidance algorithm (`PSYNC`, HIGH CONFIDENCE)
 -   [ ] Correlate remaining commands with BASE 1.1.9 consumers
 -   [x] Recover I2C read responses and calibration-window framing
 -   [ ] Recover telemetry physical-unit calibration and calibration-field semantics

@@ -117,20 +117,41 @@ it does not immediately write those fields. In the normal VFO path,
 groups for output 1. Deferred calculation followed by an explicit
 commit: VERIFIED.
 
-Two hardware paths are selected by `FUN_0803147c`:
+Two paths are selected by `FUN_0803147c`:
 
 | Selector result | Output programming |
 | --- | --- |
 | `< 2` | output 1 receives `4 × Ftuned`, then is committed |
 | `>= 2` | output 1 receives `Ftuned + 70 MHz`; output 4 receives 140 MHz |
 
-The formulas and output numbers are VERIFIED. Interpreting the selector
-as a particular board revision is currently a HYPOTHESIS.
+The formulas and output numbers are VERIFIED. In the reviewed BASE
+1.1.9 binary, `FUN_0803147c` consists only of `movs r0,#1; bx lr`.
+It therefore always selects the `< 2` path: VERIFIED. The alternative
+path is present but unreachable in this build.
 
 `FUN_0802a428` also programs output 4 to a value in approximately the
-1–2.2 MHz range while avoiding harmonic relationships with the tuned
-frequency. The algorithmic behavior is VERIFIED, but the signal's
-physical destination and purpose are unknown.
+1–2.2 MHz range while avoiding harmonic relationships within 100 kHz
+of the tuned frequency. More precisely, it starts at 2 MHz and moves
+the clock to `2 MHz ± 100 kHz / N` when a tuned-frequency harmonic
+would fall closer than 100 kHz. It then clamps the programmed result
+to 1–2.2 MHz. The arithmetic and limits are VERIFIED.
+
+The X6100 maintenance material identifies a board signal named `PSYNC`
+as the power-supply synchronization square wave. A tunable clock near
+2 MHz that is moved to prevent receiver harmonics is consistent with
+that purpose. Identifying synthesizer output 4 as the source of
+`PSYNC` is therefore HIGH CONFIDENCE, not VERIFIED, because no recovered
+schematic or firmware-visible net directly connects the output to the
+named test point. The reviewed
+[X6100 maintenance manual](https://www.manualslib.com/guide/3740642/xiegu-x6100-hf-transceiver-series-manual.html)
+also identifies the 26 MHz reference and tuned-frequency LO test
+points.
+
+Historical control index 53 is labelled `pwrsync`. BASE 1.1.9 copies
+that register into its internal cache but no direct use of the cached
+value has yet been found. Its presence supports the interpretation but
+does not prove that output 4 is the same physical signal: MEDIUM
+CONFIDENCE.
 
 ## Reimplementation implications
 
@@ -139,16 +160,21 @@ physical destination and purpose are unknown.
 - On the `< 2` hardware path, calculate the output-1 divider first,
   update the frequency-dependent analog path, and only then commit the
   cached synthesizer registers.
-- Detect the hardware path instead of assuming that all boards use the
-  `4 × Ftuned` formula.
+- BASE 1.1.9 can implement the reachable `4 × Ftuned` path. Preserve
+  the alternative formula in the architecture only if compatibility
+  with another BASE build or board family is required.
+- Generate the approximately 2 MHz output-4 clock with the recovered
+  harmonic-avoidance algorithm; its `PSYNC` role is HIGH CONFIDENCE.
 - Implement the clock-generator driver from the public 5P49V60 register
   specification; do not copy the OEM initialization/decompiler output.
 - Retain I2C1 recovery for failed synthesizer writes.
 
 ## Remaining work
 
-- Identify the hardware selector used by `FUN_0803147c`.
-- Determine the physical purpose of synthesizer output 4.
+- Find a schematic or board measurement connecting output 4 to `PSYNC`.
+- Locate another firmware build in which `FUN_0803147c` returns a value
+  other than 1, or establish that the alternative path is dead legacy
+  code.
 - Correlate internal receive/transmit offset storage with the complete
   wire-register update path.
 - Recover the analog switching performed around the deferred LO commit.

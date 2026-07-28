@@ -1,0 +1,3 @@
+function,address,instruction,effect,confidence
+FUN_0803147c,0803147c,"movs r0,#0x1",return value is constant 1,VERIFIED
+FUN_0803147c,0803147e,"bx lr",return to caller,VERIFIED

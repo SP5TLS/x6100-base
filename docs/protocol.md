@@ -177,6 +177,22 @@ The main LO device is on I2C1 at 7-bit address `0x6A`, not among the
 I2C2 devices at `0x10`, `0x4A`, or `0x4C`. The complete trace is in
 `docs/frequency_control.md`.
 
+### Register 53: power-synchronization setting
+
+Address: `0x00D4`
+
+X6100Control historical label: `pwrsync`
+
+BASE 1.1.9 detects changes and copies the complete 32-bit value into
+its internal control cache. No subsequent reader of that cached field
+has yet been recovered: VERIFIED copy behavior, unknown effective
+semantics.
+
+The synthesizer independently adjusts output 4 around 2 MHz to avoid
+tuned-frequency harmonics. Correlation of that clock with the board
+`PSYNC` signal is HIGH CONFIDENCE, but correlation of register 53 with
+the clock remains MEDIUM CONFIDENCE. See `docs/frequency_control.md`.
+
 ### Register 12: operation flags
 
 Address: `0x0030`
