@@ -20,11 +20,11 @@
 
 ### Memory
 
--   [ ] Document .text
--   [ ] Document .rodata
+-   [x] Document recovered executable region
+-   [x] Bound combined read-only data/runtime-table region
 -   [x] Document startup-derived `.data` range (HIGH CONFIDENCE)
 -   [x] Document startup-derived `.bss` range (HIGH CONFIDENCE)
--   [ ] Document CCMRAM usage
+-   [x] Confirm no application CCMRAM accesses (HIGH CONFIDENCE)
 
 ## Hardware
 
@@ -78,7 +78,7 @@
 
 ## Tooling
 
--   [ ] Export functions from Ghidra
+-   [x] Export complete function ranges from Ghidra
 -   [x] Export call graph
 -   [x] Export direct function callers
 -   [x] Export raw interrupt table
