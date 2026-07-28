@@ -122,10 +122,13 @@ data register and several RAM-backed regions or circular buffers.
 
 Peripheral identity and event-driven slave state machine: VERIFIED.
 
-Interpretation as a memory/register service protocol: HIGH CONFIDENCE.
+Interpretation as the Linux control register service: VERIFIED by
+correlation with X6100Control and the exact 224-byte register-window
+size.
 
-The address map includes special ranges around `0xF000`, but their
-external protocol meaning is not yet established.
+The address map includes special ranges around `0xF000`; their
+destinations are documented in `docs/protocol.md`, but their external
+meaning is not yet established.
 
 ## I2C3 error
 

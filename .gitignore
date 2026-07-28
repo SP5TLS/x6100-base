@@ -1,3 +1,4 @@
 # Locally reproducible Ghidra decompiler output; do not treat OEM C-like output
 # as an independent implementation artifact.
 analysis/**/*_decompile.c
+analysis/protocol/FUN_*

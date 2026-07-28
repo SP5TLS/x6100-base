@@ -48,7 +48,8 @@
 
 ## Linux ↔ BASE protocol
 
--   [ ] Transport
+-   [x] I2C3 control transport and framing
+-   [ ] Verify UART IQ/telemetry flow against BASE 1.1.9
 -   [ ] Commands
 -   [ ] Responses
 -   [ ] Telemetry
@@ -89,7 +90,7 @@
 -   [ ] gpio.md
 -   [ ] clocks.md
 -   [ ] dma.md
--   [ ] protocol.md
+-   [x] protocol.md (transport and historical 1.1.6 register map)
 -   [ ] rtos.md
 -   [ ] rx_pipeline.md
 -   [ ] tx_pipeline.md
