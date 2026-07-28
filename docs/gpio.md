@@ -129,6 +129,12 @@ addresses and affected pins are VERIFIED, but final semantic names
 should not be assigned until the hardware variant and nets are
 identified.
 
+The primary RF-band callback has now been resolved. One implementation
+uses a PCA9535-compatible I2C2 expander; the other writes the index as
+a binary value on PG9, PG10, PG11, and PG13. A secondary one-hot RF
+index is transmitted through SPI6, with PG12 used by its completion
+path. Exact mappings are documented in `docs/rf_switching.md`.
+
 ## Inputs serviced by TIM3
 
 TIM3 debounces six GPIO-backed input descriptors and updates a shared

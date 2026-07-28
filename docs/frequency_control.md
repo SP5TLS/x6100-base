@@ -83,7 +83,8 @@ cached at main-state offset `+0x6A`; a change sets pending-action bit
 `0x02`. A second sub-band index is cached at `+0x6B` and sets
 pending-action bit `0x01`. Those pending actions are applied before the
 deferred synthesizer commit: VERIFIED. Their physical relay or switch
-assignments are not yet known.
+assignments are not yet known. Output backends and exact bit patterns
+are documented in `docs/rf_switching.md`.
 
 DAC2 receives a piecewise-constant 12-bit code:
 
@@ -219,6 +220,5 @@ CONFIDENCE.
   code.
 - Correlate internal receive/transmit offset storage with the complete
   wire-register update path.
-- Map the two cached RF switch indices to physical relay/shift-register
-  outputs.
+- Map the recovered RF output codes to physical relay/filter names.
 - Identify the circuit driven by the frequency-dependent DAC2 voltage.

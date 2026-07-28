@@ -57,6 +57,8 @@
 -   [x] Resolve the BASE 1.1.9 frequency-path selector (constant 1)
 -   [x] Recover output-4 harmonic-avoidance algorithm (`PSYNC`, HIGH CONFIDENCE)
 -   [x] Recover RF-band indices and frequency-dependent DAC2 table
+-   [x] Map primary RF index to PCA9535 and direct-GPIO backends
+-   [x] Map secondary RF index to SPI6 output-image bits
 -   [ ] Correlate remaining commands with BASE 1.1.9 consumers
 -   [x] Recover I2C read responses and calibration-window framing
 -   [ ] Recover telemetry physical-unit calibration and calibration-field semantics
@@ -105,6 +107,7 @@
 -   [x] analog.md
 -   [x] i2c.md
 -   [x] frequency_control.md
+-   [x] rf_switching.md
 -   [x] watchdog.md
 -   [ ] dma.md
 -   [x] protocol.md (transport and historical 1.1.6 register map)

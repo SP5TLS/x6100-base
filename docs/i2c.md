@@ -35,6 +35,7 @@ must be shifted right once to obtain the conventional 7-bit address.
 | --- | ---: | ---: | --- |
 | I2C1 | `0x6C` | `0x36` | battery telemetry block |
 | I2C1 | `0xD4` | `0x6A` | five-output LO clock generator |
+| I2C2 | `0x40` | `0x20` | 16-bit RF-control GPIO expander |
 | I2C2 | `0x20` | `0x10` | hardware-variant device |
 | I2C2 | `0x30` | `0x18` | TLV320AIC3204 audio codec |
 | I2C2 | `0x94` | `0x4A` | auxiliary startup configuration |
@@ -133,6 +134,12 @@ Primary device references:
   <https://www.ti.com/lit/ml/slaa557/slaa557.pdf>
 
 ## Other I2C2 devices and hardware variants
+
+The object at `0x20000360` uses address byte `0x40` (7-bit `0x20`).
+It accesses the eight-register layout and 16-bit output state of an NXP
+PCA9535-compatible GPIO expander. Device-family identification:
+HIGH CONFIDENCE. It provides one of two primary RF-band output
+implementations; see `docs/rf_switching.md`.
 
 `FUN_08030754` sends a fixed startup sequence to address byte `0x94`
 (7-bit `0x4A`). The writes include register/value pairs and one

@@ -17,3 +17,4 @@ analysis/i2c/FUN_*
 analysis/watchdog/FUN_*
 analysis/memory/FUN_*
 analysis/frequency_control/FUN_*
+analysis/rf_switching/FUN_*
