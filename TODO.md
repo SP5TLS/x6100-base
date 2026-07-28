@@ -79,7 +79,9 @@
 
 ### TX
 
--   [ ] Modulation
+-   [x] Recover mode-dependent modulation topology
+-   [ ] Export TX rate-conversion and quadrature-filter coefficients
+-   [ ] Correlate BASE mode numbers with final Linux-facing names
 -   [x] RX/TX block-boundary handoff and first digital input gain
 -   [ ] ALC
 -   [ ] PA control
