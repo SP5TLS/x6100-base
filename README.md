@@ -76,7 +76,7 @@ Current understanding:
         ↓
     clear .bss
         ↓
-    candidate_SystemInit (HIGH CONFIDENCE)
+    SystemInit (VERIFIED)
         ↓
     __libc_init_array (VERIFIED)
         ↓
@@ -84,8 +84,8 @@ Current understanding:
         ↓
     application
 
-Only `__libc_init_array()` has sufficient evidence for a final name.
-The other two functions retain candidate names until verified.
+`SystemInit()` and `__libc_init_array()` have sufficient evidence for
+final names. The third function retains a candidate name until verified.
 
 # Project philosophy
 

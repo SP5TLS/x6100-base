@@ -56,7 +56,9 @@ Current name: `FUN_0803485c`
 
 Proposed name: `candidate_SystemInit`
 
-Confidence: HIGH CONFIDENCE
+Final name justified by evidence: `SystemInit`
+
+Confidence: VERIFIED
 
 Observed behavior:
 
@@ -66,9 +68,12 @@ Observed behavior:
 - writes `0x08020000` to `SCB->VTOR` at `0xE000ED08`;
 - returns to the reset function.
 
-This is structurally consistent with a CMSIS `SystemInit` function.
-The final name has not been assigned because source or symbol-level
-identity has not yet been established.
+The register sequence and reset constants match the STM32F4 CMSIS
+`SystemInit` implementation distributed in the official
+[STM32CubeF4 package](https://github.com/STMicroelectronics/STM32CubeF4).
+The function's position as the first reset-time call independently
+supports the identification. The final name is therefore VERIFIED,
+although it has not yet been applied to the persistent Ghidra project.
 
 ## Second startup call
 
