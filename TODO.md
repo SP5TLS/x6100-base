@@ -14,8 +14,8 @@
 
 ### Interrupts
 
--   [ ] Recover complete vector table
--   [ ] Identify all IRQ handlers
+-   [x] Recover complete vector table
+-   [x] Identify all active IRQ handlers
 -   [ ] Rename verified handlers
 
 ### Memory
@@ -83,9 +83,9 @@
 
 ## Documentation
 
--   [ ] startup.md
--   [ ] interrupts.md
--   [ ] memory_map.md
+-   [x] startup.md
+-   [x] interrupts.md
+-   [x] memory_map.md
 -   [ ] gpio.md
 -   [ ] clocks.md
 -   [ ] dma.md
