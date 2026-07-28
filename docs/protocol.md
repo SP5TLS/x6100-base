@@ -40,7 +40,7 @@ X6100Control uses two transports:
 | Purpose | Linux device | Parameters | 1.1.9 status |
 | --- | --- | --- | --- |
 | Control register file | `/dev/i2c-0` | slave address `0x72` | VERIFIED |
-| IQ and telemetry flow | `/dev/ttyS1` | 1,152,000 baud, raw | MEDIUM CONFIDENCE pending BASE-side framing verification |
+| IQ and telemetry flow | `/dev/ttyS1` | historical: 1,152,000 baud; BASE 1.1.9: 1,500,000 baud | VERIFIED format; VERIFIED baud-version difference |
 
 ## I2C control framing
 
@@ -234,13 +234,51 @@ The historical Linux implementation expects packets containing:
 - typical packet interval near 35 ms.
 
 This is VERIFIED behavior of the reviewed X6100Control revision.
-Compatibility with BASE 1.1.9 is a HYPOTHESIS until the corresponding
-USART/DMA producer is recovered.
+
+## UART flow in BASE 1.1.9
+
+`FUN_080337fc`, called by `TIM2_IRQHandler`, builds and schedules the
+flow packet. `FUN_08032fc8` configures DMA2 Stream 6 to transmit it
+through the USART6 data register at `0x40011404`.
+
+| Property | BASE 1.1.9 evidence |
+| --- | --- |
+| Packet base | `0x200003F8` |
+| Magic offset | `0x0000` |
+| Magic value | `0xAA5555AA` |
+| IQ sample area | offset `0x0004`, length `0x1000` |
+| IQ sample count | 512 complex 32-bit-float pairs |
+| Metadata/telemetry | follows the IQ area |
+| CRC input length | `0x409` words = 4132 bytes |
+| CRC offset | `0x1024` |
+| Total DMA length | `0x1028` = 4136 bytes |
+| CRC polynomial evidence | `0x04C11DB7` present in the firmware CRC table |
+| Peripheral | USART6 |
+| DMA | DMA2 Stream 6 |
+
+The total size, magic, sample count, metadata placement, and CRC
+placement exactly match `x6100_flow_t` in X6100Control.
+
+UART flow packet compatibility between the reviewed historical
+implementation and BASE 1.1.9: VERIFIED.
+
+### Baud-rate version difference
+
+X6100Control configures `/dev/ttyS1` for 1,152,000 baud.
+
+In BASE 1.1.9, `FUN_08033210` initializes:
+
+- USART1 at 115,200 baud;
+- USART6 at 1,500,000 baud.
+
+The flow producer uses USART6, so BASE 1.1.9's flow baud rate is
+1,500,000. This is a VERIFIED protocol difference from the reviewed
+X6100Control implementation and must be accounted for by a compatible
+Linux client.
 
 ## Remaining work
 
 - Correlate the remaining control words with BASE-side consumers.
 - Determine the meanings of the read and special I2C windows.
-- Locate the UART packet builder and verify its 1.1.9 structure.
-- Compare command additions or changed bitfields between 1.1.6 and
-  1.1.9.
+- Recover the exact meaning and scaling of every UART metadata field.
+- Compare command additions or changed bitfields between 1.1.6 and 1.1.9.

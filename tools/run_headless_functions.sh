@@ -23,4 +23,5 @@ JAVA_HOME="$GHIDRA_JDK" \
 	-process "$PROGRAM_NAME" \
 	-readOnly \
 	-scriptPath "$(pwd)/ghidra_scripts" \
+	-preScript MapSTM32F427Memory.java \
 	-postScript ExportFunctionsByAddress.java "$(pwd)/$OUTPUT_DIR" "$@"

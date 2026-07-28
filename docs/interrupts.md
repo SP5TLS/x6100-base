@@ -76,9 +76,14 @@ The handler tests and clears the TIM2 update interrupt at
 samples GPIOG input bit 15 through `GPIOG_IDR` at `0x40021810` and
 maintains a nine-tick debounce state.
 
+One of the called routines, `FUN_080337fc`, builds and schedules the
+4136-byte USART6 IQ/telemetry packet through DMA2 Stream 6.
+
 Peripheral identity and update-event handling: VERIFIED.
 
 GPIOG pin 15 debounce behavior: HIGH CONFIDENCE.
+
+Periodic UART flow service role: VERIFIED.
 
 The physical signal connected to GPIOG pin 15 is unknown.
 

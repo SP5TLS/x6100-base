@@ -49,7 +49,8 @@
 ## Linux ↔ BASE protocol
 
 -   [x] I2C3 control transport and framing
--   [ ] Verify UART IQ/telemetry flow against BASE 1.1.9
+-   [x] Verify UART IQ/telemetry flow against BASE 1.1.9
+-   [x] Identify UART baud-rate change to 1,500,000
 -   [x] Verify ATU tune flag and Linux boot handshake
 -   [ ] Correlate remaining commands with BASE 1.1.9 consumers
 -   [ ] Responses
