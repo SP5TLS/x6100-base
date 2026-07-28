@@ -124,6 +124,26 @@ Exact source entries are exported in:
 - `analysis/tx_filters/biquad_3000hz_table_entry.csv`;
 - `analysis/tx_filters/biquad_selection.csv`.
 
+`tools/verify_tx_biquads.py` independently evaluates the exported
+sections using:
+
+`H(z) = gain × Π (b0 + b1 z⁻¹ + b2 z⁻²) / (1 + a1 z⁻¹ + a2 z⁻²)`
+
+It does not execute OEM code. Representative combined magnitudes are:
+
+| Frequency | Magnitude |
+| ---: | ---: |
+| 300 Hz | `0.959888` |
+| 1 kHz | `0.998126` |
+| 2 kHz | `0.975860` |
+| 3 kHz | `0.438530` |
+| 4 kHz | `0.000358` |
+
+The cascade passes the expected voice-frequency region and strongly
+attenuates frequencies outside it. This independently verifies the
+coefficient layout, feedback signs, and overall-gain interpretation:
+HIGH CONFIDENCE.
+
 ## Mode-dependent modulation
 
 The mode byte at `0x200085AD` selects the initial complex-baseband
@@ -203,8 +223,9 @@ implementation: VERIFIED.
 ## Remaining work
 
 - Associate the `1.0` and `5.0` branches with physical audio inputs.
-- Verify the combined 300/3000 Hz response against an independent
-  frequency-response calculation.
+- Determine why the table's nominal 3 kHz selection produces roughly
+  `-7.16 dB` at exactly 3 kHz rather than a conventional `-3 dB`
+  corner.
 - Correlate numeric modes 0–7 with Linux-facing mode names.
 - Recover the CW keying-envelope timing for modes 4/5.
 - Recover ALC and final TX output scaling.

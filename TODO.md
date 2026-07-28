@@ -82,7 +82,7 @@
 -   [x] Recover mode-dependent modulation topology
 -   [x] Export TX rate-conversion and quadrature-filter coefficients
 -   [x] Recover runtime TX biquad selection and exact coefficients
--   [ ] Verify combined TX audio-filter frequency response
+-   [x] Verify combined TX audio-filter frequency response independently
 -   [ ] Correlate BASE mode numbers with final Linux-facing names
 -   [x] RX/TX block-boundary handoff and first digital input gain
 -   [ ] ALC
