@@ -60,6 +60,10 @@ RX/TX transitions electrically mute the RF path is a separate question.
 Direct-reference evidence for the two bytes is exported in
 `analysis/rf_switching/dsp_handshake_refs.csv`.
 
+RX/TX transitions use another dirty flag and reset path. Their first
+digital input gain is documented separately in `docs/tx_pipeline.md`;
+it is not changed by ordinary frequency switching.
+
 ## Primary RF index
 
 The frequency-to-index regions are documented in

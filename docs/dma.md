@@ -73,6 +73,11 @@ boundary. It decrements a separate transition counter at `0x2000832A`
 once per completed block. Exact behavior is documented in
 `docs/rf_switching.md`.
 
+An RX/TX mode dirty bit independently requests a broader mode-state
+reset at a block boundary. The handler then converts two input channels,
+sums them, and applies the first TX digital gain before subsequent
+processing. See `docs/tx_pipeline.md`.
+
 The exact sample rate still requires recovery of the I2S clock
 configuration. Buffer size and double-buffer scheduling alone are
 VERIFIED.

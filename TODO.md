@@ -80,6 +80,7 @@
 ### TX
 
 -   [ ] Modulation
+-   [x] RX/TX block-boundary handoff and first digital input gain
 -   [ ] ALC
 -   [ ] PA control
 -   [ ] SWR protection
@@ -115,7 +116,7 @@
 -   [x] protocol.md (transport and historical 1.1.6 register map)
 -   [x] rtos.md
 -   [ ] rx_pipeline.md
--   [ ] tx_pipeline.md
+-   [x] tx_pipeline.md (initial mode handoff and input-gain stages)
 
 ## Milestone 1
 
