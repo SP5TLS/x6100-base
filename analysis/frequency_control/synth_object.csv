@@ -1,0 +1,6 @@
+object_address,offset,value,interpretation,confidence
+2000036c,00,d4,I2C address byte (7-bit address 0x6a),VERIFIED
+2000036c,04,00000005,number of clock outputs,VERIFIED
+2000036c,08,018cba80,reference frequency 26000000 Hz,VERIFIED
+2000036c,50,08030f25,Thumb callback FUN_08030f24 for I2C1 writes,VERIFIED
+2000036c,54,0803124d,Thumb callback FUN_0803124c for GPIOE pin 7 control,VERIFIED

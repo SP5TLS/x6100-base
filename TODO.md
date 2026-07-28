@@ -53,6 +53,7 @@
 -   [x] Identify UART baud-rate change to 1,500,000
 -   [x] Verify ATU tune flag and Linux boot handshake
 -   [x] Recover UART flow packet layout and metadata producers
+-   [x] Trace `vfoa_freq`/`vfob_freq` through LO synthesizer programming
 -   [ ] Correlate remaining commands with BASE 1.1.9 consumers
 -   [x] Recover I2C read responses and calibration-window framing
 -   [ ] Recover telemetry physical-unit calibration and calibration-field semantics
@@ -100,6 +101,7 @@
 -   [x] dsp_primitives.md
 -   [x] analog.md
 -   [x] i2c.md
+-   [x] frequency_control.md
 -   [x] watchdog.md
 -   [ ] dma.md
 -   [x] protocol.md (transport and historical 1.1.6 register map)

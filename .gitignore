@@ -16,3 +16,4 @@ analysis/gpio/FUN_*
 analysis/i2c/FUN_*
 analysis/watchdog/FUN_*
 analysis/memory/FUN_*
+analysis/frequency_control/FUN_*

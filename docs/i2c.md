@@ -14,7 +14,7 @@ Firmware SHA-256:
 
 | Bus | Pins | Rate | Role | Confidence |
 | --- | --- | ---: | --- | --- |
-| I2C1 | PB6 SCL, PB7 SDA, AF4 | 100 kHz | master, battery-pack telemetry | VERIFIED |
+| I2C1 | PB6 SCL, PB7 SDA, AF4 | 100 kHz | master, battery telemetry and LO synthesizer | VERIFIED |
 | I2C2 | PB10 SCL, PB11 SDA, AF4 | 100 kHz | master, audio codec and auxiliary devices | VERIFIED |
 | I2C3 | PA8 SCL, PC9 SDA, AF4 | 400 kHz | slave, Linux control register file | VERIFIED |
 
@@ -34,6 +34,7 @@ must be shifted right once to obtain the conventional 7-bit address.
 | Bus | Address byte in firmware | 7-bit address | Observed use |
 | --- | ---: | ---: | --- |
 | I2C1 | `0x6C` | `0x36` | battery telemetry block |
+| I2C1 | `0xD4` | `0x6A` | five-output LO clock generator |
 | I2C2 | `0x20` | `0x10` | hardware-variant device |
 | I2C2 | `0x30` | `0x18` | TLV320AIC3204 audio codec |
 | I2C2 | `0x94` | `0x4A` | auxiliary startup configuration |
@@ -82,6 +83,16 @@ On transfer failure, `FUN_08031cfc`:
 Bus recovery sequence and ten clock pulses: VERIFIED. This is
 consistent with recovery from a slave holding the bus, but the exact
 electrical fault is not observable from firmware alone.
+
+## I2C1 LO synthesizer
+
+The object at `0x2000036C` uses address byte `0xD4` (7-bit `0x6A`), a
+26 MHz reference, five outputs, and an I2C1 write callback. Its
+configuration and divider registers match the Renesas/IDT 5P49V60
+VersaClock 6E: HIGH CONFIDENCE.
+
+The VFO frequency path, divider formulas, deferred register commit, and
+device evidence are documented in `docs/frequency_control.md`.
 
 ## I2C2 TLV320AIC3204
 
@@ -165,6 +176,8 @@ See `docs/protocol.md` for:
   resets and clocks the physical bus before retrying later.
 - Treat the I2C1 512-byte block as an external protocol, not as a C
   structure to copy blindly.
+- Program the I2C1 clock generator from the public 5P49V60
+  specification and preserve the firmware's ordered LO update.
 - Preserve TLV320AIC3204 page selection and clock-divider ordering.
 - Detect the `0x10`/`0x4C` hardware variant rather than configuring both
   devices unconditionally.

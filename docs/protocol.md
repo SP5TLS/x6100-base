@@ -105,6 +105,9 @@ Existence and size of the 56-entry control register file: VERIFIED.
 Preservation of every 1.1.6 command meaning in 1.1.9: HIGH CONFIDENCE,
 pending correlation with each BASE-side consumer.
 
+The consumers of indices 1 and 7 have now been traced through the LO
+synthesizer. See `docs/frequency_control.md`.
+
 ## Historical control register labels
 
 These names come from X6100Control. Offsets and layout are VERIFIED as
@@ -159,6 +162,20 @@ Unlisted entries remain unnamed. They must not be assumed unused
 without checking BASE 1.1.9.
 
 ## Semantics verified in BASE 1.1.9
+
+### Registers 1 and 7: VFO frequencies
+
+Addresses: `0x0004` and `0x001C`
+
+`FUN_0802af0c` selects the A or B six-word VFO record and consumes the
+32-bit field at record offset `+0x04` as a frequency in hertz. It
+applies operating offsets and passes the result into the LO frequency
+path. Register locations and selection behavior: VERIFIED. Hertz unit:
+HIGH CONFIDENCE.
+
+The main LO device is on I2C1 at 7-bit address `0x6A`, not among the
+I2C2 devices at `0x10`, `0x4A`, or `0x4C`. The complete trace is in
+`docs/frequency_control.md`.
 
 ### Register 12: operation flags
 
