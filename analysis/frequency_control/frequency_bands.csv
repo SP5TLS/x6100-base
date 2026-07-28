@@ -20,3 +20,10 @@ dac2,0x8eb,21000001,24000000,,VERIFIED
 dac2,0xa08,24000001,28000000,,VERIFIED
 dac2,0xb26,28000001,50000000,,VERIFIED
 dac2,0xc43,50000001,4294967295,unsigned frequency input,VERIFIED
+secondary_rf,0,0,2000000,output-image bit 13,VERIFIED
+secondary_rf,1,2000001,4000000,output-image bit 12,VERIFIED
+secondary_rf,2,4000001,8000000,output-image bit 11,VERIFIED
+secondary_rf,3,8000001,15000000,output-image bit 10,VERIFIED
+secondary_rf,4,15000001,22000000,output-image bit 9,VERIFIED
+secondary_rf,5,22000001,30000000,output-image bit 8,VERIFIED
+secondary_rf,6,30000001,4294967295,output-image bit 7,VERIFIED

@@ -59,6 +59,7 @@
 -   [x] Recover RF-band indices and frequency-dependent DAC2 table
 -   [x] Map primary RF index to PCA9535 and direct-GPIO backends
 -   [x] Map secondary RF index to SPI6 output-image bits
+-   [x] Recover exact secondary RF-index frequency boundaries
 -   [ ] Correlate remaining commands with BASE 1.1.9 consumers
 -   [x] Recover I2C read responses and calibration-window framing
 -   [ ] Recover telemetry physical-unit calibration and calibration-field semantics

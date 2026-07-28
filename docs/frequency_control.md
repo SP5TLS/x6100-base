@@ -82,9 +82,10 @@ Classification and exact integer boundaries: VERIFIED. The index is
 cached at main-state offset `+0x6A`; a change sets pending-action bit
 `0x02`. A second sub-band index is cached at `+0x6B` and sets
 pending-action bit `0x01`. Those pending actions are applied before the
-deferred synthesizer commit: VERIFIED. Their physical relay or switch
-assignments are not yet known. Output backends and exact bit patterns
-are documented in `docs/rf_switching.md`.
+deferred synthesizer commit: VERIFIED. The secondary index has seven
+regions bounded at 2, 4, 8, 15, 22, and 30 MHz: VERIFIED. Physical
+relay or switch assignments are not yet known. Output backends and
+exact bit patterns are documented in `docs/rf_switching.md`.
 
 DAC2 receives a piecewise-constant 12-bit code:
 

@@ -90,21 +90,23 @@ unknown.
 ## Secondary sub-band index
 
 `FUN_0802c750` clears bits 7–13 in a shared 24-bit output image and
-sets exactly one:
+sets exactly one. The complete frequency mapping is:
 
-| Secondary index | Output-image bit |
-| ---: | ---: |
-| 0 | 13 |
-| 1 | 12 |
-| 2 | 11 |
-| 3 | 10 |
-| 4 | 9 |
-| 5 | 8 |
-| other | 7 |
+| Frequency region | Secondary index | Output-image bit |
+| ---: | ---: | ---: |
+| ≤2 MHz | 0 | 13 |
+| >2–4 MHz | 1 | 12 |
+| >4–8 MHz | 2 | 11 |
+| >8–15 MHz | 3 | 10 |
+| >15–22 MHz | 4 | 9 |
+| >22–30 MHz | 5 | 8 |
+| >30 MHz | 6 | 7 |
 
 The image is transmitted as three bytes through SPI6 at `0x40015400`.
 The transfer completion path drives PG12 low. One-hot selection,
-three-byte transfer, SPI6 peripheral, and PG12 operation: VERIFIED.
+exact integer boundaries, three-byte transfer, SPI6 peripheral, and
+PG12 operation: VERIFIED. The same intervals are included in
+`analysis/frequency_control/frequency_bands.csv`.
 
 Interpretation as another bank of RF relays or filter switches is HIGH
 CONFIDENCE because the selected bit follows tuned-frequency subregions
@@ -126,7 +128,5 @@ names remain HYPOTHESES and are not assigned.
 ## Remaining work
 
 - Associate PCA9535/direct-GPIO codes with board revisions.
-- Recover the exact secondary-index frequency boundaries as a compact
-  table.
 - Identify the physical filters or relays selected by each primary and
   secondary code.
