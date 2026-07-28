@@ -33,7 +33,7 @@
 -   [x] DMA
 -   [ ] ADC
 -   [ ] DAC
--   [ ] SPI
+-   [x] SPI / full-duplex I2S
 -   [ ] I2C
 -   [x] USART
 -   [x] Timers
@@ -96,6 +96,7 @@
 -   [x] timers.md
 -   [x] usart.md
 -   [x] dma.md
+-   [x] spi_i2s.md
 -   [ ] dma.md
 -   [x] protocol.md (transport and historical 1.1.6 register map)
 -   [ ] rtos.md

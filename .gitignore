@@ -8,3 +8,4 @@ analysis/clocks/FUN_*
 analysis/timers/FUN_*
 analysis/usart/FUN_*
 analysis/dma/FUN_*
+analysis/i2s/FUN_*
