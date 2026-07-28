@@ -86,7 +86,8 @@
 -   [ ] Correlate BASE mode numbers with final Linux-facing names
 -   [x] RX/TX block-boundary handoff and first digital input gain
 -   [x] Recover TX ALC topology, limits, and final complex scaling
--   [ ] Correlate ALC ADC inputs and target with physical RF units
+-   [x] Correlate ADC1 directional-detector inputs with TX-power/VSWR telemetry
+-   [ ] Recover absolute RF-power units and identify ADC1 channel 2
 -   [ ] PA control
 -   [ ] SWR protection
 

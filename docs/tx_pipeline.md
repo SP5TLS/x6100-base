@@ -226,11 +226,14 @@ and controller error state, and therefore restarts acquisition:
 VERIFIED. The exact physical units and calibration of the power target
 still need correlation with RF measurements.
 
-Several ADC-derived quantities also enter the controller calculation.
-Their arithmetic participation is VERIFIED, but assigning them final
-forward-power, reflected-power, or supply-sensor names would require
-additional analog-path evidence. Those interpretations remain
-HYPOTHESIS.
+ADC1 channels 0 and 1 feed identically calibrated directional-detector
+paths. Channel 0 supplies the published TX-power value; channels 0 and
+1 form the published VSWR ratio `(F+R)/(F-R)`. Their interpretation as
+forward and reflected RF detectors is HIGH CONFIDENCE, with the
+arithmetic and telemetry routing VERIFIED. ADC1 channel 2 supplies a
+clamped `1...20` correction multiplier to the ALC feedback calculation;
+its physical identity remains unknown. Exact formulas and qualification
+logic are documented in `docs/analog.md`.
 
 Direct-reference evidence is exported in
 `analysis/tx_filters/tx_output_control_refs.csv`.
@@ -312,7 +315,8 @@ implementation: VERIFIED.
   corner.
 - Correlate numeric modes 0–7 with Linux-facing mode names.
 - Recover the CW keying-envelope timing for modes 4/5.
-- Correlate the ALC ADC inputs and power target with physical RF units.
+- Recover the absolute RF-power calibration unit and identify the
+  physical role of ADC1 channel 2.
 - Determine the source and exact purpose of common Q31 correction
   `0x2000BA58`.
 - Determine whether the inactive zero-gain override is used by another

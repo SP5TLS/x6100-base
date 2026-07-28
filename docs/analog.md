@@ -79,19 +79,49 @@ scale factor but is not sufficient by itself to assign a final unit.
 The DMA1 Stream 3 DSP handler reads the three halfwords at
 `0x2000C6B4`:
 
-- ADC1 channel 0 is multiplied by `0.012165527`;
-- ADC1 channel 1 is multiplied by `0.012165527`;
-- ADC1 channel 2 participates in a clamped expression based on
-  `4000 - sample`.
+- ADC1 channel 0 is the forward RF-detector path: HIGH CONFIDENCE;
+- ADC1 channel 1 is the reflected RF-detector path: HIGH CONFIDENCE;
+- ADC1 channel 2 participates in an ALC correction multiplier, but its
+  physical net remains unknown: VERIFIED use, unknown identity.
 
-It derives additional floating-point values, including a ratio using
-the first two channels, in the fast signal-processing path.
+Channels 0 and 1 pass through identical conversions. For raw ADC sample
+`adc`, the firmware calculates:
 
-The register path and arithmetic are VERIFIED. Interpretation of
-channels 0 and 1 as forward/reflected detector inputs, and channel 2 as
-an ALC-related input, is a HYPOTHESIS pending schematic or controlled
-hardware measurements. No symbol renames should be made from this
-hypothesis.
+```
+x = adc × 0.012165527
+P = x × (0.0115375 × x + 0.06)
+```
+
+It smooths the channel-0 result and exposes it through
+`FUN_0802442c`. `TIM3_IRQHandler` publishes that getter as TX-power
+telemetry, while the reviewed X6100Control 1.1.6 interface decodes the
+same field as `tx_power` in tenths. Arithmetic and end-to-end telemetry
+association: VERIFIED. The forward-power interpretation is therefore
+HIGH CONFIDENCE; the absolute unit still requires hardware
+calibration.
+
+Every ten DSP blocks, the firmware forms a ratio from accumulated raw
+channel-0 and channel-1 samples:
+
+`ratio = (forward + reflected) / (forward - reflected)`
+
+It forces the result to at least `1.0`, suppresses it at low detector
+level, and requires three qualifying updates before exposing it through
+`FUN_08024454`. `TIM3_IRQHandler` publishes that getter in the VSWR
+telemetry field, decoded as `vswr` by X6100Control. Formula and
+telemetry association: VERIFIED. Identifying channel 1 as the reflected
+detector is HIGH CONFIDENCE.
+
+Channel 2 produces:
+
+`correction = clamp(1 + 0.005 × (4000 - adc), 1, 20)`
+
+This multiplier enters the TX ALC feedback calculation. Formula and use
+are VERIFIED. It is not safe to infer a final physical net name from
+the arithmetic alone.
+
+Direct references for the derived RF measurement state are exported in
+`analysis/analog/adc1_rf_measurement_refs.csv`.
 
 ## PA bias device versus STM32 DAC
 
@@ -150,12 +180,18 @@ write has been identified: HIGH CONFIDENCE.
   until their electrical transfer functions are verified.
 - Keep ADC1 acquisition synchronized with the fast DSP path; polling it
   from the main loop would not reproduce the observed timing.
+- Preserve the common nonlinear calibration for both directional
+  detector channels and calculate VSWR only after the recovered
+  low-level and settling guards.
 - Do not substitute the internal DAC for the separate PA bias-control
   transaction path.
 
 ## Remaining work
 
-- Correlate PA0/PA1/PA2, PA6/PA7, and PC4 with the board schematic.
+- Confirm the PA0/PA1 directional-detector assignment against the board
+  schematic or injected-signal measurements.
+- Identify the physical role of the PA2 ALC correction input.
+- Correlate PA6/PA7 and PC4 with the board schematic.
 - Recover the physical units for ADC2 indices 0 and 1.
 - Identify the ADC2 channel 14 consumer or external role.
 - Identify the external PA bias-control device and its transfer
