@@ -64,15 +64,35 @@ Direct-reference exports:
 
 ## Rate conversion
 
-The raw TX input is accumulated in groups of eight samples. Each group
-passes through two consecutive rate-conversion/filter objects before
-entering the mode switch. Combined with the previously recovered
-100 kHz raw and 12.5 kHz internal rate constants, this establishes an
-8:1 conversion into the modulation-rate domain: HIGH CONFIDENCE.
+The raw TX input is accumulated in groups of eight samples and passed
+to a 64-tap FIR decimator with factor 8. Its instance is at
+`0x20007244`, and its coefficients are copied from `0x0803E3E4` during
+startup. Factor, tap count, object, coefficient source, and processing
+direction: VERIFIED.
 
-The implementation uses reusable DSP objects rather than mode-specific
-ad-hoc sample dropping. A compatible implementation should preserve
-their filter response; coefficient recovery is still pending.
+After mode-dependent complex-baseband generation, two independent
+64-tap FIR interpolators at `0x20007490` and `0x200075DC` expand the I
+and Q components by factor 8. They use the same coefficient array at
+`0x0803E3E4`: VERIFIED.
+
+Together with the recovered 100 kHz raw and 12.5 kHz internal rate
+constants, these structures establish:
+
+`100 kHz → decimate by 8 → 12.5 kHz modulation → interpolate by 8 → 100 kHz`
+
+Rate-domain topology: VERIFIED.
+
+The 64 coefficients are exactly symmetric. Their exported
+single-precision sum is approximately `1.057501116`. Exact IEEE-754
+bits and decimal values are in
+`analysis/tx_filters/rate_conversion_fir_64.csv`.
+
+Between decimation and modulation, two five-stage direct-form-I biquad
+cascades process the audio sequentially. Startup generates their
+coefficients for 300 Hz and 3000 Hz using the 12.5 kHz rate. Structure,
+stage count, frequencies, rate, and ordering: VERIFIED. Interpretation
+as the TX audio band-pass edges is HIGH CONFIDENCE. These coefficients
+are generated in RAM rather than copied from a fixed flash array.
 
 ## Mode-dependent modulation
 
@@ -93,9 +113,13 @@ Final user-facing mode names are not assigned because the BASE binary
 does not itself prove the Linux enumeration labels.
 
 For modes 0–3, the firmware uses a 100-sample circular history and a
-quadrature FIR helper. One component is delayed by 50 samples while
-the other is filtered, then both are multiplied by eight. Delay,
-history length, FIR use, orientation swaps, and scaling: VERIFIED.
+101-tap quadrature FIR helper. One component is delayed by 50 samples
+while the other is filtered, then both are multiplied by eight. The
+coefficient array at `0x0803E130` is exactly antisymmetric with a zero
+center tap and zero sum to exported precision, matching a Hilbert
+transformer. Delay, history length, FIR use, coefficient properties,
+orientation swaps, and scaling: VERIFIED. Exact values are in
+`analysis/tx_filters/quadrature_fir_101.csv`.
 
 Modes 4 and 5 consume the internal waveform/ramp state also used by the
 CW transition logic. The waveform is multiplied by eight. Identifying
@@ -143,11 +167,14 @@ implementation: VERIFIED.
   explicit orientation, not merely as audio routing.
 - Preserve the 8:1 rate conversion on both sides of the modulation-rate
   processing.
+- Use the exact exported IEEE-754 FIR coefficients when compatibility
+  is required; decimal columns are provided for inspection.
 
 ## Remaining work
 
 - Associate the `1.0` and `5.0` branches with physical audio inputs.
-- Export the rate-conversion and Hilbert/FIR coefficients.
+- Reproduce and verify the runtime-generated 300/3000 Hz biquad
+  coefficients independently.
 - Correlate numeric modes 0–7 with Linux-facing mode names.
 - Recover the CW keying-envelope timing for modes 4/5.
 - Recover ALC and final TX output scaling.

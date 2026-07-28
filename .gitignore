@@ -18,3 +18,4 @@ analysis/watchdog/FUN_*
 analysis/memory/FUN_*
 analysis/frequency_control/FUN_*
 analysis/rf_switching/FUN_*
+analysis/tx_filters/FUN_*

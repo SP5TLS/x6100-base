@@ -57,6 +57,23 @@ Multiple state objects are passed to this primitive from different
 branches of the DMA handler, so one final semantic name cannot yet be
 assigned to every filter instance.
 
+## TX filter instances
+
+| Object | Primitive | Parameters | Confidence |
+| ---: | --- | --- | --- |
+| `0x20007244` | FIR decimator | factor 8, 64 taps | VERIFIED |
+| `0x20007728` | biquad cascade | 5 stages, generated for 300 Hz at 12.5 kHz | VERIFIED parameters |
+| `0x200077F4` | biquad cascade | 5 stages, generated for 3000 Hz at 12.5 kHz | VERIFIED parameters |
+| `0x200078D8` | FIR | 101-tap antisymmetric quadrature coefficients | VERIFIED structure |
+| `0x20007490` | FIR interpolator | factor 8, 64 taps | VERIFIED |
+| `0x200075DC` | FIR interpolator | factor 8, 64 taps | VERIFIED |
+
+The decimator and both interpolators share the flash coefficient array
+at `0x0803E3E4`. The quadrature FIR uses `0x0803E130`. Both arrays are
+exported under `analysis/tx_filters/`. Its exact antisymmetry, zero
+center tap, and use with a 50-sample delay establish a Hilbert role:
+HIGH CONFIDENCE.
+
 ## Complex magnitude
 
 `FUN_080361a0` consumes interleaved real/imaginary float pairs and emits
