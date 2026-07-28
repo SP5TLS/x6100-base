@@ -1,0 +1,10 @@
+/* 080244a4 FUN_080244a4 */
+
+undefined1 FUN_080244a4(void)
+
+{
+  return DAT_200082f6;
+}
+
+
+

@@ -240,8 +240,8 @@ TIM3 supplies the upstream flags from active-low GPIO descriptors:
 | --- | ---: | --- | ---: |
 | paddle input 0 | `0x200001AA` | PF14 | 1 TIM3 tick |
 | paddle input 1 | `0x200001BE` | PF13 | 1 TIM3 tick |
-| latched immediate-key source | `0x200001D2` | PA11 | 1 TIM3 tick |
-| immediate-key source | `0x200001FA` | PD0 | 1 TIM3 tick |
+| edge-conditioned immediate-CW source | `0x200001D2` | PA11 | 1 TIM3 tick |
+| direct immediate-CW source | `0x200001FA` | PD0 | 1 TIM3 tick |
 
 GPIO ports, masks, active-low polarity, debounce counts, stable flags,
 and their CW consumers: VERIFIED. `FUN_0802A8A4` copies PF14/PF13
@@ -268,13 +268,51 @@ comes from section 7.6, page 22, of the Radioddity *Extended manual for
 Xiegu X6100*, version 1.0 (2024):
 `https://www.radiomanual.info/schemi/Vari/Xiegu_X-6100_extended_user_2024.pdf`.
 
-PD0 and PA11 participate in the immediate-key/PTT path, but assigning
-either one a final connector label such as microphone PTT, accessory
-PTT, or another internal source still requires schematic or connector
-measurements. Those physical labels remain HYPOTHESIS. In manual key
-mode either PF14 or PF13 can assert the continuous key state, agreeing
-with the manual's instruction to connect a straight key to either
-`DI` or `DA`; this does not make PA11 or PD0 KEY-jack contacts.
+PD0 and PA11 participate in the immediate-CW-key path, but assigning
+either one a final connector or board-control label requires schematic
+or connector measurements. Those physical labels remain HYPOTHESIS.
+In manual key mode either PF14 or PF13 can assert the continuous key
+state, agreeing with the manual's instruction to connect a straight
+key to either `DI` or `DA`; this does not make PA11 or PD0 KEY-jack
+contacts.
+
+### TX-request arbitration around the keyer
+
+The control loop keeps a 32-bit TX-source word at `0x20000168`.
+`FUN_0802D7CC(mask, state)` is its generic bit setter: VERIFIED.
+Register 12 bit `0x00040000` drives source bit 0. The historical name
+for the register bit is `iptt`, so the internal/software PTT label is
+HIGH CONFIDENCE.
+
+TIM3 independently sets source bit 1 from debounced active-low PB9
+(`0x20000182`): VERIFIED. BASE 1.1.6 patch work calls this source
+`HPTT`; hardware PTT is therefore HIGH CONFIDENCE. This corrects the
+earlier provisional grouping of PA11/PD0 with the general PTT path.
+
+`FUN_0802A8A4` requests TX from any of these sources:
+
+| Source-word bit | TX source | Confidence |
+| ---: | --- | --- |
+| `0x00000001` | register-12 `iptt` | HIGH CONFIDENCE |
+| `0x00000002` | active-low PB9 / hardware PTT | HIGH CONFIDENCE |
+| `0x00000010` | ATU operation | HIGH CONFIDENCE |
+| `0x00000020` | VOX | HIGH CONFIDENCE |
+| `0x00000040` | modem/digital TX | HIGH CONFIDENCE |
+| `0x00000100` | calibration | HIGH CONFIDENCE |
+| `0x00000200` | SWR scan | HIGH CONFIDENCE |
+| keyer RF byte `0x200082F6` | CW RF envelope/key state | VERIFIED |
+
+The masks and their ability to request TX are VERIFIED in BASE 1.1.9;
+the semantic labels other than the already recovered keyer state are
+correlations with X6100Control and the 1.1.6 patch. PA11 and PD0 only
+feed key-state bit 2 while the selected mode is CW/CWR. They do not
+write the general TX-source word: VERIFIED.
+
+The exact external origin of PB9 and the physical identities of PA11
+and PD0 remain unresolved. The user and service manuals show multiple
+possible physical transmit controls (body/hand-microphone PTT and ACC
+`TRX`), but firmware behavior alone does not establish their
+pin-by-pin assignment.
 
 The keyer structure begins at `0x200082EC`. Its byte at `+9`
 (`0x200082F5`) drives the monitor envelope, while byte `+10`
@@ -348,7 +386,12 @@ Field and state evidence:
 - `analysis/tx_filters/cw_gpio_descriptor_refs.csv`;
 - `analysis/tx_filters/cw_upstream_flag_refs.csv`;
 - `analysis/tx_filters/cw_upstream_extended_refs.csv`;
-- `analysis/tx_filters/cw_qsk_ratio_refs.csv`.
+- `analysis/tx_filters/cw_qsk_ratio_refs.csv`;
+- `analysis/tx_filters/cw_control_decompilation.txt`;
+- `analysis/tx_filters/ptt_arbitration_decompilation.txt`;
+- `analysis/tx_filters/tx_request_sources.csv`;
+- `analysis/tx_filters/tx_source_getter_callers.csv`;
+- `analysis/tx_filters/tx_source_getter_decompilation.txt`.
 
 Mode 6 computes an affine audio value using two initialized parameters
 and sends the same initial value into both component paths. Its
@@ -487,8 +530,8 @@ implementation: VERIFIED.
 - Determine why the table's nominal 3 kHz selection produces roughly
   `-7.16 dB` at exactly 3 kHz rather than a conventional `-3 dB`
   corner.
-- Correlate PA11/PD0 with the remaining external or internal PTT
-  sources.
+- Correlate PB9, PA11, and PD0 with body PTT, microphone PTT, ACC
+  `TRX`, or any remaining internal sources.
 - Compare the disconnected key-ratio field with other BASE versions.
 - Recover the absolute RF-power calibration unit and identify the
   physical role of ADC1 channel 2.

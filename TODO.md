@@ -89,7 +89,8 @@
 -   [x] Recover QSK hold units and audit key-ratio application
 -   [x] Map CW input flags to STM32 GPIO pins
 -   [x] Map PF13/PF14 to KEY tip/ring contacts
--   [ ] Map PA11/PD0 to remaining PTT sources
+-   [x] Recover TX-request arbitration and hardware-PTT GPIO
+-   [ ] Map PB9/PA11/PD0 to physical TX controls
 -   [ ] Compare disconnected key-ratio control with other BASE versions
 -   [x] RX/TX block-boundary handoff and first digital input gain
 -   [x] Recover TX ALC topology, limits, and final complex scaling

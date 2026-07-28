@@ -254,6 +254,11 @@ X6100Control assigns the same bit to `x6100_atu_tune`.
 
 Register 12 bit `0x00002000` means ATU tune active/requested: VERIFIED.
 
+Register 12 bit `0x00040000` is copied through
+`FUN_0802D7CC(0x1, state)` into TX-source bit 0. That source requests
+transmit in `FUN_0802A8A4`: VERIFIED. X6100Control calls the register
+bit `iptt`; internal/software PTT is therefore HIGH CONFIDENCE.
+
 Other register 12 bits retain HIGH CONFIDENCE historical meanings until
 their individual consumers are checked.
 

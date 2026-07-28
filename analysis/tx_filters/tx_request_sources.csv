@@ -1,0 +1,9 @@
+source_mask_or_state,producer,request_behavior,interpretation,confidence
+0x00000001,FUN_0802D7CC_from_register_12_bit_0x00040000,asserts_TX,internal_or_software_PTT,HIGH CONFIDENCE
+0x00000002,TIM3_from_active_low_PB9,asserts_TX,hardware_PTT,HIGH CONFIDENCE
+0x00000010,FUN_0802D7CC,asserts_TX,ATU,HIGH CONFIDENCE
+0x00000020,FUN_0802D7CC,asserts_TX,VOX,HIGH CONFIDENCE
+0x00000040,FUN_0802D7CC,asserts_TX,modem_or_digital_TX,HIGH CONFIDENCE
+0x00000100,FUN_0802D7CC,asserts_TX,calibration,HIGH CONFIDENCE
+0x00000200,FUN_0802D7CC,asserts_TX,SWR_scan,HIGH CONFIDENCE
+0x200082F6,FUN_0802145C,asserts_TX_when_nonzero,CW_RF_key_state,VERIFIED

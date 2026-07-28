@@ -198,6 +198,14 @@ Preferred scripts:
 -   export_peripherals.py
 -   rename_from_csv.py
 
+The repository's headless wrappers use the imported read-only Ghidra
+project and write reproducible evidence beneath `analysis/`. For
+targeted pseudocode evidence use:
+
+    tools/run_headless_decompile.sh output.txt FUNCTION_ADDRESS...
+
+The exporter does not rename functions or modify the Ghidra project.
+
 ------------------------------------------------------------------------
 
 # Documentation template
