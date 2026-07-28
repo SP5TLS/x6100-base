@@ -152,9 +152,11 @@ TIM3 debounces seven active-low GPIO-backed input descriptors:
 Descriptor values, active level, debounce state machine, and stable
 destinations: VERIFIED.
 
-PF14 and PF13 feed the two CW paddle inputs. PA11 and PD0 feed the
-aggregated immediate-key/PTT path: VERIFIED software routing. Exact
-external connector contacts and final straight-key/PTT labels remain
+PF14 and PF13 feed the two CW paddle inputs. Correlation with the
+published KEY-plug diagram and keyer element lengths maps PF14 to
+tip/`DI`/dot and PF13 to ring/`DA`/dash: HIGH CONFIDENCE. PA11 and PD0
+feed the aggregated immediate-key/PTT path: VERIFIED software routing.
+Their exact external or internal sources and final PTT labels remain
 unresolved. See `docs/tx_pipeline.md`.
 
 ## Reimplementation implications
@@ -169,8 +171,8 @@ unresolved. See `docs/tx_pipeline.md`.
 
 ## Remaining work
 
-- Assign final physical roles and connector contacts to all seven TIM3
-  inputs.
+- Assign final physical roles and connector contacts to PA11, PA12,
+  PD0, PB9, and PE3.
 - Correlate shifted RF-control bits with frequency ranges and hardware
   filters.
 - Identify power, PA-enable, charger, and reset nets from the board

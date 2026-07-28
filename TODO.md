@@ -88,7 +88,8 @@
 -   [x] Recover CW software key-state generator and register-33 fields
 -   [x] Recover QSK hold units and audit key-ratio application
 -   [x] Map CW input flags to STM32 GPIO pins
--   [ ] Map PF13/PF14/PA11/PD0 to external connector contacts
+-   [x] Map PF13/PF14 to KEY tip/ring contacts
+-   [ ] Map PA11/PD0 to remaining PTT sources
 -   [ ] Compare disconnected key-ratio control with other BASE versions
 -   [x] RX/TX block-boundary handoff and first digital input gain
 -   [x] Recover TX ALC topology, limits, and final complex scaling

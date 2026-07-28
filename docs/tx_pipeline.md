@@ -224,8 +224,8 @@ The three input bits have these algorithmic roles:
 
 | Bit | Recovered use | Interpretation |
 | ---: | --- | --- |
-| 0 | first paddle input | dot/dash identity depends on key mode |
-| 1 | second paddle input | dot/dash identity depends on key mode |
+| 0 | first paddle input | dot/`DI` in unswapped automatic mode, HIGH CONFIDENCE |
+| 1 | second paddle input | dash/`DA` in unswapped automatic mode, HIGH CONFIDENCE |
 | 2 | immediately asserts the key without element generation | straight/manual key, HIGH CONFIDENCE |
 
 `FUN_0802A8A4` constructs these bits only while the active mode is 4 or
@@ -249,10 +249,32 @@ directly to key-state bits 0/1. It forms bit 2 from PD0 or a latched PA11
 transition after both paddles are released: VERIFIED.
 
 PF14 and PF13 are therefore the two paddle inputs: HIGH CONFIDENCE.
+The X6100 connection diagram identifies the 3.5 mm KEY plug as tip
+`DI`, ring `DA`, and sleeve `Common`: VERIFIED external documentation.
+In automatic mode 1, input 0 selects the short element and input 1
+selects the element multiplied by the fixed `3.0` ratio. Mode 2 swaps
+the two inputs. Correlating that behavior with the historical
+`auto-left`/`auto-right` enumeration gives:
+
+| KEY contact | Element in automatic mode 1 | MCU input | Confidence |
+| --- | --- | --- | --- |
+| tip (`DI`) | dot | PF14 | HIGH CONFIDENCE |
+| ring (`DA`) | dash | PF13 | HIGH CONFIDENCE |
+| sleeve (`Common`) | active-low return | ground/common | VERIFIED external documentation |
+
+The KEY contact assignment is recorded in
+`analysis/tx_filters/cw_connector_mapping.csv`. The external diagram
+comes from section 7.6, page 22, of the Radioddity *Extended manual for
+Xiegu X6100*, version 1.0 (2024):
+`https://www.radiomanual.info/schemi/Vari/Xiegu_X-6100_extended_user_2024.pdf`.
+
 PD0 and PA11 participate in the immediate-key/PTT path, but assigning
-either one a final connector label such as straight key, microphone
-PTT, or accessory PTT requires schematic or connector measurements.
-Those physical labels remain HYPOTHESIS.
+either one a final connector label such as microphone PTT, accessory
+PTT, or another internal source still requires schematic or connector
+measurements. Those physical labels remain HYPOTHESIS. In manual key
+mode either PF14 or PF13 can assert the continuous key state, agreeing
+with the manual's instruction to connect a straight key to either
+`DI` or `DA`; this does not make PA11 or PD0 KEY-jack contacts.
 
 The keyer structure begins at `0x200082EC`. Its byte at `+9`
 (`0x200082F5`) drives the monitor envelope, while byte `+10`
@@ -320,6 +342,7 @@ Field and state evidence:
 - `analysis/tx_filters/cw_keyer_fields.csv`;
 - `analysis/tx_filters/cw_key_input_refs.csv`;
 - `analysis/tx_filters/cw_control_loop_callers.csv`;
+- `analysis/tx_filters/cw_connector_mapping.csv`;
 - `analysis/tx_filters/cw_gpio_mapping.csv`;
 - `analysis/tx_filters/cw_gpio_descriptor_data.csv`;
 - `analysis/tx_filters/cw_gpio_descriptor_refs.csv`;
@@ -464,8 +487,8 @@ implementation: VERIFIED.
 - Determine why the table's nominal 3 kHz selection produces roughly
   `-7.16 dB` at exactly 3 kHz rather than a conventional `-3 dB`
   corner.
-- Correlate PF13/PF14/PA11/PD0 with external connector contacts and
-  distinguish straight key from PTT sources.
+- Correlate PA11/PD0 with the remaining external or internal PTT
+  sources.
 - Compare the disconnected key-ratio field with other BASE versions.
 - Recover the absolute RF-power calibration unit and identify the
   physical role of ADC1 channel 2.
