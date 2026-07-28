@@ -1,0 +1,16 @@
+logical_field,logical_bit,control_word_bit,output_mask,confidence
+bank_direct,0,0,0x000001,VERIFIED
+bank_direct,1,1,0x000002,VERIFIED
+bank_direct,2,2,0x000004,VERIFIED
+bank_direct,3,3,0x000008,VERIFIED
+bank_direct,4,4,0x000010,VERIFIED
+bank_direct,5,5,0x000020,VERIFIED
+bank_direct,6,6,0x000040,VERIFIED
+bank_permuted,0,8,0x200000,VERIFIED
+bank_permuted,1,9,0x010000,VERIFIED
+bank_permuted,2,10,0x008000,VERIFIED
+bank_permuted,3,11,0x004000,VERIFIED
+bank_permuted,4,12,0x020000,VERIFIED
+bank_permuted,5,13,0x040000,VERIFIED
+bank_permuted,6,14,0x080000,VERIFIED
+topology,0,16,0x100000,VERIFIED

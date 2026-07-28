@@ -90,6 +90,8 @@
 -   [ ] Recover absolute RF-power units and identify ADC1 channel 2
 -   [ ] PA control
 -   [x] Trace VSWR measurement into the antenna-tuner search
+-   [x] Recover ATU state packing, relay-bit permutation, and search phases
+-   [ ] Assign ATU banks to L/C and recover component values
 -   [x] Audit direct VSWR consumers for a firmware hard-trip path
 -   [ ] Identify any hardware or external-controller SWR protection
 

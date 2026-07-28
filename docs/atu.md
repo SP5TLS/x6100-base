@@ -45,6 +45,77 @@ of the corresponding Linux control register `swrscan_trx`. That is
 supporting historical evidence for the measurement-session
 interpretation, not proof that every 1.1.9 register label is unchanged.
 
+## Network representation
+
+The best candidate is stored at `0x2000BF88` in this layout:
+
+| Offset | Width | Meaning |
+| ---: | ---: | --- |
+| `+0` | 32 bits | best measured VSWR multiplied by 10 |
+| `+4` | 8 bits | first seven-bit relay bank |
+| `+5` | 8 bits | second seven-bit relay bank |
+| `+6` | 8 bits | binary network-topology selection |
+
+Offsets and value domains: VERIFIED. Calling the two bytes relay banks
+is HIGH CONFIDENCE from their one-bit-at-a-time board-output mapping
+and use by the matching search. Assigning either bank the final label
+`L` or `C` is not yet justified.
+
+Linux register 17, historically named `atu_network` by X6100Control
+1.1.6, packs the same state as:
+
+- bits `0...6`: direct relay bank;
+- bits `8...14`: permuted relay bank;
+- bit `16`: topology selection.
+
+The direct bank maps logical bits 0...6 to board-control bits 0...6.
+The other bank maps its logical bits to board-control bits
+`21,16,15,14,17,18,19`. Topology maps to board-control bit 20.
+Packing and output-bit permutation: VERIFIED. The exact relay coils
+and component values need board evidence.
+
+The complete mapping is exported in
+`analysis/atu/relay_bit_mapping.csv`.
+
+## Search algorithm
+
+`FUN_08028E48` performs the initial search. It clears the network and
+tests both topology values. For each topology it evaluates both
+seven-bit banks using the nine coarse patterns:
+
+`0x00, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x30, 0x40`
+
+The table contents, nested search, topology iteration, and retention of
+the lowest result are VERIFIED. Exact initialized table words are
+exported in `analysis/atu/coarse_scan_patterns.csv`.
+
+Measurements are converted to integer tenths. Candidate validation
+waits for repeated fresh readings, takes three readings for an average,
+and can retry the average up to five times when it differs too far from
+the preceding result. Sampling structure and retry counts: VERIFIED.
+This is a noise/stability guard: HIGH CONFIDENCE.
+
+If the best coarse result is still at least `2.0`, `FUN_0802993C`
+performs a local multi-step search around the selected candidate. Its
+signed step table is:
+
+`1, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10`
+
+It retains only candidates that improve the best validated measurement
+and limits each bank to `0...127`: VERIFIED. The table is exported in
+`analysis/atu/search_tables_words.csv`.
+
+`FUN_080290E0` then performs a final directional sweep around the
+candidate, independently refining the two banks. It explores up to ten
+positions in either direction, respects the `0...127` limits, and can
+stop early once the measured VSWR reaches `1.5` or better. Search
+radius, bounds, ordering, and threshold: VERIFIED.
+
+After applying the winning network, the tune result state is `1` when
+the best VSWR is at most `3.0`, otherwise `3`. Numeric states and
+threshold: VERIFIED; final user-facing names for states 1 and 3 remain
+unassigned.
+
 ## SWR protection status
 
 The complete direct-reference set for the current ratio
@@ -71,12 +142,18 @@ symbol is assigned.
   displayed VSWR field asynchronously.
 - Preserve the dedicated low-power TX session and restore the previous
   user power after tuning.
+- Preserve the two seven-bit banks and topology bit as separate logical
+  fields; do not expose the permuted board-output word as the public
+  network representation.
+- Reproduce coarse selection, validated measurements, local refinement,
+  and final directional sweep as distinct phases.
 - Do not invent an OEM hard-trip threshold; none is supported by the
   recovered ratio consumers.
 
 ## Remaining work
 
-- Recover the tuner relay bit mapping.
-- Reconstruct the complete search and acceptance algorithm.
+- Assign the two banks to inductors/capacitors and recover component
+  values from schematic or measurement.
+- Name tune result states 1 and 3 from an independent consumer.
 - Identify whether protection exists in hardware or another firmware
   component.

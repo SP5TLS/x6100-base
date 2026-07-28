@@ -177,6 +177,15 @@ The main LO device is on I2C1 at 7-bit address `0x6A`, not among the
 I2C2 devices at `0x10`, `0x4A`, or `0x4C`. The complete trace is in
 `docs/frequency_control.md`.
 
+### Register 17: ATU network
+
+Address: `0x0044`
+
+Bits `0...6` and `8...14` hold two seven-bit matching-network banks;
+bit 16 selects one of two network topologies. Packing is VERIFIED.
+Electrical assignment of the banks to inductors and capacitors remains
+unresolved; see `docs/atu.md`.
+
 ### Register 53: power-synchronization setting
 
 Address: `0x00D4`
