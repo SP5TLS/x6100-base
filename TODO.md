@@ -30,7 +30,7 @@
 
 -   [x] RCC / clocks
 -   [ ] GPIO
--   [ ] DMA
+-   [x] DMA
 -   [ ] ADC
 -   [ ] DAC
 -   [ ] SPI
@@ -95,6 +95,7 @@
 -   [x] clocks.md
 -   [x] timers.md
 -   [x] usart.md
+-   [x] dma.md
 -   [ ] dma.md
 -   [x] protocol.md (transport and historical 1.1.6 register map)
 -   [ ] rtos.md
