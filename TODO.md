@@ -34,7 +34,7 @@
 -   [x] ADC topology, DMA acquisition, and ADC2 filtering
 -   [x] DAC initialization and frequency-dependent DAC2 control
 -   [x] SPI / full-duplex I2S
--   [ ] I2C
+-   [x] I2C1/I2C2 masters, codec, variants, and I2C3 slave
 -   [x] USART
 -   [x] Timers
 -   [ ] Watchdog
@@ -99,6 +99,7 @@
 -   [x] spi_i2s.md
 -   [x] dsp_primitives.md
 -   [x] analog.md
+-   [x] i2c.md
 -   [ ] dma.md
 -   [x] protocol.md (transport and historical 1.1.6 register map)
 -   [x] rtos.md
