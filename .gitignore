@@ -4,3 +4,4 @@ analysis/**/*_decompile.c
 analysis/protocol/FUN_*
 analysis/protocol/control_descriptor_refs.csv
 analysis/flow/FUN_*
+analysis/clocks/FUN_*

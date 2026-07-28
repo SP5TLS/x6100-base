@@ -28,7 +28,7 @@
 
 ## Hardware
 
--   [ ] RCC / clocks
+-   [x] RCC / clocks
 -   [ ] GPIO
 -   [ ] DMA
 -   [ ] ADC
@@ -92,7 +92,7 @@
 -   [x] interrupts.md
 -   [x] memory_map.md
 -   [ ] gpio.md
--   [ ] clocks.md
+-   [x] clocks.md
 -   [ ] dma.md
 -   [x] protocol.md (transport and historical 1.1.6 register map)
 -   [ ] rtos.md
