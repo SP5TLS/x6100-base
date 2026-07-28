@@ -1,0 +1,7 @@
+preinit_start=0x0807C5C8
+preinit_end=0x0807C5C8
+preinit_count=0
+init_start=0x0807C5C8
+init_end=0x0807C5CC
+init_count=1
+init_entry_0x0807C5C8=0x080201D5

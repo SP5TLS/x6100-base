@@ -76,23 +76,16 @@ Current understanding:
         ↓
     clear .bss
         ↓
-    startup_call_1
+    candidate_SystemInit (HIGH CONFIDENCE)
         ↓
-    startup_call_2
+    __libc_init_array (VERIFIED)
         ↓
-    startup_call_3
+    candidate_main (HIGH CONFIDENCE)
         ↓
     application
 
-The three startup functions still need to be identified.
-
-Possible candidates:
-
--   SystemInit()
--   \_\_libc_init_array()
--   main()
-
-Names are intentionally not assigned until verified.
+Only `__libc_init_array()` has sufficient evidence for a final name.
+The other two functions retain candidate names until verified.
 
 # Project philosophy
 

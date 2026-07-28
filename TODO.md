@@ -9,7 +9,7 @@
 -   [x] Identify startup_call_2 (`candidate_libc_init_array`, HIGH CONFIDENCE)
 -   [x] Identify startup_call_3 (`candidate_main`, HIGH CONFIDENCE)
 -   [ ] Confirm SystemInit()
--   [ ] Confirm \_\_libc_init_array()
+-   [x] Confirm \_\_libc_init_array() (VERIFIED)
 -   [x] Locate `candidate_main` at `0x08034178` (HIGH CONFIDENCE)
 
 ### Interrupts

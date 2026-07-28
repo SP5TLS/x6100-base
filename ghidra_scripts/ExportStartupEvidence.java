@@ -51,6 +51,7 @@ public class ExportStartupEvidence extends GhidraScript {
 		exportDisassembly(resetFunction, new File(outputDirectory, "reset_disassembly.txt"));
 		exportDecompilation(resetFunction, new File(outputDirectory, "reset_decompile.c"));
 		exportDirectCallees(resetFunction, outputDirectory);
+		exportRuntimeArrays(memory, new File(outputDirectory, "runtime_arrays.txt"));
 
 		try (BufferedWriter writer =
 			new BufferedWriter(new FileWriter(new File(outputDirectory, "startup_summary.txt")))) {
@@ -60,6 +61,28 @@ public class ExportStartupEvidence extends GhidraScript {
 			writer.write(String.format("reset_code_address=0x%08X%n", resetVector & ~1L));
 			writer.write("reset_current_name=" + resetFunction.getName() + "\n");
 			writer.write("reset_body=" + resetFunction.getBody() + "\n");
+		}
+	}
+
+	private void exportRuntimeArrays(Memory memory, File output) throws Exception {
+		// Literal pool used by FUN_08037ed0 in this image.
+		Address literals = toAddr(0x08037f08L);
+		long preinitStart = readUnsignedInt(memory, literals);
+		long preinitEnd = readUnsignedInt(memory, literals.add(4));
+		long initStart = readUnsignedInt(memory, literals.add(8));
+		long initEnd = readUnsignedInt(memory, literals.add(12));
+
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(output))) {
+			writer.write(String.format("preinit_start=0x%08X%n", preinitStart));
+			writer.write(String.format("preinit_end=0x%08X%n", preinitEnd));
+			writer.write(String.format("preinit_count=%d%n", (preinitEnd - preinitStart) / 4));
+			writer.write(String.format("init_start=0x%08X%n", initStart));
+			writer.write(String.format("init_end=0x%08X%n", initEnd));
+			writer.write(String.format("init_count=%d%n", (initEnd - initStart) / 4));
+			for (long entryAddress = initStart; entryAddress < initEnd; entryAddress += 4) {
+				long value = readUnsignedInt(memory, toAddr(entryAddress));
+				writer.write(String.format("init_entry_0x%08X=0x%08X%n", entryAddress, value));
+			}
 		}
 	}
 

@@ -78,7 +78,9 @@ Current name: `FUN_08037ed0`
 
 Proposed name: `candidate_libc_init_array`
 
-Confidence: HIGH CONFIDENCE
+Final name justified by evidence: `__libc_init_array`
+
+Confidence: VERIFIED
 
 Observed behavior:
 
@@ -87,10 +89,31 @@ Observed behavior:
 - iterates over a second range of function pointers;
 - returns.
 
-This matches the characteristic pre-initializer, runtime initializer,
-and initializer-array sequence of `__libc_init_array`. The array
-boundaries and the identity of `FUN_0803ced8` still need to be recorded
-before assigning a final name.
+The four boundaries loaded by this function are:
+
+| Linker-provided range | Start | End | Entries |
+| --- | ---: | ---: | ---: |
+| preinit array | `0x0807C5C8` | `0x0807C5C8` | 0 |
+| init array | `0x0807C5C8` | `0x0807C5CC` | 1 |
+
+The sole init-array entry is the Thumb address `0x080201D5`, whose code
+address is `0x080201D4`.
+
+The control flow is an exact match for newlib's `__libc_init_array`:
+iterate the preinit array, call `_init`, then iterate the init array.
+This comparison is based on the
+[newlib `init.c` implementation](https://sourceware.org/pipermail/newlib/2022/018886.html)
+and the recovered array boundaries. The final name is therefore
+VERIFIED, although it has not yet been applied to the persistent Ghidra
+project.
+
+`FUN_0803ced8` contains only an ABI-compatible prologue, `nop`, and
+epilogue. Its role as the `_init` stub is HIGH CONFIDENCE.
+
+The init-array function at `0x080201D4` loads a null weak-function
+literal and returns without invoking it. Its identity as a generated
+frame-registration helper is MEDIUM CONFIDENCE; its effective no-op
+behavior in this image is VERIFIED.
 
 ## Third startup call
 
@@ -110,8 +133,6 @@ hypothesis. No final rename has been performed.
 
 ## Remaining work
 
-- Identify the two initializer-array ranges used by `FUN_08037ed0`.
-- Identify `FUN_0803ced8`.
 - Recover the complete call graph rooted at `FUN_08034178`.
 - Correlate RAM ranges with linker sections and global references.
 - Apply candidate or final names in the persistent Ghidra project only
