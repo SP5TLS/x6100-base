@@ -1,0 +1,9 @@
+value,historical_linux_name,base_1_1_9_behavior,confidence
+0,LSB,first Hilbert/delay orientation,HIGH CONFIDENCE
+1,LSB_DIG,first Hilbert/delay orientation,HIGH CONFIDENCE
+2,USB,opposite Hilbert/delay orientation,HIGH CONFIDENCE
+3,USB_DIG,opposite Hilbert/delay orientation,HIGH CONFIDENCE
+4,CW,keyed waveform with first final complex orientation,HIGH CONFIDENCE
+5,CWR,keyed waveform with swapped final complex orientation,HIGH CONFIDENCE
+6,AM,carrier plus scaled audio,HIGH CONFIDENCE
+7,NFM,clamped audio-to-phase modulation,HIGH CONFIDENCE

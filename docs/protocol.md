@@ -177,6 +177,16 @@ The main LO device is on I2C1 at 7-bit address `0x6A`, not among the
 I2C2 devices at `0x10`, `0x4A`, or `0x4C`. The complete trace is in
 `docs/frequency_control.md`.
 
+### Registers 4 and 10: VFO modes
+
+Addresses: `0x0010` and `0x0028`
+
+The historical X6100Control enum maps values 0...7 to `LSB, LSB_DIG,
+USB, USB_DIG, CW, CWR, AM, NFM`. All four mode families independently
+match the recovered BASE 1.1.9 transmit algorithms. Preservation of
+this numeric enumeration is HIGH CONFIDENCE. See
+`docs/tx_pipeline.md`.
+
 ### Register 17: ATU network
 
 Address: `0x0044`

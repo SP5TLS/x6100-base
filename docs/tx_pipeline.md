@@ -151,16 +151,23 @@ generator:
 
 | Mode values | Recovered behavior | Interpretation |
 | --- | --- | --- |
-| 0, 1 | audio history/delay plus FIR-derived quadrature component; opposite I/Q orientation between modes | opposite-sideband pair, HIGH CONFIDENCE |
-| 2, 3 | same delay/FIR quadrature construction with the alternate orientation pairing | second opposite-sideband pair, HIGH CONFIDENCE |
-| 4, 5 | internally generated/keyed waveform is copied to both components; GPIOE12 follows its sign/state | CW-like keyed pair, HIGH CONFIDENCE |
-| 6 | `carrier_offset + audio × depth`; identical values feed both initial components | AM-like modulation, HIGH CONFIDENCE |
-| 7 | audio is clipped, scaled into phase deviation, then converted to a `sin/cos` complex pair | angle/FM modulation, VERIFIED algorithm; FM mode HIGH CONFIDENCE |
+| 0, 1 | audio history/delay plus FIR-derived quadrature component; identical DSP orientation for both values | LSB / LSB_DIG, HIGH CONFIDENCE |
+| 2, 3 | same construction with I/Q roles exchanged relative to 0/1; identical orientation within the pair | USB / USB_DIG, HIGH CONFIDENCE |
+| 4, 5 | internally generated/keyed waveform; final complex orientation is exchanged between values | CW / CWR, HIGH CONFIDENCE |
+| 6 | `carrier_offset + audio × depth`; identical values feed both initial components | AM, HIGH CONFIDENCE |
+| 7 | audio is clipped, scaled into phase deviation, then converted to a `sin/cos` complex pair | NFM, HIGH CONFIDENCE; angle-modulation algorithm VERIFIED |
 | other | both components are zero | VERIFIED |
 
 The numeric mode selection and signal-processing behavior are VERIFIED.
-Final user-facing mode names are not assigned because the BASE binary
-does not itself prove the Linux enumeration labels.
+The user-facing names are correlated with the X6100Control 1.1.6 enum.
+That historical enum assigns exactly `LSB, LSB_DIG, USB, USB_DIG, CW,
+CWR, AM, NFM` to values 0...7. Its two sideband pairs, keyed pair, AM,
+and NFM all independently agree with the BASE 1.1.9 algorithms:
+HIGH CONFIDENCE that the enumeration is unchanged.
+
+This cross-version correlation is not used to rename Ghidra symbols.
+The evidence table is exported in
+`analysis/tx_filters/mode_mapping.csv`.
 
 For modes 0–3, the firmware uses a 100-sample circular history and a
 101-tap quadrature FIR helper. One component is delayed by 50 samples
@@ -172,9 +179,10 @@ orientation swaps, and scaling: VERIFIED. Exact values are in
 `analysis/tx_filters/quadrature_fir_101.csv`.
 
 Modes 4 and 5 consume the internal waveform/ramp state also used by the
-CW transition logic. The waveform is multiplied by eight. Identifying
-the pair as opposite CW sidebands is HIGH CONFIDENCE, but the exact
-keying-envelope timing remains to be recovered.
+CW transition logic. The waveform is multiplied by eight. A later
+mode-specific path exchanges sine/cosine placement between values 4
+and 5, consistent with the historical CW/CWR pair: HIGH CONFIDENCE.
+The exact keying-envelope timing remains to be recovered.
 
 Mode 6 computes an affine audio value using two initialized parameters
 and sends the same initial value into both component paths. Its
@@ -313,7 +321,6 @@ implementation: VERIFIED.
 - Determine why the table's nominal 3 kHz selection produces roughly
   `-7.16 dB` at exactly 3 kHz rather than a conventional `-3 dB`
   corner.
-- Correlate numeric modes 0–7 with Linux-facing mode names.
 - Recover the CW keying-envelope timing for modes 4/5.
 - Recover the absolute RF-power calibration unit and identify the
   physical role of ADC1 channel 2.

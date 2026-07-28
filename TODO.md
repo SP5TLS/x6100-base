@@ -83,7 +83,7 @@
 -   [x] Export TX rate-conversion and quadrature-filter coefficients
 -   [x] Recover runtime TX biquad selection and exact coefficients
 -   [x] Verify combined TX audio-filter frequency response independently
--   [ ] Correlate BASE mode numbers with final Linux-facing names
+-   [x] Correlate BASE mode numbers with historical Linux-facing names
 -   [x] RX/TX block-boundary handoff and first digital input gain
 -   [x] Recover TX ALC topology, limits, and final complex scaling
 -   [x] Correlate ADC1 directional-detector inputs with TX-power/VSWR telemetry
