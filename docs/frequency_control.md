@@ -60,8 +60,50 @@ not yet been assigned because this trace alone does not prove them.
 Before committing the synthesizer update, `FUN_0802c840` is called with
 the tuned frequency (or a variant-dependent adjusted value). Earlier
 peripheral analysis shows that this function controls
-frequency-dependent analog/DAC state. The ordering is VERIFIED; the
-complete RF-band-selection semantics are still under investigation.
+frequency-dependent analog/DAC state. The ordering is VERIFIED.
+
+The function independently derives an RF-band index and a DAC2 code.
+Recovered RF-band regions are:
+
+| Index | Frequency region |
+| ---: | ---: |
+| 0 | below 1.5 MHz or above 55 MHz |
+| 1 | 1.5–2.2 MHz |
+| 2 | >2.2–3.8 MHz |
+| 3 | >3.8–5.5 MHz |
+| 4 | >5.5–7.5 MHz |
+| 5 | >7.5–13.5 MHz |
+| 6 | >13.5–21 MHz |
+| 7 | >21–33 MHz |
+| 8 | >33–50 MHz |
+| 9 | >50–55 MHz |
+
+Classification and exact integer boundaries: VERIFIED. The index is
+cached at main-state offset `+0x6A`; a change sets pending-action bit
+`0x02`. A second sub-band index is cached at `+0x6B` and sets
+pending-action bit `0x01`. Those pending actions are applied before the
+deferred synthesizer commit: VERIFIED. Their physical relay or switch
+assignments are not yet known.
+
+DAC2 receives a piecewise-constant 12-bit code:
+
+| Frequency region | DAC2 code |
+| ---: | ---: |
+| ≤2 MHz | `0x11D` |
+| >2–5 MHz | `0x23A` |
+| >5–7 MHz | `0x358` |
+| >7–10 MHz | `0x475` |
+| >10–14 MHz | `0x593` |
+| >14–18 MHz | `0x6B0` |
+| >18–21 MHz | `0x7CD` |
+| >21–24 MHz | `0x8EB` |
+| >24–28 MHz | `0xA08` |
+| >28–50 MHz | `0xB26` |
+| >50 MHz | `0xC43` |
+
+Codes and boundaries: VERIFIED. An analog tuning/bias voltage role is
+HIGH CONFIDENCE; the exact circuit is unknown. Machine-readable
+boundaries are in `analysis/frequency_control/frequency_bands.csv`.
 
 ## Synthesizer identification
 
@@ -177,4 +219,6 @@ CONFIDENCE.
   code.
 - Correlate internal receive/transmit offset storage with the complete
   wire-register update path.
-- Recover the analog switching performed around the deferred LO commit.
+- Map the two cached RF switch indices to physical relay/shift-register
+  outputs.
+- Identify the circuit driven by the frequency-dependent DAC2 voltage.

@@ -130,9 +130,17 @@ and `0xC43`.
 
 Frequency-dependent DAC2 control: VERIFIED.
 
+The complete piecewise table has now been recovered, from `0x11D` at
+frequencies up to 2 MHz through `0xC43` above 50 MHz. Exact integer
+boundaries and the parallel RF-band classification are documented in
+`docs/frequency_control.md` and
+`analysis/frequency_control/frequency_bands.csv`.
+
 Its physical purpose is unknown. Band-dependent RF bias or tuning
-control is a HYPOTHESIS. DAC channel 1 is initialized to zero, but no
-later application write has been identified: HIGH CONFIDENCE.
+control is HIGH CONFIDENCE because the code increases monotonically
+across frequency regions and is updated immediately before the LO
+commit. DAC channel 1 is initialized to zero, but no later application
+write has been identified: HIGH CONFIDENCE.
 
 ## Reimplementation implications
 
@@ -150,6 +158,5 @@ later application write has been identified: HIGH CONFIDENCE.
 - Correlate PA0/PA1/PA2, PA6/PA7, and PC4 with the board schematic.
 - Recover the physical units for ADC2 indices 0 and 1.
 - Identify the ADC2 channel 14 consumer or external role.
-- Map every frequency interval in `FUN_0802c840` to its DAC2 code.
 - Identify the external PA bias-control device and its transfer
   function.
