@@ -219,8 +219,56 @@ observed branches.
 | `0xF000–0xFFFD` | `0x2000C190` | aliased circular window | VERIFIED |
 | `0xFFFE–0xFFFF` | — | returns constant `0x61` | HIGH CONFIDENCE |
 
-The semantic purpose of the telemetry and special windows remains
-unknown.
+### Firmware-identification response
+
+The `0x0000–0x007F` read window is a 128-byte circular
+firmware-identification buffer at `0x2000E8E4`.
+
+During startup, `candidate_main`:
+
+1. copies seven bytes of `V1.1.9` to offsets `0x00–0x06`;
+2. formats the build date and time as `%s,%s`;
+3. copies the 32-byte formatting buffer to offsets `0x07–0x26`.
+
+For the analyzed image the meaningful response bytes therefore begin:
+
+```text
+V1.1.9Nov 27 2025,10:31:57\0
+```
+
+The destination is zero-initialized before those copies, and I2C reads
+wrap modulo 128. Buffer purpose, construction, and BASE 1.1.9 contents:
+VERIFIED.
+
+### Calibration-data window
+
+The shared `0x2000C190` window contains the BASE calibration block, not
+ordinary runtime telemetry. Both I2C read ranges `0x0100–0x0FFF` and
+`0xF000–0xFFFD` address it modulo `0x330`; Linux writes through the
+`0xF000–0xFFFD` range.
+
+| Property | Value | Confidence |
+| --- | ---: | --- |
+| RAM base | `0x2000C190` | VERIFIED |
+| Size | `0x330` bytes | VERIFIED |
+| Word count | 204 | VERIFIED |
+| Word 0 | magic `0xAA5555AA` | VERIFIED |
+| Words 1–202 | calibration payload | VERIFIED layout |
+| Word 203 | CRC of words 0–202 | VERIFIED |
+| CRC initial value | `0xFFFFFFFF` | VERIFIED |
+| CRC processing | non-reflected, table-driven, four steps per word | VERIFIED |
+| CRC polynomial | `0x04C11DB7` | HIGH CONFIDENCE |
+| Primary flash copy | `0x08004000` | VERIFIED |
+| Legacy/migration copy | `0x080E0000` | VERIFIED |
+
+`FUN_08033ef4` validates the primary flash copy, falls back to the
+legacy address and migrates it when valid, or creates a zeroed default
+block when neither copy passes magic and CRC validation. Two early
+payload values are clamped to `0xAF0` and `0xCE4`; their physical
+meaning remains unknown.
+
+The individual calibration fields must be recovered from their
+consumers before names are assigned.
 
 ## UART flow evidence from X6100Control
 

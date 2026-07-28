@@ -54,8 +54,8 @@
 -   [x] Verify ATU tune flag and Linux boot handshake
 -   [x] Recover UART flow packet layout and metadata producers
 -   [ ] Correlate remaining commands with BASE 1.1.9 consumers
--   [ ] Responses
--   [ ] Recover telemetry physical-unit calibration and special I2C windows
+-   [x] Recover I2C read responses and calibration-window framing
+-   [ ] Recover telemetry physical-unit calibration and calibration-field semantics
 
 ## DSP
 
