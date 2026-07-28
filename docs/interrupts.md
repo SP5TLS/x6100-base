@@ -155,7 +155,5 @@ recorded.
 
 - Apply the six VERIFIED names and `Default_Handler` to the persistent
   Ghidra project.
-- Recover direct call graphs for the DMA and timer handlers.
-- Identify DMA1 Stream 3 and companion-stream buffer layouts.
 - Map TIM2/TIM3 GPIO inputs to schematic signals.
-- Document the I2C3 address-space protocol and buffer ownership.
+- Separate the RX and TX sub-pipelines inside DMA1 Stream 3.

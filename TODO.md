@@ -41,10 +41,10 @@
 
 ## RTOS
 
--   [ ] Detect RTOS
--   [ ] Recover tasks
--   [ ] Recover queues
--   [ ] Recover timers
+-   [x] Identify bare-metal superloop; no RTOS scheduler (HIGH CONFIDENCE)
+-   [x] Confirm no RTOS task objects are present
+-   [x] Confirm no RTOS queues/semaphores are present
+-   [x] Confirm timers are hardware-driven rather than RTOS timers
 
 ## Linux ↔ BASE protocol
 
@@ -100,7 +100,7 @@
 -   [x] dsp_primitives.md
 -   [ ] dma.md
 -   [x] protocol.md (transport and historical 1.1.6 register map)
--   [ ] rtos.md
+-   [x] rtos.md
 -   [ ] rx_pipeline.md
 -   [ ] tx_pipeline.md
 

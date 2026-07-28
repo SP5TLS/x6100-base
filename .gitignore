@@ -10,3 +10,4 @@ analysis/usart/FUN_*
 analysis/dma/FUN_*
 analysis/i2s/FUN_*
 analysis/dsp_primitives/FUN_*
+analysis/rtos/FUN_*
