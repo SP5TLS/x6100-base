@@ -29,7 +29,7 @@
 ## Hardware
 
 -   [x] RCC / clocks
--   [ ] GPIO
+-   [x] GPIO modes, peripheral pins, shift chains, and shutdown sequence
 -   [x] DMA
 -   [x] ADC topology, DMA acquisition, and ADC2 filtering
 -   [x] DAC initialization and frequency-dependent DAC2 control
@@ -91,7 +91,7 @@
 -   [x] startup.md
 -   [x] interrupts.md
 -   [x] memory_map.md
--   [ ] gpio.md
+-   [x] gpio.md
 -   [x] clocks.md
 -   [x] timers.md
 -   [x] usart.md

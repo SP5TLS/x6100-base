@@ -12,3 +12,4 @@ analysis/i2s/FUN_*
 analysis/dsp_primitives/FUN_*
 analysis/rtos/FUN_*
 analysis/analog/FUN_*
+analysis/gpio/FUN_*
