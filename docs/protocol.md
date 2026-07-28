@@ -206,6 +206,12 @@ uses confirm the historical `cwtone` and `cwvol` labels: VERIFIED
 fields and arithmetic, HIGH CONFIDENCE labels. The fixed RF and monitor
 envelopes are documented in `docs/tx_pipeline.md`.
 
+Bits `0...7` set keyer element timing; bits `8...9` select manual or
+automatic paddle handling, including a swapped-paddle mode; bits
+`10...11` select iambic behavior. Bit 29 is training mode and suppresses
+RF keying while retaining the monitor. Algorithms are VERIFIED;
+historical `ks`, `km`, `kimb`, and `cwtrain` labels are HIGH CONFIDENCE.
+
 ### Register 53: power-synchronization setting
 
 Address: `0x00D4`

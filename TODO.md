@@ -85,7 +85,8 @@
 -   [x] Verify combined TX audio-filter frequency response independently
 -   [x] Correlate BASE mode numbers with historical Linux-facing names
 -   [x] Recover CW RF/monitor envelope timing and tone/level fields
--   [ ] Recover CW key-state source and remaining keyer fields
+-   [x] Recover CW software key-state generator and register-33 fields
+-   [ ] Map CW input flags to connector pins and finish iambic/ratio timing
 -   [x] RX/TX block-boundary handoff and first digital input gain
 -   [x] Recover TX ALC topology, limits, and final complex scaling
 -   [x] Correlate ADC1 directional-detector inputs with TX-power/VSWR telemetry

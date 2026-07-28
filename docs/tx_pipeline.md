@@ -213,6 +213,63 @@ Exact recovered parameters are summarized in
 `analysis/tx_filters/cw_envelope_parameters.csv`; direct state
 references are in `analysis/tx_filters/cw_envelope_refs.csv`.
 
+### CW key-state generator
+
+The DMA handler invokes `FUN_0802145C` once per completed 128-frame
+block. Its input callback `FUN_080312F4` returns the three-bit state at
+`0x2000C6D8`. `FUN_08031300(mask, state)` is the only writer and
+atomically sets or clears selected bits: VERIFIED.
+
+The three input bits have these algorithmic roles:
+
+| Bit | Recovered use | Interpretation |
+| ---: | --- | --- |
+| 0 | first paddle input | dot/dash identity depends on key mode |
+| 1 | second paddle input | dot/dash identity depends on key mode |
+| 2 | immediately asserts the key without element generation | straight/manual key, HIGH CONFIDENCE |
+
+`FUN_0802A8A4` constructs these bits only while the active mode is 4 or
+5. Bits 0 and 1 come from two control-state flags. Bit 2 is synthesized
+from additional control and transition flags. Thus the CW processor
+consumes a software-aggregated key state, not a GPIO register directly:
+VERIFIED. Correlating those upstream flags with final connector pins
+remains open.
+
+The keyer structure begins at `0x200082EC`. Its byte at `+9`
+(`0x200082F5`) drives the monitor envelope, while byte `+10`
+(`0x200082F6`) drives the RF envelope. In normal operation the RF state
+can remain asserted for a programmable hold interval after the monitor
+key releases. Separate monitor/RF outputs and hold behavior: VERIFIED.
+
+Register 33 fields control the generator:
+
+| Bits | Recovered behavior | Historical label correlation |
+| --- | --- | --- |
+| `0...7` | element timing input clamped to `5...100` | key speed / WPM, HIGH CONFIDENCE |
+| `8...9` | value 0 passes inputs manually; automatic modes generate elements; value 2 swaps paddle bits | manual / auto-left / auto-right, HIGH CONFIDENCE |
+| `10...11` | changes behavior when both paddles are held and elements alternate | iambic A/B, HIGH CONFIDENCE |
+| `29` | forces RF-key output low while leaving monitor-key generation active | CW training, VERIFIED behavior; label HIGH CONFIDENCE |
+
+For the speed field `w`, `FUN_08024318` calculates the element counter:
+
+`count = clamp(380000 / (clamp(w, 5, 100) × 390.625), 1, 1000)`
+
+Formula and constants: VERIFIED. The historical WPM interpretation is
+HIGH CONFIDENCE. Assigning exact wall-clock element duration also
+depends on the keyer invocation schedule; the observed DMA-block call
+is VERIFIED.
+
+Automatic mode alternates the two element types, retains paddle memory,
+and applies a separate length multiplier to one type. This is an
+iambic keyer algorithm: HIGH CONFIDENCE. Exact A-versus-B release
+semantics and the ratio-field transfer function remain to be
+documented.
+
+Field and state evidence:
+
+- `analysis/tx_filters/cw_keyer_fields.csv`;
+- `analysis/tx_filters/cw_key_input_refs.csv`.
+
 Mode 6 computes an affine audio value using two initialized parameters
 and sends the same initial value into both component paths. Its
 AM/carrier interpretation is HIGH CONFIDENCE.
@@ -350,8 +407,9 @@ implementation: VERIFIED.
 - Determine why the table's nominal 3 kHz selection produces roughly
   `-7.16 dB` at exactly 3 kHz rather than a conventional `-3 dB`
   corner.
-- Identify the electrical or software source of the CW key-state
-  callback and recover the remaining keyer-mode fields.
+- Correlate the software-aggregated paddle and straight-key flags with
+  physical connector pins.
+- Recover exact iambic A/B release semantics and key-ratio scaling.
 - Recover the absolute RF-power calibration unit and identify the
   physical role of ADC1 channel 2.
 - Determine the source and exact purpose of common Q31 correction
