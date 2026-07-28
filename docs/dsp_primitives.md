@@ -74,6 +74,12 @@ exported under `analysis/tx_filters/`. Its exact antisymmetry, zero
 center tap, and use with a 50-sample delay establish a Hilbert role:
 HIGH CONFIDENCE.
 
+The 300/3000 Hz biquad entries have also been exported. Each contains
+five six-float source sections plus an overall gain. The runtime loader
+converts each section into the five-float CMSIS-style DF1 layout and
+applies the two overall gains after cascading both objects: VERIFIED.
+See `docs/tx_pipeline.md` for the selection formula and addresses.
+
 ## Complex magnitude
 
 `FUN_080361a0` consumes interleaved real/imaginary float pairs and emits

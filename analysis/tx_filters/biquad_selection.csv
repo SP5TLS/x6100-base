@@ -1,0 +1,3 @@
+cutoff_hz,sample_rate_hz,index,pointer,overall_gain_bits,overall_gain,confidence
+300,12500,45,0805b10c,3f3181e3,0.693388164,VERIFIED
+3000,12500,475,0806c334,3ca492d4,0.0200895444,VERIFIED

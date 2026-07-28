@@ -91,8 +91,38 @@ Between decimation and modulation, two five-stage direct-form-I biquad
 cascades process the audio sequentially. Startup generates their
 coefficients for 300 Hz and 3000 Hz using the 12.5 kHz rate. Structure,
 stage count, frequencies, rate, and ordering: VERIFIED. Interpretation
-as the TX audio band-pass edges is HIGH CONFIDENCE. These coefficients
-are generated in RAM rather than copied from a fixed flash array.
+as the TX audio band-pass edges is HIGH CONFIDENCE.
+
+The coefficients are selected from two initialized `.data` pointer
+tables. For cutoff `F` and sample rate `Fs`, the firmware computes:
+
+`index = trunc(((2 × F / Fs) − 0.002) × 995)`
+
+and clamps the result to `0…995`. Thus:
+
+| Cutoff | Index | Flash entry | Overall gain |
+| ---: | ---: | ---: | ---: |
+| 300 Hz | 45 | `0x0805B10C` | `0.693388164` |
+| 3000 Hz | 475 | `0x0806C334` | `0.0200895444` |
+
+Formula, indices, initialized pointers, and gains: VERIFIED.
+
+Each flash entry contains five six-float groups followed by one overall
+gain:
+
+`b0, b1, b2, 1.0, a1, a2`
+
+The loader copies `b0…b2`, omits the per-stage `1.0`, negates `a1/a2`
+to match the feedback-sign convention of `FUN_08036000`, and stores
+five floats per runtime stage. After the two cascades, the DSP path
+multiplies the sample by both entries' overall gains. Layout,
+sign conversion, and gain application: VERIFIED.
+
+Exact source entries are exported in:
+
+- `analysis/tx_filters/biquad_300hz_table_entry.csv`;
+- `analysis/tx_filters/biquad_3000hz_table_entry.csv`;
+- `analysis/tx_filters/biquad_selection.csv`.
 
 ## Mode-dependent modulation
 
@@ -173,8 +203,8 @@ implementation: VERIFIED.
 ## Remaining work
 
 - Associate the `1.0` and `5.0` branches with physical audio inputs.
-- Reproduce and verify the runtime-generated 300/3000 Hz biquad
-  coefficients independently.
+- Verify the combined 300/3000 Hz response against an independent
+  frequency-response calculation.
 - Correlate numeric modes 0–7 with Linux-facing mode names.
 - Recover the CW keying-envelope timing for modes 4/5.
 - Recover ALC and final TX output scaling.
