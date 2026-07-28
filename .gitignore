@@ -6,3 +6,4 @@ analysis/protocol/control_descriptor_refs.csv
 analysis/flow/FUN_*
 analysis/clocks/FUN_*
 analysis/timers/FUN_*
+analysis/usart/FUN_*

@@ -35,7 +35,7 @@
 -   [ ] DAC
 -   [ ] SPI
 -   [ ] I2C
--   [ ] USART
+-   [x] USART
 -   [x] Timers
 -   [ ] Watchdog
 
@@ -94,6 +94,7 @@
 -   [ ] gpio.md
 -   [x] clocks.md
 -   [x] timers.md
+-   [x] usart.md
 -   [ ] dma.md
 -   [x] protocol.md (transport and historical 1.1.6 register map)
 -   [ ] rtos.md
