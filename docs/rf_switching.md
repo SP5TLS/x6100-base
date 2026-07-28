@@ -19,13 +19,46 @@ updates:
 The VFO update path then:
 
 1. calculates and caches the new LO divider;
-2. enters the RF transition sequence;
+2. requests a DSP-state reset and starts a four-block transition
+   counter;
 3. applies the primary index;
 4. applies the secondary index;
 5. adjusts the approximately 2 MHz `PSYNC` candidate;
 6. commits the cached LO divider.
 
 Ordering and pending-bit behavior: VERIFIED.
+
+## DSP transition handling
+
+Immediately before applying pending RF outputs, `FUN_080243d0` writes
+one to byte `0x20008328`. On the next DMA1 Stream 3 DSP invocation,
+`FUN_08024528` clears this flag and resets numerous filter histories,
+delay buffers, accumulators, and related state. Request/consume
+behavior and bulk state clearing: VERIFIED.
+
+`FUN_08023d4c` operates on byte `0x2000832A`. If it is zero, the
+function changes its local value to 4, executes a 100-iteration
+register-only loop, and stores 4. If it was already nonzero, it retains
+that value. The DMA handler decrements the byte once at the end of each
+processed block until it reaches zero: VERIFIED.
+
+Despite the decompiler's higher-level rendering, the instruction stream
+does not reload `0x2000832A` inside the 100-iteration loop. Therefore
+`FUN_08023d4c` is not a synchronous wait for four DMA interrupts:
+VERIFIED. Describing it as a four-block transition/countdown marker is
+HIGH CONFIDENCE; no other consumer was found that changes DSP gain or
+hardware state based on its current value.
+
+`FUN_08023d74`, called with `0x14` before some adjacent gain/control
+changes, immediately returns and ignores its argument in BASE 1.1.9.
+It must not be reimplemented as a 20 ms delay without evidence from
+another firmware build: VERIFIED.
+
+This establishes a DSP discontinuity-control role for the sequence,
+not a separately observed hardware mute. Whether other callbacks around
+RX/TX transitions electrically mute the RF path is a separate question.
+Direct-reference evidence for the two bytes is exported in
+`analysis/rf_switching/dsp_handshake_refs.csv`.
 
 ## Primary RF index
 
@@ -122,6 +155,11 @@ names remain HYPOTHESES and are not assigned.
   `0x3BF8` region mask.
 - Preserve unrelated bits in the shared 24-bit SPI6 image.
 - Apply RF switching before committing the new LO divider.
+- Reset the recovered DSP histories at the next block boundary after a
+  frequency/RF-path change.
+- Preserve the four-block countdown only if compatibility with the OEM
+  state machine requires it; it does not synchronously delay the main
+  control path in BASE 1.1.9.
 - Do not label any bit as a specific LPF/BPF relay without schematic or
   controlled measurement evidence.
 
@@ -130,3 +168,5 @@ names remain HYPOTHESES and are not assigned.
 - Associate PCA9535/direct-GPIO codes with board revisions.
 - Identify the physical filters or relays selected by each primary and
   secondary code.
+- Determine whether the four-block counter has an external diagnostic
+  purpose or is vestigial synchronization logic.

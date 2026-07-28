@@ -67,6 +67,12 @@ samples to floating point and executes the firmware's RX/TX signal
 processing. This very large interrupt routine is therefore the primary
 audio/IQ DSP block callback: HIGH CONFIDENCE.
 
+The handler also consumes a frequency-transition reset flag at
+`0x20008328`, clearing numerous DSP histories at the next block
+boundary. It decrements a separate transition counter at `0x2000832A`
+once per completed block. Exact behavior is documented in
+`docs/rf_switching.md`.
+
 The exact sample rate still requires recovery of the I2S clock
 configuration. Buffer size and double-buffer scheduling alone are
 VERIFIED.
