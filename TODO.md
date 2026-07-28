@@ -37,7 +37,7 @@
 -   [x] I2C1/I2C2 masters, codec, variants, and I2C3 slave
 -   [x] USART
 -   [x] Timers
--   [ ] Watchdog
+-   [x] Confirm no application IWDG/WWDG use and document software reset
 
 ## RTOS
 
@@ -100,6 +100,7 @@
 -   [x] dsp_primitives.md
 -   [x] analog.md
 -   [x] i2c.md
+-   [x] watchdog.md
 -   [ ] dma.md
 -   [x] protocol.md (transport and historical 1.1.6 register map)
 -   [x] rtos.md
