@@ -116,6 +116,36 @@ the best VSWR is at most `3.0`, otherwise `3`. Numeric states and
 threshold: VERIFIED; final user-facing names for states 1 and 3 remain
 unassigned.
 
+## Application and persistence
+
+Control bit `0x1000`, historically `atue` in X6100Control, selects
+whether the configured network is active. When it is clear,
+`FUN_0802A168` clears both seven-bit relay banks. When it is set,
+`FUN_0802A014` expands register 17 into both banks plus the topology
+bit and sends the resulting board-control word through the output
+callback. Enable/bypass behavior and register application: VERIFIED.
+
+At the end of a tune session, `FUN_0802ADF4` reads the winning topology
+and two bank bytes from `0x2000BF8E`, `0x2000BF8D`, and `0x2000BF8C`.
+It passes the three bytes to `FUN_0803394C`, which stores them at
+`0x2000142D...0x2000142F`. The flow-packet builder publishes those
+bytes in the 32-bit `atu_params` field: VERIFIED.
+
+The complete direct-reference set for `0x2000BF88...0x2000BF8F`
+contains only the tuner search, its three getters, and the tune-session
+publisher. No BASE function copies the result into flash, a
+frequency-indexed table, or control register 17. Absence of internal
+persistence in the analyzed BASE 1.1.9 image: HIGH CONFIDENCE.
+
+The winning relays remain physically applied after the search, while
+the three-byte logical result is reported to Linux. Persistent
+per-frequency storage, if supported by the complete radio, is therefore
+the responsibility of Linux-side software or another component:
+HIGH CONFIDENCE.
+
+Direct-reference evidence is exported in
+`analysis/atu/tune_result_refs.csv`.
+
 ## SWR protection status
 
 The complete direct-reference set for the current ratio
@@ -145,6 +175,8 @@ symbol is assigned.
 - Preserve the two seven-bit banks and topology bit as separate logical
   fields; do not expose the permuted board-output word as the public
   network representation.
+- Treat `atu_params` as the result-notification path and register 17 as
+  the path for reapplying a stored network.
 - Reproduce coarse selection, validated measurements, local refinement,
   and final directional sweep as distinct phases.
 - Do not invent an OEM hard-trip threshold; none is supported by the
@@ -155,5 +187,6 @@ symbol is assigned.
 - Assign the two banks to inductors/capacitors and recover component
   values from schematic or measurement.
 - Name tune result states 1 and 3 from an independent consumer.
+- Locate the Linux-side owner of any per-frequency tuner memory.
 - Identify whether protection exists in hardware or another firmware
   component.

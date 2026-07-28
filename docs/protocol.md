@@ -369,7 +369,7 @@ labels.
 | `0x100D` | 1 | battery voltage | producer scales an internal measurement by `0.01` | HIGH CONFIDENCE |
 | `0x100E` | 1 | battery capacity | battery monitor converts its percentage-like value to 8 bits | HIGH CONFIDENCE |
 | `0x100F` | 1 | reserved | copied with the preceding three bytes | VERIFIED layout |
-| `0x1010` | 4 | ATU parameters | three bytes supplied by the ATU sequence; high byte retained | HIGH CONFIDENCE |
+| `0x1010` | 4 | ATU parameters | topology and two seven-bit bank values supplied by the ATU sequence; high byte retained | VERIFIED |
 | `0x1014` | 12 | reserved | no packet-builder writes observed | HIGH CONFIDENCE |
 | `0x1020` | 4 | hardware key code | written only through `FUN_08033968`, called by key-input functions | HIGH CONFIDENCE |
 | `0x1024` | 4 | CRC32 | CRC over the preceding `0x409` words | VERIFIED |
@@ -378,6 +378,11 @@ X6100Control interprets the voltage bytes in tenths of a volt and TX
 power, VSWR, and ALC in tenths of their displayed units. The BASE-side
 scaling and byte locations agree, but the physical-unit calibration of
 the measurement producers has not yet been recovered.
+
+The three low bytes of `atu_params` are the tune result in order:
+topology, direct-bank value, permuted-bank value. The reverse control
+path is register 17. BASE publishes a result but does not persist it in
+the analyzed image; see `docs/atu.md`.
 
 ### Flow flags
 
