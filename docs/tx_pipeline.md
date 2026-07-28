@@ -261,14 +261,46 @@ is VERIFIED.
 
 Automatic mode alternates the two element types, retains paddle memory,
 and applies a separate length multiplier to one type. This is an
-iambic keyer algorithm: HIGH CONFIDENCE. Exact A-versus-B release
-semantics and the ratio-field transfer function remain to be
-documented.
+iambic keyer algorithm: HIGH CONFIDENCE. Runtime mode value 1 enables
+an additional remembered opposite element after a squeeze transition,
+consistent with historical iambic B; value 0 omits that behavior,
+consistent with iambic A: HIGH CONFIDENCE.
+
+### QSK hold and element ratio
+
+Register 34 low 16 bits are sign-extended and written to
+`0x20008308`. While the monitor key is active, the keyer reloads its RF
+hold counter from this value. After monitor release it decrements the
+counter once per DMA block before clearing the RF-key state: VERIFIED.
+
+At 100 kHz and 128 frames per completed block, one count corresponds to
+`1.28 ms`. Therefore the nominal additional RF hold is:
+
+`hold_ms = max(raw_signed_16, 0) × 1.28`
+
+Count handling is VERIFIED; the time follows from the VERIFIED block
+size and sample rate. The historical `qsktime` label is HIGH
+CONFIDENCE. Values above `32767` become negative in BASE because of
+the sign extension and do not produce a long hold: VERIFIED edge case.
+
+The upper 16 bits are converted to floating point and multiplied by
+`0.1`, matching X6100Control's historical key-ratio representation.
+However, the result remains only in the main control structure.
+No writer transfers it to the keyer ratio at `0x20008314`: HIGH
+CONFIDENCE from the complete direct-reference set.
+
+The active keyer ratio is initialized to `3.0` and is then only read
+indirectly by `FUN_0802145C`. Consequently BASE 1.1.9 generates the
+second element at three times the first-element duration regardless of
+register 34's upper half: HIGH CONFIDENCE. This appears to be an
+unimplemented or disconnected control field, not permission to remove
+the field from a compatible protocol.
 
 Field and state evidence:
 
 - `analysis/tx_filters/cw_keyer_fields.csv`;
-- `analysis/tx_filters/cw_key_input_refs.csv`.
+- `analysis/tx_filters/cw_key_input_refs.csv`;
+- `analysis/tx_filters/cw_qsk_ratio_refs.csv`.
 
 Mode 6 computes an affine audio value using two initialized parameters
 and sends the same initial value into both component paths. Its
@@ -409,7 +441,7 @@ implementation: VERIFIED.
   corner.
 - Correlate the software-aggregated paddle and straight-key flags with
   physical connector pins.
-- Recover exact iambic A/B release semantics and key-ratio scaling.
+- Compare the disconnected key-ratio field with other BASE versions.
 - Recover the absolute RF-power calibration unit and identify the
   physical role of ADC1 channel 2.
 - Determine the source and exact purpose of common Q31 correction

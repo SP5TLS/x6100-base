@@ -212,6 +212,20 @@ automatic paddle handling, including a swapped-paddle mode; bits
 RF keying while retaining the monitor. Algorithms are VERIFIED;
 historical `ks`, `km`, `kimb`, and `cwtrain` labels are HIGH CONFIDENCE.
 
+### Register 34: QSK hold and key ratio
+
+Address: `0x0088`
+
+The low 16 bits are the raw RF-key hold count, consumed once per
+128-frame DMA block. At the recovered 100 kHz rate, one count is
+`1.28 ms`: VERIFIED arithmetic and scheduling; historical `qsktime`
+label HIGH CONFIDENCE.
+
+The upper 16 bits are decoded as `value × 0.1`, consistent with the
+historical key-ratio field, but BASE 1.1.9 does not apply the decoded
+value to its keyer. The active ratio remains fixed at startup value
+`3.0`: HIGH CONFIDENCE. See `docs/tx_pipeline.md`.
+
 ### Register 53: power-synchronization setting
 
 Address: `0x00D4`

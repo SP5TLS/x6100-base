@@ -5,3 +5,5 @@ register,bit_range,runtime_state,recovered_behavior,confidence
 33,12..22,0x200082E8,monitor tone frequency in hertz,VERIFIED
 33,23..28,0x200082E4,monitor gain equals field divided by 320,VERIFIED
 33,29,0x200082FB,training suppresses RF key but preserves monitor key,VERIFIED
+34,0..15,0x20008308,RF key hold in DMA-block counts,VERIFIED
+34,16..31,control cache only,ratio divided by ten but not applied to keyer,HIGH CONFIDENCE
