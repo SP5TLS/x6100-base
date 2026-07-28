@@ -196,6 +196,16 @@ bit 16 selects one of two network topologies. Packing is VERIFIED.
 Electrical assignment of the banks to inductors and capacitors remains
 unresolved; see `docs/atu.md`.
 
+### Register 33: CW controls
+
+Address: `0x0084`
+
+Bits `12...22` are a tone frequency in hertz. Bits `23...28` are the CW
+monitor-level field, converted to linear gain by division by 320. These
+uses confirm the historical `cwtone` and `cwvol` labels: VERIFIED
+fields and arithmetic, HIGH CONFIDENCE labels. The fixed RF and monitor
+envelopes are documented in `docs/tx_pipeline.md`.
+
 ### Register 53: power-synchronization setting
 
 Address: `0x00D4`

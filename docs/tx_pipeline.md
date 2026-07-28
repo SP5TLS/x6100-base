@@ -182,7 +182,36 @@ Modes 4 and 5 consume the internal waveform/ramp state also used by the
 CW transition logic. The waveform is multiplied by eight. A later
 mode-specific path exchanges sine/cosine placement between values 4
 and 5, consistent with the historical CW/CWR pair: HIGH CONFIDENCE.
-The exact keying-envelope timing remains to be recovered.
+
+Startup generates a 120-element half-cosine ramp:
+
+`ramp[i] = (1 - cos(pi × i / 119)) / 2`, for `i = 0...119`
+
+Formula, length, endpoints, and monotonic direction: VERIFIED. The RF
+keyed-waveform branch advances or reverses one table position per
+12.5 kHz modulation sample. The ramp contains 120 sample values; its
+two endpoints are 119 sample intervals apart, or `9.52 ms`: VERIFIED.
+
+A separate index applies the same ramp to the CW monitor oscillator in
+the 100 kHz output loop. That monitor rise/fall spans 120 samples, or
+119 intervals between endpoints, or `1.19 ms`: VERIFIED. The unequal
+RF and monitor timings follow directly from their different processing
+rates; they are not inferred from a single shared counter.
+
+The monitor phase increment is:
+
+`phase_step = tone_hz × 2 pi / 100000`
+
+Register 33 bits `12...22` supply `tone_hz`. Its startup default is
+800 Hz, producing phase step `0.0502654836` radians/sample. Register 33
+bits `23...28` supply monitor level, converted to linear gain by
+`value × 0.003125` (`value / 320`). Field extraction, setters, formula,
+and defaults: VERIFIED. The historical X6100Control field labels
+`cwtone` and `cwvol` agree with these consumers: HIGH CONFIDENCE.
+
+Exact recovered parameters are summarized in
+`analysis/tx_filters/cw_envelope_parameters.csv`; direct state
+references are in `analysis/tx_filters/cw_envelope_refs.csv`.
 
 Mode 6 computes an affine audio value using two initialized parameters
 and sends the same initial value into both component paths. Its
@@ -321,7 +350,8 @@ implementation: VERIFIED.
 - Determine why the table's nominal 3 kHz selection produces roughly
   `-7.16 dB` at exactly 3 kHz rather than a conventional `-3 dB`
   corner.
-- Recover the CW keying-envelope timing for modes 4/5.
+- Identify the electrical or software source of the CW key-state
+  callback and recover the remaining keyer-mode fields.
 - Recover the absolute RF-power calibration unit and identify the
   physical role of ADC1 channel 2.
 - Determine the source and exact purpose of common Q31 correction

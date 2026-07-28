@@ -1,0 +1,10 @@
+quantity,value,unit,confidence
+rf_ramp_length,120,samples,VERIFIED
+rf_ramp_rate,12500,samples_per_second,VERIFIED
+rf_ramp_endpoint_interval,9.52,milliseconds,VERIFIED
+monitor_ramp_length,120,samples,VERIFIED
+monitor_ramp_rate,100000,samples_per_second,VERIFIED
+monitor_ramp_endpoint_interval,1.19,milliseconds,VERIFIED
+default_tone_frequency,800,hertz,VERIFIED
+default_tone_phase_step,0.0502654836,radians_per_sample,VERIFIED
+default_monitor_gain,0.1,linear,VERIFIED
