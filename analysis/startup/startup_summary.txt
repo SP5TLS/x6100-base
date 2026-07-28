@@ -1,0 +1,6 @@
+image_base=0x08020000
+initial_msp=0x20030000
+reset_vector=0x08034A19
+reset_code_address=0x08034A18
+reset_current_name=FUN_08034a18
+reset_body=[[08034a18, 08034a4f]]
