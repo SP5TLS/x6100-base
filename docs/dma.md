@@ -67,6 +67,12 @@ samples to floating point and executes the firmware's RX/TX signal
 processing. This very large interrupt routine is therefore the primary
 audio/IQ DSP block callback: HIGH CONFIDENCE.
 
+At the end of the TX path, the handler writes 128 interleaved signed
+Q31 I/Q pairs to the selected I2S3ext transmit bank at `0x200003D0`.
+It writes a separate two-level audio signal to the selected I2S2ext
+bank at `0x200003C8`. Buffer-to-interface routing is VERIFIED; see
+`docs/tx_pipeline.md` for scaling and packing.
+
 The handler also consumes a frequency-transition reset flag at
 `0x20008328`, clearing numerous DSP histories at the next block
 boundary. It decrements a separate transition counter at `0x2000832A`

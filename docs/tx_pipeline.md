@@ -4,8 +4,8 @@
 
 This document is an incremental reconstruction of the BASE 1.1.9
 transmit path. It currently covers RX/TX mode handoff, input conversion,
-the first digital gain, and transition-state clearing. Modulation, ALC,
-and final output scaling remain under investigation.
+rate conversion, modulation, ALC, final fixed-point conversion, and
+I2S output routing.
 
 ## RX/TX mode handoff
 
@@ -193,8 +193,87 @@ This is a directly observed angle-modulation algorithm: VERIFIED.
 After every branch, two separate FIR objects process the initial
 components and produce eight output samples per 12.5 kHz modulation
 sample, returning the stream to the 100 kHz domain: HIGH CONFIDENCE.
-The resulting complex samples continue into level control, correction,
-and output stages not yet documented here.
+The resulting 128 complex samples occupy interleaved floating-point
+buffer `0x20004190...0x2000458F`: VERIFIED.
+
+## Automatic level control
+
+The handler calculates the magnitude of every complex sample in
+`0x20004190`, selects a block peak, and smooths it into state
+`0x2000B7CC`. When the new peak is larger, the update is:
+
+`envelope = 0.01 × old + 0.99 × peak`
+
+When it is smaller:
+
+`envelope = 0.995 × old + 0.005 × peak`
+
+Magnitude calculation, peak selection, asymmetric attack/release, and
+constants: VERIFIED.
+
+A closed-loop controller maintains a dB-domain attenuation state at
+`0x2000B7A8`. Its normal range is clamped to `-40...0 dB`. The firmware
+combines that state with another dB correction, converts the result to
+a linear multiplier, and applies the same multiplier to I and Q for all
+128 samples. Controller topology, limits, conversion, and complex
+scaling: VERIFIED. Calling this loop TX ALC is HIGH CONFIDENCE.
+
+`FUN_08024010` supplies the controller target. Its caller logs
+`txpower updated`, converts the Linux-facing power byte to floating
+point in steps of `0.1`, and passes that value to the function. A target
+change resets the attenuation state to `-40 dB`, clears the envelope
+and controller error state, and therefore restarts acquisition:
+VERIFIED. The exact physical units and calibration of the power target
+still need correlation with RF measurements.
+
+Several ADC-derived quantities also enter the controller calculation.
+Their arithmetic participation is VERIFIED, but assigning them final
+forward-power, reflected-power, or supply-sensor names would require
+additional analog-path evidence. Those interpretations remain
+HYPOTHESIS.
+
+Direct-reference evidence is exported in
+`analysis/tx_filters/tx_output_control_refs.csv`.
+
+## Final I/Q output
+
+After ALC, each interleaved float is independently converted to signed
+32-bit fixed point with 31 fractional bits. Before packing, the firmware
+adds:
+
+- I-specific integer correction `0x2000B784`;
+- Q-specific integer correction `0x2000B788`;
+- common integer correction `0x2000BA58` to both components.
+
+The first two values have dedicated one-argument setters and are loaded
+from calibration-dependent tables by the main control update:
+VERIFIED. Their interpretation as converter DC-offset corrections is
+HIGH CONFIDENCE. `0x2000BA58` has no runtime writer outside startup in
+this image, so its exact purpose remains HYPOTHESIS.
+
+Each 32-bit result has its two 16-bit halves exchanged before storage.
+The 128 packed I/Q pairs are written to the selected I2S3ext transmit
+bank through pointer `0x200003D0`. I2S3ext is DMA1 Stream 5 and is
+configured for 16-bit DMA transfers, so the halfword exchange preserves
+the required serial order for each 32-bit sample. Conversion, additions,
+packing, destination, and pair count: VERIFIED.
+
+The selected I2S2ext transmit bank at `0x200003C8` is populated in the
+same final loop from a separate audio path. It does not receive the
+complex buffer. Thus the final routing is:
+
+| Output | DMA stream | Recovered payload |
+| --- | ---: | --- |
+| I2S2ext | DMA1 Stream 4 | two related audio-level samples |
+| I2S3ext | DMA1 Stream 5 | interleaved 32-bit TX I/Q |
+
+Routing and packing are VERIFIED. The physical devices connected to
+the two serial outputs are not named here without board-level evidence.
+
+Additional direct-reference evidence:
+
+- `analysis/tx_filters/tx_iq_output_refs.csv`;
+- `analysis/tx_filters/tx_iq_offset_refs.csv`.
 
 ## Relationship to RF frequency changes
 
@@ -219,6 +298,11 @@ implementation: VERIFIED.
   processing.
 - Use the exact exported IEEE-754 FIR coefficients when compatibility
   is required; decimal columns are provided for inspection.
+- Apply one ALC multiplier equally to I and Q; independent component
+  gains would rotate or distort the recovered complex signal.
+- Convert final I/Q to signed Q31, add the recovered integer
+  calibration corrections, exchange 16-bit halves, and send the result
+  through the I2S3ext DMA path.
 
 ## Remaining work
 
@@ -228,6 +312,8 @@ implementation: VERIFIED.
   corner.
 - Correlate numeric modes 0–7 with Linux-facing mode names.
 - Recover the CW keying-envelope timing for modes 4/5.
-- Recover ALC and final TX output scaling.
+- Correlate the ALC ADC inputs and power target with physical RF units.
+- Determine the source and exact purpose of common Q31 correction
+  `0x2000BA58`.
 - Determine whether the inactive zero-gain override is used by another
   firmware version.

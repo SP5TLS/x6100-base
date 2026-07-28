@@ -85,7 +85,8 @@
 -   [x] Verify combined TX audio-filter frequency response independently
 -   [ ] Correlate BASE mode numbers with final Linux-facing names
 -   [x] RX/TX block-boundary handoff and first digital input gain
--   [ ] ALC
+-   [x] Recover TX ALC topology, limits, and final complex scaling
+-   [ ] Correlate ALC ADC inputs and target with physical RF units
 -   [ ] PA control
 -   [ ] SWR protection
 
