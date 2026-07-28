@@ -89,7 +89,9 @@
 -   [x] Correlate ADC1 directional-detector inputs with TX-power/VSWR telemetry
 -   [ ] Recover absolute RF-power units and identify ADC1 channel 2
 -   [ ] PA control
--   [ ] SWR protection
+-   [x] Trace VSWR measurement into the antenna-tuner search
+-   [x] Audit direct VSWR consumers for a firmware hard-trip path
+-   [ ] Identify any hardware or external-controller SWR protection
 
 ## Tooling
 

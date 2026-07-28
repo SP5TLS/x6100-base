@@ -112,6 +112,10 @@ telemetry field, decoded as `vswr` by X6100Control. Formula and
 telemetry association: VERIFIED. Identifying channel 1 as the reflected
 detector is HIGH CONFIDENCE.
 
+The antenna-tuner path uses a separate fresh-sample getter for the same
+ratio. Its handshake and tune-session behavior are documented in
+`docs/atu.md`.
+
 Channel 2 produces:
 
 `correction = clamp(1 + 0.005 × (4000 - adc), 1, 20)`
