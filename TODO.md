@@ -79,7 +79,7 @@
 ## Tooling
 
 -   [ ] Export functions from Ghidra
--   [ ] Export call graph
+-   [x] Export call graph
 -   [x] Export direct function callers
 -   [x] Export raw interrupt table
 -   [ ] Export globals
@@ -97,6 +97,7 @@
 -   [x] usart.md
 -   [x] dma.md
 -   [x] spi_i2s.md
+-   [x] dsp_primitives.md
 -   [ ] dma.md
 -   [x] protocol.md (transport and historical 1.1.6 register map)
 -   [ ] rtos.md
