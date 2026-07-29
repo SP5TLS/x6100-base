@@ -194,7 +194,6 @@
 -   [x] frequency_control.md
 -   [x] rf_switching.md
 -   [x] watchdog.md
--   [ ] dma.md
 -   [x] protocol.md (transport and historical 1.1.6 register map)
 -   [x] linux_hardware_interface.md
 -   [x] base_firmware_update.md
