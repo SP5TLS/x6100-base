@@ -133,8 +133,21 @@ It smooths the channel-0 result and exposes it through
 telemetry, while the reviewed X6100Control 1.1.6 interface decodes the
 same field as `tx_power` in tenths. Arithmetic and end-to-end telemetry
 association: VERIFIED. The forward-power interpretation is therefore
-HIGH CONFIDENCE; the absolute unit still requires hardware
-calibration.
+HIGH CONFIDENCE.
+
+The physical unit is watts: HIGH CONFIDENCE. Register 15 supplies the
+closed-loop target in `0.1 W` steps, and `FUN_08024010` explicitly
+converts targets below 10 W to dBm:
+
+```text
+target_dBm = 10 * log10(target_W * 1000)
+```
+
+The detector polynomial output and the target use the same
+Linux-facing scale, and packet byte `0x1009` is
+`round/saturate(P * 10)`. The unit is therefore no longer an open
+protocol question. Absolute measurement accuracy remains unverified
+and requires comparison with a wattmeter on a dummy load.
 
 Every ten DSP blocks, the firmware forms a ratio from accumulated raw
 channel-0 and channel-1 samples:
@@ -163,7 +176,27 @@ as the ACC `ALC_V` path is therefore HIGH CONFIDENCE. See
 `docs/acc.md`.
 
 Direct references for the derived RF measurement state are exported in
-`analysis/analog/adc1_rf_measurement_refs.csv`.
+`analysis/analog/adc1_rf_measurement_refs.csv`. Getter and target
+conversion evidence is in
+`analysis/analog/telemetry_getters_decompile.txt`.
+
+### ALC telemetry meaning
+
+The packet ALC byte is not an ADC voltage and is not an independent
+power measurement. It is derived from the TX controller attenuation:
+
+```text
+linear = 10^(attenuation_dB / 20)
+alc_internal ~= 100 * linear
+flow[0x100B] = unsigned(alc_internal)
+```
+
+The exact implementation uses the firmware's logarithm/exponential
+approximation and produces about `1.07` at `-40 dB` and `100.05` at
+`0 dB`. X6100Control displays the byte multiplied by `0.1`, yielding
+approximately `0.1...10.0`. Arithmetic and source are VERIFIED; this
+is a dimensionless controller-level indicator, not volts or watts:
+HIGH CONFIDENCE.
 
 ## PA bias device versus STM32 DAC
 

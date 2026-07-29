@@ -117,7 +117,8 @@
     - [x] Recover register 35 signed RX complex shift and active-low
       bypass, including its shared CW-oscillator gate
 -   [x] Recover I2C read responses and calibration-window framing
--   [ ] Recover telemetry physical-unit calibration and calibration-field semantics
+-   [x] Recover telemetry physical units and used calibration-block
+    field semantics
 
 ## DSP
 
@@ -156,7 +157,8 @@
 -   [x] RX/TX block-boundary handoff and first digital input gain
 -   [x] Recover TX ALC topology, limits, and final complex scaling
 -   [x] Correlate ADC1 directional-detector inputs with TX-power/VSWR telemetry
--   [ ] Recover absolute RF-power units
+-   [x] Recover absolute RF-power unit (`0.1 W` protocol field;
+    watt-to-dBm target conversion)
 -   [x] Identify ADC1 channel 2 / PA2 as the ACC ALC input
 -   [x] Recover PA bias-device protocol and ordered RX/TX hardware controls
 -   [x] Resolve hardware-variant PA callback to PCA9535 bit 0 / PD14

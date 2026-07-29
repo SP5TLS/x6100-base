@@ -1,0 +1,11 @@
+word_index,byte_offset,count,consumer,conversion,recovered_role,confidence
+0,0x000,1,FUN_08033ef4,exact 0xAA5555AA,magic,VERIFIED
+1,0x004,1,FUN_08034178,raw 16-bit code,drive-stage PA bias-control code,HIGH CONFIDENCE role; VERIFIED code use
+2,0x008,1,FUN_08034178,raw 16-bit code,final-stage PA bias-control code,HIGH CONFIDENCE role; VERIFIED code use
+3+2*b,0x00C+8*b,23,FUN_0802AF0C,signed value * 0.0001,RX magnitude-correction table selected by register 13 band index,HIGH CONFIDENCE role; VERIFIED indexing and scale
+4+2*b,0x010+8*b,23,FUN_0802AF0C,signed value * 0.001,RX phase-correction table selected by register 13 band index,HIGH CONFIDENCE role; VERIFIED indexing and scale
+49..102,0x0C4..0x198,54,no runtime consumer recovered,none,reserved or unused in BASE 1.1.9,VERIFIED absence of recovered consumer; purpose unknown
+103+2*b,0x19C+8*b,23,FUN_0802AF0C,signed value * 5000,TX I integer-offset correction table selected by register 13 band index,HIGH CONFIDENCE role; VERIFIED indexing and scale
+104+2*b,0x1A0+8*b,23,FUN_0802AF0C,signed value * 5000,TX Q integer-offset correction table selected by register 13 band index,HIGH CONFIDENCE role; VERIFIED indexing and scale
+149..202,0x254..0x328,54,no runtime consumer recovered,none,reserved or unused in BASE 1.1.9,VERIFIED absence of recovered consumer; purpose unknown
+203,0x32C,1,FUN_08033EF4,CRC over words 0..202,CRC,VERIFIED

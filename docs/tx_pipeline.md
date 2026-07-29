@@ -451,8 +451,11 @@ scaling: VERIFIED. Calling this loop TX ALC is HIGH CONFIDENCE.
 point in steps of `0.1`, and passes that value to the function. A target
 change resets the attenuation state to `-40 dB`, clears the envelope
 and controller error state, and therefore restarts acquisition:
-VERIFIED. The exact physical units and calibration of the power target
-still need correlation with RF measurements.
+VERIFIED. For targets below 10, the function calculates
+`10*log10(target*1000)`, establishing watts at the input and dBm
+internally: VERIFIED formula and HIGH CONFIDENCE physical unit.
+Absolute directional-detector accuracy still requires bench
+calibration.
 
 ADC1 channels 0 and 1 feed identically calibrated directional-detector
 paths. Channel 0 supplies the published TX-power value; channels 0 and

@@ -639,11 +639,29 @@ ordinary runtime telemetry. Both I2C read ranges `0x0100–0x0FFF` and
 `FUN_08033ef4` validates the primary flash copy, falls back to the
 legacy address and migrates it when valid, or creates a zeroed default
 block when neither copy passes magic and CRC validation. Two early
-payload values are clamped to `0xAF0` and `0xCE4`; their physical
-meaning remains unknown.
+payload values are clamped to `0xAF0` and `0xCE4`.
 
-The individual calibration fields must be recovered from their
-consumers before names are assigned.
+The runtime consumers recover the following used layout. Here `b` is
+the register-13 calibration-band index `0...22`:
+
+| Words | Count | Conversion | Role | Confidence |
+| ---: | ---: | --- | --- | --- |
+| 1 | 1 | raw 16-bit code | drive-stage PA bias control | HIGH CONFIDENCE role; VERIFIED use |
+| 2 | 1 | raw 16-bit code | final-stage PA bias control | HIGH CONFIDENCE role; VERIFIED use |
+| `3 + 2b` | 23 | signed × `0.0001` | RX magnitude correction | HIGH CONFIDENCE role; VERIFIED indexing/scale |
+| `4 + 2b` | 23 | signed × `0.001` | RX phase correction | HIGH CONFIDENCE role; VERIFIED indexing/scale |
+| `103 + 2b` | 23 | signed × `5000` | TX I integer offset correction | HIGH CONFIDENCE role; VERIFIED indexing/scale |
+| `104 + 2b` | 23 | signed × `5000` | TX Q integer offset correction | HIGH CONFIDENCE role; VERIFIED indexing/scale |
+
+The electrical current transfer functions of words 1 and 2 remain
+unknown. Words 49...102 and 149...202 have no recovered runtime
+consumer in BASE 1.1.9; they remain reserved/unknown and must be
+preserved.
+
+The exact word/byte layout is exported in
+`analysis/protocol/calibration_field_layout.csv`; dynamic-index
+evidence is in
+`analysis/protocol/calibration_consumers_decompile.txt`.
 
 ## UART flow evidence from X6100Control
 
@@ -695,9 +713,9 @@ labels.
 | `0x0004` | `0x1000` | 512 complex-float IQ samples | copied by `FUN_08023c88` | VERIFIED |
 | `0x1004` | 4 | flags | snapshot of accumulator at `0x20001420` | VERIFIED |
 | `0x1008` | 1 | reserved | retained by packet builder | VERIFIED |
-| `0x1009` | 1 | TX power, tenths | `TIM3_IRQHandler` saturates `FUN_0802442c() * 10` to 8 bits | HIGH CONFIDENCE |
+| `0x1009` | 1 | TX power, `0.1 W` | `TIM3_IRQHandler` saturates `FUN_0802442c() * 10` to 8 bits | HIGH CONFIDENCE unit; VERIFIED packing |
 | `0x100A` | 1 | VSWR, tenths | `TIM3_IRQHandler` saturates `FUN_08024454() * 10` to 8 bits | HIGH CONFIDENCE |
-| `0x100B` | 1 | ALC level | converted from `FUN_08024440()` to an 8-bit value | HIGH CONFIDENCE |
+| `0x100B` | 1 | dimensionless ALC indicator | controller linear gain mapped to approximately 1...100; X6100Control displays × 0.1 | HIGH CONFIDENCE meaning; VERIFIED arithmetic/packing |
 | `0x100C` | 1 | external voltage | ADC2-derived internal value × `0.01`; tenths of a volt | VERIFIED path; HIGH CONFIDENCE unit |
 | `0x100D` | 1 | battery voltage | MAX17205 `Batt` millivolts × `0.01`; tenths of a volt | VERIFIED |
 | `0x100E` | 1 | battery capacity | integer conversion of MAX17205 `RepSOC` | VERIFIED |
@@ -708,9 +726,12 @@ labels.
 | `0x1024` | 4 | CRC32 | CRC over the preceding `0x409` words | VERIFIED |
 
 X6100Control interprets the voltage bytes in tenths of a volt and TX
-power, VSWR, and ALC in tenths of their displayed units. The BASE-side
-scaling and byte locations agree, but the physical-unit calibration of
-the measurement producers has not yet been recovered.
+power in tenths of a watt. `FUN_08024010` independently establishes
+watts by converting the control target to dBm as
+`10*log10(target*1000)`: HIGH CONFIDENCE physical unit; VERIFIED
+conversion. VSWR is a dimensionless ratio in tenths. The ALC byte is a
+dimensionless indication of the controller's linear gain, displayed by
+the historical client with an additional factor of `0.1`.
 
 External voltage at `0x100C` originates specifically from PA6:
 ADC2 channel 6 → filtered ADC2 getter index 0 → multiplication by
