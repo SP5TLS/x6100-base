@@ -169,9 +169,11 @@ CS4272 data sheet.
 
 Double-speed mode covers 50–100 kHz, so this configuration independently
 supports the recovered 100,000-Hz raw DSP rate. The CS4272 is the
-external stereo sample converter for one high-rate I2S path: HIGH
-CONFIDENCE. The exact SPI2-versus-SPI3 attachment still requires pin or
-data-flow correlation.
+external stereo converter for the SPI3/I2S3 I/Q path: HIGH CONFIDENCE.
+This assignment combines the verified DMA signal roles with the
+verified PG8 release immediately before the CS4272 probe. A direct
+software binding between I2C and I2S instances does not exist, so final
+board-level confirmation still requires a schematic or signal tracing.
 
 Primary device reference:
 
@@ -256,8 +258,8 @@ See `docs/protocol.md` for:
 
 - Recover the I2C1 battery block layout and checksum/version fields.
 - Identify the I2C2 devices at 7-bit addresses `0x4A` and `0x4C`.
-- Correlate the CS4272 with the exact SPI2/I2S2 or SPI3/I2S3 sample
-  interface.
+- Verify the HIGH CONFIDENCE CS4272-to-SPI3/I2S3 board connection by
+  schematic or direct signal tracing.
 - Map every TLV320AIC3204 helper to its codec register semantics.
 - Verify whether the hardware-variant branch is selected by board
   revision, device presence, or another condition.

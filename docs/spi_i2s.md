@@ -13,6 +13,13 @@ described in `docs/dma.md`.
 
 Peripheral roles and directions: VERIFIED.
 
+Signal roles recovered from the DMA handler:
+
+| Full-duplex pair | Receive use | Transmit use | Role | Confidence |
+| --- | --- | --- | --- | --- |
+| SPI2 + I2S2ext | two real channels summed for TX audio | real audio samples | audio | VERIFIED |
+| SPI3 + I2S3ext | separate receiver I/Q components | complex Q31 I/Q pairs | I/Q | VERIFIED |
+
 ## Pin configuration
 
 `FUN_080320fc` configures these alternate-function pins before enabling
@@ -111,14 +118,26 @@ Ordering and function relationships: VERIFIED.
 
 One supported converter is a Cirrus Logic CS4272 at I2C2 address
 `0x10`: VERIFIED from its complete register map and startup sequence.
-Firmware configures it for double-speed, slave, I2S operation, which is
-consistent with the recovered 100,000-Hz raw rate: HIGH CONFIDENCE.
+Firmware configures it for double-speed, slave, I2S operation.
+
+The combined evidence assigns the converters as follows:
+
+| Device | Reset-related GPIO | I2S pair | Confidence |
+| --- | --- | --- | --- |
+| TLV320AIC3204 at `0x18` | PE15 toggled immediately before initialization | SPI2/I2S2 audio pair | HIGH CONFIDENCE |
+| CS4272 at `0x10` | PG8 released immediately before its probe/configuration | SPI3/I2S3 I/Q pair | HIGH CONFIDENCE |
+| unidentified fallback at `0x4C` | same startup branch as CS4272 | SPI3/I2S3 I/Q pair | HIGH CONFIDENCE |
+
+The signal roles and reset sequencing are VERIFIED. The device-to-pair
+assignments are HIGH CONFIDENCE rather than VERIFIED because firmware
+has no software object that directly binds an I2C address to an STM32
+I2S instance; final verification requires a schematic or continuity/
+signal tracing.
 
 If the CS4272 probe fails, startup configures an unidentified device at
 I2C2 address `0x4C` instead. The mutually exclusive branch and its
 placement in audio startup identify it as an alternate sample-converter
-implementation: HIGH CONFIDENCE. The exact association of either
-variant with SPI2/I2S2 or SPI3/I2S3 remains unresolved.
+implementation: HIGH CONFIDENCE.
 
 Exact I2C payloads and device evidence are documented in `docs/i2c.md`.
 
@@ -133,6 +152,7 @@ streams phase-aligned at bank boundaries.
 
 - `analysis/i2s/rcc_plli2s_refs.csv`;
 - `analysis/i2s/sample_rate_refs.csv`;
+- `analysis/i2s/i2s_signal_roles.csv`;
 - `analysis/i2c/i2c2_aux_startup_sequences.csv`;
 - `analysis/dma/audio_dma_callers.csv`;
 - `analysis/dma/dma1_stream3_refs.csv`.

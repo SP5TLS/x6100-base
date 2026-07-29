@@ -67,11 +67,23 @@ samples to floating point and executes the firmware's RX/TX signal
 processing. This very large interrupt routine is therefore the primary
 audio/IQ DSP block callback: HIGH CONFIDENCE.
 
+The two receive pairs do not have interchangeable signal roles:
+
+- samples from `0x200003CC`, the SPI2/I2S2 receive bank, are converted
+  as two real channels and summed before the transmit-audio processing
+  chain: VERIFIED;
+- samples from `0x200003D4`, the SPI3/I2S3 receive bank, remain separate
+  components and enter the receiver I/Q processing chain: VERIFIED.
+
 At the end of the TX path, the handler writes 128 interleaved signed
 Q31 I/Q pairs to the selected I2S3ext transmit bank at `0x200003D0`.
 It writes a separate two-level audio signal to the selected I2S2ext
 bank at `0x200003C8`. Buffer-to-interface routing is VERIFIED; see
 `docs/tx_pipeline.md` for scaling and packing.
+
+Therefore SPI2/I2S2 is the full-duplex audio pair and SPI3/I2S3 is the
+full-duplex I/Q pair: VERIFIED from both receive and transmit buffer
+use.
 
 The handler also consumes a frequency-transition reset flag at
 `0x20008328`, clearing numerous DSP histories at the next block
@@ -116,5 +128,6 @@ independent design if it meets the sample deadline.
 
 - `analysis/dma/dma1_stream3_refs.csv`;
 - `analysis/dma/audio_dma_callers.csv`;
+- `analysis/i2s/i2s_signal_roles.csv`;
 - `analysis/interrupts/irq_14_DMA1_Stream3_08024528_disassembly.txt`;
 - startup `.data` source at firmware address `0x0807C994`.

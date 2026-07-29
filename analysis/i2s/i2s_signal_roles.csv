@@ -1,0 +1,5 @@
+interface,direction,dma_stream,buffer_pointer,observed_processing,role,confidence
+SPI2/I2S2,RX,3,0x200003CC,two signed channels converted to float then summed before TX audio processing,audio or microphone input,VERIFIED
+I2S2ext,TX,4,0x200003C8,separate two-level real audio signal packed into transmit bank,audio output,VERIFIED
+SPI3/I2S3,RX,0,0x200003D4,two signed channels retained as separate components for receiver DSP,I/Q input,VERIFIED
+I2S3ext,TX,5,0x200003D0,128 signed Q31 complex pairs packed into transmit bank,I/Q output,VERIFIED
