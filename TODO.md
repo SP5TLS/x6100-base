@@ -165,6 +165,7 @@
 
 ## Documentation
 
+-   [x] hardware_map.md and machine-readable hardware resource inventory
 -   [x] startup.md
 -   [x] interrupts.md
 -   [x] memory_map.md

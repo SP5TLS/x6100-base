@@ -59,6 +59,11 @@ Confirmed by:
 
 # Confirmed information
 
+The consolidated implementation-oriented hardware index is
+[`docs/hardware_map.md`](docs/hardware_map.md). Its machine-readable
+resource inventory is
+[`analysis/hardware/hardware_resources.csv`](analysis/hardware/hardware_resources.csv).
+
 ## Memory layout
 
 -   Flash application base: `0x08020000`

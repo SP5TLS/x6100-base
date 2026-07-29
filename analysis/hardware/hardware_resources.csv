@@ -1,0 +1,46 @@
+category,resource,pins_or_address,configuration,firmware_role,lifecycle,confidence,detail
+core,STM32F427,MCU,"Cortex-M4; Thumb-2; little-endian",BASE controller,all,VERIFIED,docs/startup.md
+clock,HSE,external oscillator,25 MHz assumption,main PLL source,startup,VERIFIED firmware assumption,docs/clocks.md
+clock,SYSCLK/HCLK,N/A,250 MHz intended,CPU and AHB clock,runtime,VERIFIED configured value; HIGH CONFIDENCE physical frequency,docs/clocks.md
+clock,PCLK1/APB1 timers,N/A,"62.5 MHz / 125 MHz",I2C and timer domain,runtime,VERIFIED,docs/clocks.md
+clock,PCLK2/APB2 timers,N/A,"125 MHz / 250 MHz",USART and high-speed peripheral domain,runtime,VERIFIED,docs/clocks.md
+i2c,I2C1,"PB6 SCL; PB7 SDA; AF4",100 kHz master,MAX17205 LO synthesizer and PA-bias control,startup/runtime,VERIFIED,docs/i2c.md
+i2c_device,MAX17205,7-bit 0x36,"256-word primary-page read; selected register writes",battery fuel gauge,startup/runtime,VERIFIED,docs/charger.md
+i2c_device,LO clock generator,7-bit 0x6A,"26 MHz reference; five outputs; deferred commit",VFO/LO synthesis,runtime,HIGH CONFIDENCE 5P49V60 identification,docs/frequency_control.md
+i2c_device,PA bias controller,7-bit 0x63,"two channels; 3-byte writes; PE10 latch pulse",drive/final quiescent-current control,startup/RX/TX/calibration,HIGH CONFIDENCE role; device unknown,docs/pa_control.md
+i2c,I2C2,"PB10 SCL; PB11 SDA; AF4",100 kHz master,audio/IQ codecs and board variants,startup/runtime,VERIFIED,docs/i2c.md
+i2c_device,CS4272,7-bit 0x10,"fixed 8-write startup; double-speed slave I2S",zero-IF I/Q ADC/DAC,startup,VERIFIED,docs/i2c.md
+i2c_device,TLV320AIC3204,7-bit 0x18,"paged register interface; 32-bit master I2S",audio ADC/DAC and analog routing,startup/runtime,VERIFIED,docs/i2c.md
+i2c_device,PCA9535-compatible expander,7-bit 0x20,16-bit GPIO output image,RF band and board-variant controls,startup/runtime,HIGH CONFIDENCE family; VERIFIED protocol,docs/rf_switching.md
+i2c_device,auxiliary audio/IQ support,7-bit 0x4A,fixed six-write startup contract,unconditional support function,startup,VERIFIED contract; MEDIUM CONFIDENCE support role,docs/i2c.md
+i2c_device,alternate I/Q backend,7-bit 0x4C,fixed four-write fallback contract,CS4272 fallback,startup,HIGH CONFIDENCE role; device unknown,docs/i2c.md
+i2c,I2C3,"PA8 SCL; PC9 SDA; AF4","400 kHz slave; own address 0x72",Linux control register service,runtime,VERIFIED,docs/protocol.md
+serial,USART1,"PA9 TX; PA10 RX; AF7","115200 8-N-1",diagnostic/stdio,startup/runtime,HIGH CONFIDENCE role; VERIFIED configuration,docs/usart.md
+serial,USART6,"PC6 TX; PC7 RX; AF8","1500000 8-N-1",Linux IQ/telemetry flow,runtime,VERIFIED,docs/usart.md
+i2s,SPI2/I2S2 plus I2S2ext,"PD12-PD15 AF5 within the recovered I2S pin set","32-bit stereo; slave RX/TX; external clocks",audio sample pair,startup/runtime,VERIFIED role and format; exact signal labels deferred,docs/spi_i2s.md
+i2s,SPI3/I2S3 plus I2S3ext,"PA15 AF6; PC10 AF6; PC11 AF5; PC12 AF6","32-bit stereo; slave RX/TX; external clocks",complex I/Q sample pair,startup/runtime,VERIFIED role and format; exact signal labels deferred,docs/spi_i2s.md
+spi,SPI6 output chain,"PG13 SCK AF5; PG14 MOSI AF5; PG12 latch",24-bit high-byte-first; latch high then low,ATU relays and secondary RF index,startup/runtime,VERIFIED,docs/atu.md
+gpio_serial,RF shift chains,"PC5 data; PB0 clock; PB1 or PG6 latch","6-bit chain or 16-bit MSB-first chain",additional RF relay/filter control,startup/frequency change,VERIFIED protocol; HIGH CONFIDENCE role,docs/gpio.md
+adc,ADC1,"PA0 ch0; PA1 ch1; PA2 ch2","DMA2 Stream0 channel0; 3 halfwords",forward/reflected RF and ACC ALC,runtime,HIGH CONFIDENCE physical roles; VERIFIED acquisition,docs/analog.md
+adc,ADC2,"PA6 ch6; PA7 ch7; PC4 ch14","DMA2 Stream2 channel1; 15 halfwords",external voltage PA current and unknown third telemetry,runtime,VERIFIED acquisition; mixed role confidence,docs/analog.md
+dac,DAC1/2,"PA4 DAC1; PA5 DAC2","both enabled; DAC1 zero; DAC2 12-bit staircase",ACC BAND_V on DAC2,startup/frequency change,VERIFIED writes; HIGH CONFIDENCE BAND_V,docs/acc.md
+timer,TIM2,APB1,"PSC 20; ARR 4000; update IRQ about 1487.72 Hz",flow scheduler and ADC2 filter service,runtime,VERIFIED,docs/timers.md
+timer,TIM3,APB1,"PSC 124; ARR 5000; update IRQ about 199.96 Hz",GPIO debounce and RF telemetry,runtime,VERIFIED,docs/timers.md
+timer,TIM4,"PD12 AF2 during capture setup; later reused as I2S AF5","PSC 8; ARR 0xFFFF; CC2 IRQ",hardware-key capture,runtime,HIGH CONFIDENCE role; VERIFIED registers; physical input unresolved,docs/timers.md
+dma,DMA1 Streams 0/3/4/5,SPI2/SPI3/I2S2ext/I2S3ext,"circular double-buffer; 512 halfwords per bank",audio/IQ sample transport,runtime,VERIFIED,docs/dma.md
+dma,DMA2 Streams 0/2,ADC1/ADC2,"3 and 15 halfword scans",analog acquisition,runtime,VERIFIED,docs/analog.md
+dma,DMA2 Streams 1/5/6/7,USART6/USART1,"RX buffers and on-demand TX",serial transport,runtime,VERIFIED,docs/dma.md
+gpio_control,ACC TRX,PE2,"RX low; TX high",external RX/TX indication/control,RX/TX,HIGH CONFIDENCE role; VERIFIED levels,docs/acc.md
+gpio_control,RX/TX rails,"PD3; PD4","RX 1/0; TX 0/1",candidate +5R/+5T enables,RX/TX/shutdown,HIGH CONFIDENCE roles; VERIFIED levels,docs/pa_control.md
+gpio_control,PA enable tuple,"PE8; PE9; PG11; variant callback","enabled 1/0/1/1; disabled 0/1/0/0",PA bias/TX enable,RX/TX/calibration,VERIFIED tuple; HIGH CONFIDENCE aggregate role,docs/pa_control.md
+gpio_control,CW RF envelope,PE12,active-low per-sample output,CW/RF envelope,RX/TX,HIGH CONFIDENCE role; VERIFIED behavior,docs/pa_control.md
+gpio_control,codec reset,PE15,active-low,TLV320AIC3204 hardware reset,startup,HIGH CONFIDENCE role; VERIFIED lifecycle,docs/i2c.md
+gpio_control,charger enable,"PF12 or PCA9535 bit1","PF12 active-high; expander bit active-low",binary charger enable,startup/runtime,HIGH CONFIDENCE role; VERIFIED levels,docs/charger.md
+gpio_control,PA bias latch,PE10,low-delay-high pulse,commit external bias codes,startup/RX/TX/calibration,HIGH CONFIDENCE role; VERIFIED waveform,docs/pa_control.md
+gpio_input,hardware PTT,PB9,active-low debounced,TX request,runtime,HIGH CONFIDENCE role; VERIFIED consumer,docs/gpio.md
+gpio_input,CW dot,PF14,active-low debounced,KEY tip DI dot,runtime,HIGH CONFIDENCE connector role; VERIFIED consumer,docs/gpio.md
+gpio_input,CW dash,PF13,active-low debounced,KEY ring DA dash,runtime,HIGH CONFIDENCE connector role; VERIFIED consumer,docs/gpio.md
+gpio_input,speaker/phone detect,PF15,stable-low gain selection,S/P jack detection,runtime,HIGH CONFIDENCE role; VERIFIED behavior,docs/gpio.md
+gpio_input,early charge full/status,PE13,active-low sample,early FULL condition,early service,VERIFIED behavior; physical net unresolved,docs/charger.md
+gpio_unknown,early power/status output,PF11,output held high,early service control,early service,VERIFIED behavior; role unresolved,docs/charger.md
+gpio_unknown,shutdown/power status,PG4,input polled,boot and final shutdown condition,startup/shutdown,VERIFIED behavior; role unresolved,docs/gpio.md
