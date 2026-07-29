@@ -112,7 +112,8 @@ names are not yet known:
 | PE10 | low-delay-high pulse after external PA-bias device writes | VERIFIED |
 | PE8, PE9, PG11 and variant callback | PA calibration and normal TX enable subset | HIGH CONFIDENCE role; VERIFIED levels |
 | PE12 | per-sample active-low CW/RF envelope output; otherwise forced high | HIGH CONFIDENCE role; VERIFIED behavior |
-| PE2, PD3, PD4 | remaining ordered RX/TX hardware transition group | VERIFIED |
+| PD3 / PD4 | complementary RX/TX outputs; candidate `+5R` / `+5T` rail enables | HIGH CONFIDENCE roles; VERIFIED levels |
+| PE2 | remaining ordered RX/TX hardware transition output | VERIFIED |
 | PD2, PD3, PD4 | sequenced low during shutdown | VERIFIED |
 | PF11 | read by the charger/battery startup loop | VERIFIED |
 | PF13 | controlled by the charger/battery startup loop | VERIFIED |
@@ -131,7 +132,8 @@ The hardware-variant PA callback is now resolved to PCA9535 output bit
 The main routine clears PD4, waits five seconds, clears PD3, waits three
 seconds, then clears PD2 before its final shutdown wait. Interpretation
 as an ordered power-rail shutdown sequence is HIGH CONFIDENCE; the
-individual rails are unknown.
+service manual's complementary `+5R`/`+5T` rails correlate with PD3
+and PD4 respectively at HIGH CONFIDENCE. PD2 remains unknown.
 
 GPIO-backed callbacks selected by `FUN_0803131c` provide two hardware
 variants for several power and RF-control operations. The callback

@@ -98,6 +98,7 @@
 -   [x] Recover PA bias-device protocol and ordered RX/TX hardware controls
 -   [x] Resolve hardware-variant PA callback to PCA9535 bit 1 / PD14
 -   [x] Separate PA calibration-enable subset and recover PE12 CW output
+-   [x] Correlate PD3/PD4 with service-manual +5R/+5T rails
 -   [ ] Identify PA-control IC and resolve individual enable/routing GPIO nets
 -   [x] Trace VSWR measurement into the antenna-tuner search
 -   [x] Recover ATU state packing, relay-bit permutation, and search phases

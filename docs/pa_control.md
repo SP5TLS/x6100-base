@@ -159,6 +159,32 @@ PA-related enable/bias-measurement subset: HIGH CONFIDENCE. PE2 and
 the complementary PD3/PD4 pair are more likely RX/TX routing or
 support-power controls, but their exact roles remain HYPOTHESIS.
 
+### PD3/PD4 receive/transmit supply correlation
+
+The X6100 service manual identifies separate middle-board rails:
+
+- `+5R`, present in receive and zero in transmit;
+- `+5T`, present in transmit and theoretically zero in receive.
+
+Firmware drives PD3 high/PD4 low in RX and PD3 low/PD4 high in TX.
+The levels are an exact match for active-high enables of `+5R` and
+`+5T`, respectively. Therefore:
+
+| GPIO | Candidate physical role | Confidence |
+| --- | --- | --- |
+| PD3 | `+5R` receive-rail enable | HIGH CONFIDENCE |
+| PD4 | `+5T` transmit-rail enable | HIGH CONFIDENCE |
+
+The external rail behavior is documented by the
+[X6100 service manual](https://www.manualslib.com/guide/3740642/xiegu-x6100-hf-transceiver-series-manual.html);
+the GPIO levels and ordering are VERIFIED from firmware. Final net
+names still require continuity measurement or schematic evidence.
+
+The shutdown sequence is consistent with this interpretation: PD4 is
+cleared first, then PD3 after five seconds, and the remaining PD2
+support-power signal after another three seconds. PD2's exact rail is
+still unknown.
+
 ### PE12 CW hardware output
 
 PE12 is not simply a static member of the RX/TX group. In CW/CWR modes
@@ -220,8 +246,9 @@ RX transition. This correspondence is VERIFIED.
 
 - Identify the external two-channel device from PCB markings or bus
   capture and recover its electrical transfer function.
-- Resolve PE2, PE8, PE9, PG11, PD3, PD4, and the PE12 CW-key output to
-  schematic nets.
+- Confirm PD3/PD4 as `+5R`/`+5T` enables by continuity measurement.
+- Resolve PE2, PE8, PE9, PG11, and the PE12 CW-key output to schematic
+  nets.
 - Assign the PCA9535 output-1 / PD14 logical signal to its physical
   board net.
 - Measure the required settling time represented by the PE10 callback
