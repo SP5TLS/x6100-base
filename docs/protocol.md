@@ -159,6 +159,7 @@ are currently HIGH CONFIDENCE rather than final symbol names.
 | 29 | `0x0074` | `monilevel` |
 | 33 | `0x0084` | `ks_km_kimb_cwtone_cwvol_cwtrain` |
 | 34 | `0x0088` | `qsktime_kr` |
+| 35 | `0x008C` | unknown historical label; RX complex-shift control |
 | 41 | `0x00A4` | `biasdrive_biasfinal` |
 | 42 | `0x00A8` | `rit` |
 | 43 | `0x00AC` | `xit` |
@@ -386,6 +387,41 @@ The upper 16 bits are decoded as `value × 0.1`, consistent with the
 historical key-ratio field, but BASE 1.1.9 does not apply the decoded
 value to its keyer. The active ratio remains fixed at startup value
 `3.0`: HIGH CONFIDENCE. See `docs/tx_pipeline.md`.
+
+### Register 35: RX complex-shift control
+
+Address: `0x008C`
+
+This register was absent from the historical X6100Control enumeration,
+so no historical field name is assigned.
+
+`FUN_0802AF0C` decodes it as:
+
+| Bits | BASE use | Confidence |
+|---:|---|---|
+| `0...23` | sign-extended signed shift value `n` | VERIFIED |
+| `24` | complex-shift bypass flag | VERIFIED |
+| `25...31` | no consumer in this update block | HIGH CONFIDENCE |
+
+The decoded fields are forwarded through two single-assignment helpers:
+
+- `FUN_08024404(bit24)` writes byte `0x2000BF71`;
+- `FUN_08024418(sign_extend(raw & 0x00FFFFFF))` writes signed word
+  `0x2000BF74`.
+
+The DMA RX handler executes the rotator only when bit 24 is zero.
+Therefore the verified polarity is:
+
+| Bit 24 | Effect |
+|---:|---|
+| `0` | rotator path enabled |
+| `1` | rotator bypassed |
+
+`n=0` produces no frequency shift even when the path is enabled.
+For nonzero `n`, the handler uses one signed-hertz step per integer at
+the recovered 100-ksample/s processing rate: HIGH CONFIDENCE physical
+unit, VERIFIED arithmetic. See `docs/rx_pipeline.md` for the equations
+and the separate CW oscillator.
 
 ### Register 41: PA bias codes
 

@@ -72,21 +72,79 @@ DC removal. This remains an open item.
 
 ## Optional complex frequency shift
 
-State at `0x2000BF74..0x2000BF84` controls a complex rotator. For a
-signed control value `n`, the handler derives:
+The Linux-visible source is protocol register 35 at byte offset
+`0x008C`. This register is not present in the historical X6100Control
+enumeration. `FUN_0802AF0C` decodes it as:
+
+```text
+bypass = (register >> 24) & 1
+n      = sign_extend_24(register & 0x00ffffff)
+```
+
+`FUN_08024404` copies `bypass` to `0x2000BF71`, and
+`FUN_08024418` copies `n` to `0x2000BF74`. These are their only direct
+writers: VERIFIED from memory-reference export.
+
+The update block calls both helpers during its initial full refresh and
+whenever live register 35 differs from its cached copy. No mode check
+is made at this point: VERIFIED. With a zero-filled control window the
+initial decoded state is `bypass=0, n=0`; a later Linux register write
+changes it.
+
+The polarity is important: the DMA handler rotates only while
+`bypass == 0`. Thus bit 24 clear enables the path and bit 24 set
+bypasses it. With `n == 0`, enabling the path still produces zero
+shift.
+
+When an enabled `n` changes, the handler caches it and derives:
 
 ```text
 phase_increment = abs(n) * 2*pi / 100000
 direction       = sign(n)
 ```
 
-It applies one sine/cosine rotation per complex sample and wraps phase
-at `2*pi`. The arithmetic is VERIFIED. Interpreting `n` as an offset in
-hertz is HIGH CONFIDENCE because the denominator equals the recovered
-100 ksample/s input rate.
+For each corrected input sample `(I,Q)`, it applies:
 
-The stage has an explicit bypass flag. CW/CWR also use a later
-mode-specific complex beat oscillator before their channel filters.
+```text
+c = cos(phase)
+s = sin(phase) * direction
+I' = I*c - Q*s
+Q' = I*s + Q*c
+phase = wrap_2pi(phase + phase_increment)
+```
+
+The equations, update trigger, and phase wrapping are VERIFIED. This
+is mathematically a signed rotation at `n / 100000` cycles/sample.
+Consequently one integer unit is one hertz if the recovered
+100-ksample/s domain equals the physical converter rate: HIGH
+CONFIDENCE unit. A physical I2S clock measurement remains the final
+absolute-rate check.
+
+The phase accumulator is not reset when `n` changes or when bypass is
+asserted. It simply stops advancing while bypassed and resumes from its
+previous phase when re-enabled: VERIFIED.
+
+### Separate CW/CWR beat oscillator
+
+CW/CWR modes have another oscillator after factor-8 decimation and
+before their channel biquads. Its frequency is not `n`. It comes from
+protocol register 33 bits `12...22`, the verified `cwtone` field, and
+is stored as a floating-point hertz value at `0x200082E8`.
+
+At the 12.5-ksample/s stage its normalized phase advances by:
+
+```text
+cw_phase_cycles += cwtone * 8e-5
+```
+
+Since `8e-5 = 1/12500`, `cwtone` is used directly in hertz. The
+arithmetic and register source are VERIFIED.
+
+The register-35 bypass flag gates both the 100-ksample/s complex
+rotator and this later CW/CWR oscillator. With bit 24 set, neither is
+applied. With bit 24 clear, the general shift uses `n`, while CW/CWR
+additionally use `cwtone`. This shared gating is VERIFIED; the
+user-interface reason for coupling the two stages remains unresolved.
 
 ## Mode-dependent channel and demodulator paths
 

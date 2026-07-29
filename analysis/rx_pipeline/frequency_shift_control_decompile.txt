@@ -1,0 +1,19 @@
+/* 08024404 FUN_08024404 */
+
+void FUN_08024404(undefined1 param_1)
+
+{
+  DAT_2000bf71 = param_1;
+  return;
+}
+
+
+
+/* 08024418 FUN_08024418 */
+
+void FUN_08024418(undefined4 param_1)
+
+{
+  DAT_2000bf74 = param_1;
+  return;
+}

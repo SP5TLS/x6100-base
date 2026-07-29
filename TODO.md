@@ -114,6 +114,8 @@
       table effects, and required index bound
     - [x] Audit all register 21 fields, including persistent charger
       control, variant output behavior, and squelch threshold
+    - [x] Recover register 35 signed RX complex shift and active-low
+      bypass, including its shared CW-oscillator gate
 -   [x] Recover I2C read responses and calibration-window framing
 -   [ ] Recover telemetry physical-unit calibration and calibration-field semantics
 
