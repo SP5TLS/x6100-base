@@ -1,0 +1,5 @@
+bits,historical_role,recovered_effect,valid_values,confidence
+0,VFO index,"0 selects the VFO-A record and 1 selects the VFO-B record as the normal active record; split may exchange active/inactive records during ordinary TX",0..1,HIGH CONFIDENCE labels; VERIFIED selection
+1..7,unused,"masked off by the BASE consumer",0,HIGH CONFIDENCE
+8..15,frequency calibration index,"select four band-dependent calibration values: I offset Q offset magnitude correction and phase correction; publish the index to DSP state",0..22,VERIFIED table access and arithmetic; HIGH CONFIDENCE calibration roles
+16..31,unused,"no effect in the recovered register-13 update block",0,HIGH CONFIDENCE

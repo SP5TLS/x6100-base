@@ -219,15 +219,6 @@ match the recovered BASE 1.1.9 transmit algorithms. Preservation of
 this numeric enumeration is HIGH CONFIDENCE. See
 `docs/tx_pipeline.md`.
 
-### Register 17: ATU network
-
-Address: `0x0044`
-
-Bits `0...6` and `8...14` hold two seven-bit matching-network banks;
-bit 16 selects one of two network topologies. Packing is VERIFIED.
-Electrical assignment of the banks to inductors and capacitors remains
-unresolved; see `docs/atu.md`.
-
 ### Register 15: RF gain and TX-power target
 
 Address: `0x003C`
@@ -267,6 +258,51 @@ in the register-15 update block: HIGH CONFIDENCE.
 
 The exact transfer is exported in
 `analysis/protocol/register15_rfg_txpwr.csv`.
+
+### Register 13: active VFO and calibration band
+
+Address: `0x0034`
+
+Bit 0 selects the normal active VFO record: zero selects VFO A and one
+selects VFO B. The firmware then derives active and inactive record
+pointers from this bit; register 12 split control may exchange them
+during an ordinary TX: VERIFIED selection, HIGH CONFIDENCE A/B labels.
+Bits `1...7` are ignored by this consumer: HIGH CONFIDENCE.
+
+Bits `8...15` select a frequency-dependent calibration entry. When the
+index changes, BASE loads:
+
+- two signed calibration values, multiplies each by `5000`, and stores
+  them as the I and Q integer offsets added immediately before the
+  final SPI3/I2S3 sample packing;
+- one signed value scaled by `0.0001`, then converted to a multiplicative
+  correction by adding `1.0`;
+- one signed value scaled by `0.001`, clamped to `-60...+60`, converted
+  to radians, and expanded into sine/cosine correction state;
+- the raw band index into the DSP control state.
+
+Table addressing, constants, final I/Q offset additions, and
+trigonometric conversion are VERIFIED. Interpreting the latter two
+values as magnitude and phase correction is HIGH CONFIDENCE.
+
+The historical Linux implementation computes indices `0...22` from
+frequency, covering out-of-band gaps and amateur bands through
+54 MHz. BASE performs no range check before indexing its calibration
+arrays: VERIFIED. A compatible controller must restrict this byte to
+`0...22`; larger values can read beyond the intended entries.
+
+Bits `16...31` have no observed effect in the register-13 update block:
+HIGH CONFIDENCE. The mapping is exported in
+`analysis/protocol/register13_vi_vm.csv`.
+
+### Register 17: ATU network
+
+Address: `0x0044`
+
+Bits `0...6` and `8...14` hold two seven-bit matching-network banks;
+bit 16 selects one of two network topologies. Packing is VERIFIED.
+Electrical assignment of the banks to inductors and capacitors remains
+unresolved; see `docs/atu.md`.
 
 ### Register 33: CW controls
 

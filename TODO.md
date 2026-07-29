@@ -86,6 +86,8 @@
       and TX-power target scaling
     - [x] Recover every consumed register 12 operation bit and the
       ATU-tune request/clear handshake
+    - [x] Recover register 13 active-VFO selection, calibration-band
+      table effects, and required index bound
 -   [x] Recover I2C read responses and calibration-window framing
 -   [ ] Recover telemetry physical-unit calibration and calibration-field semantics
 
