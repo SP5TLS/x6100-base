@@ -84,6 +84,8 @@
 -   [ ] Correlate remaining commands with BASE 1.1.9 consumers
     - [x] Recover register 15 RF-gain serial output, DSP gain split,
       and TX-power target scaling
+    - [x] Recover every consumed register 12 operation bit and the
+      ATU-tune request/clear handshake
 -   [x] Recover I2C read responses and calibration-window framing
 -   [ ] Recover telemetry physical-unit calibration and calibration-field semantics
 

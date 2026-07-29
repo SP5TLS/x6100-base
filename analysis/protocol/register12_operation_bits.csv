@@ -1,0 +1,11 @@
+bit,mask,historical_label,recovered_effect,confidence
+1,0x00000002,sple,"select the other VFO record during ordinary TX; suppressed for ATU and calibration TX sources",HIGH CONFIDENCE label; VERIFIED selection
+3,0x00000008,voice_rec,"force TX request false; switch audio/DSP routing through FUN_0802f4b8 FUN_0802f7c8 and FUN_080243e0",HIGH CONFIDENCE label; VERIFIED control flow
+4,0x00000010,swrscan_trx,"copy into TX-source mask 0x00000200",HIGH CONFIDENCE label; VERIFIED routing
+12,0x00001000,atue,"select ATU network application versus bypass through FUN_0802a014/FUN_0802a168",HIGH CONFIDENCE label; VERIFIED branch
+13,0x00002000,atu_tune,"run FUN_0802adf4 tuning transaction; clear this bit in the internal mirror before the call and wait for Linux-visible request to clear before returning",VERIFIED
+14,0x00004000,modem_trx,"copy into TX-source mask 0x00000040 and select MAIN-board audio through IN3R",HIGH CONFIDENCE label; VERIFIED routing
+15,0x00008000,calibration_trx,"copy into TX-source mask 0x00000100 and cache calibration-active state",HIGH CONFIDENCE label; VERIFIED routing
+16,0x00010000,power_off,"make the main control iteration return its shutdown condition",HIGH CONFIDENCE label; VERIFIED branch
+18,0x00040000,iptt,"copy into TX-source mask 0x00000001",HIGH CONFIDENCE internal/software PTT; VERIFIED routing
+other,other,unknown,"no direct consumer in the recovered register-12 update block",HIGH CONFIDENCE

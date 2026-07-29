@@ -344,8 +344,37 @@ Register 12 bit `0x00040000` is copied through
 transmit in `FUN_0802A8A4`: VERIFIED. X6100Control calls the register
 bit `iptt`; internal/software PTT is therefore HIGH CONFIDENCE.
 
-Other register 12 bits retain HIGH CONFIDENCE historical meanings until
-their individual consumers are checked.
+The complete set of bits consumed by the BASE 1.1.9 update block is:
+
+| Bit | Historical label | Recovered BASE effect |
+| ---: | --- | --- |
+| 1 | `sple` | select the other VFO record during ordinary TX |
+| 3 | `voice_rec` | suppress TX and switch the audio/DSP routing |
+| 4 | `swrscan_trx` | set TX-source mask `0x200` |
+| 12 | `atue` | select ATU-network application or bypass |
+| 13 | `atu_tune` | execute the blocking ATU tune transaction |
+| 14 | `modem_trx` | set TX-source mask `0x40` and route IN3R |
+| 15 | `calibration_trx` | set TX-source mask `0x100` |
+| 16 | `power_off` | request exit from the main control loop |
+| 18 | `iptt` | set TX-source mask `0x01` |
+
+Bit extraction and the listed control-flow effects are VERIFIED.
+Historical labels are HIGH CONFIDENCE except `atu_tune`, whose
+Linux/BASE handshake is VERIFIED. No other bit has a direct consumer
+in this update block: HIGH CONFIDENCE.
+
+The split bit selects the inactive VFO only during an ordinary
+transmission. ATU (`0x10`) and calibration (`0x100`) TX sources retain
+the normal active VFO: VERIFIED.
+
+The tune bit has command-like behavior. Firmware clears bit 13 in its
+internal mirror before calling `FUN_0802adf4`; that function performs
+the ATU operation and finally waits until Linux clears bit 13 in the
+live control register: VERIFIED. A compatible Linux controller must
+therefore deassert the request; it must not leave `atu_tune` set.
+
+The machine-readable mapping is
+`analysis/protocol/register12_operation_bits.csv`.
 
 ### Register 55: Linux boot handshake
 
