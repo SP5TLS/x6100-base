@@ -1,0 +1,6 @@
+order,function,pin,operation,relation,confidence
+1,FUN_08034178,PE15,drive low,early main startup before audio subsystem initialization,VERIFIED
+2,FUN_080244b4,PE15,drive low,reassert immediately before codec startup,VERIFIED
+3,FUN_080244b4,PE15,delay 1 ms,minimum observed low interval at final reset pulse,VERIFIED
+4,FUN_080244b4,PE15,drive high,immediately precedes TLV320AIC3204 software reset and configuration,VERIFIED
+5,all later firmware,PE15,no further writes found,remains high during normal operation and recovered shutdown path,VERIFIED

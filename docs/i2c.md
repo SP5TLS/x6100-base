@@ -131,6 +131,15 @@ format and makes both BCLK and WCLK outputs: VERIFIED against the
 TLV320AIC3204 register map. The codec is therefore the serial-clock
 master while both STM32 I2S peripherals are slaves.
 
+PE15 is driven low early in `FUN_08034178`, driven low again immediately
+before codec startup, held for at least the explicit 1-ms delay, and
+then driven high immediately before the TLV320AIC3204 software-reset
+write and register sequence: VERIFIED. No later PE15 writes were found,
+including in the recovered shutdown path: VERIFIED. Interpreting PE15
+as the codec's active-low hardware reset is HIGH CONFIDENCE. The exact
+lifecycle is exported in
+`analysis/i2c/audio_reset_gpio_lifecycle.csv`.
+
 Primary device references:
 
 - TI TLV320AIC3204 product page:
@@ -273,7 +282,8 @@ The complete firmware-visible control policy is:
 1. clear GPIOG ODR bit 8; PG8 remains an input, so this is an output
    latch update rather than a verified physical reset assertion;
 2. initialize both STM32 I2S pairs and their DMA streams;
-3. drive PE15 low, wait 1 ms, then drive it high;
+3. reassert PE15 low, wait 1 ms, then drive it high; PE15 was already
+   driven low earlier in main startup;
 4. initialize TLV320AIC3204 at `0x18`, including 100-kHz dividers and
    32-bit master-I2S operation;
 5. wait 100 ms;

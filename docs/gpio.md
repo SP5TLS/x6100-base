@@ -51,6 +51,13 @@ and no later output-mode configuration was found: VERIFIED. These ODR
 writes therefore update only the latent output latch and do not
 constitute verified physical reset control.
 
+PE15 has a different and electrically effective lifecycle. It is an
+output, is driven low early in main startup, driven low again before
+audio initialization, held across a 1-ms delay, then driven high
+immediately before TLV320AIC3204 programming. It is not written again:
+VERIFIED. PE15 is the TLV320AIC3204 active-low hardware-reset line:
+HIGH CONFIDENCE.
+
 Some pins appear in more than one group because the initializer
 deliberately reconfigures them during its sequence. PG6 and PG12 are
 first included in an input/output setup and later explicitly configured
@@ -117,7 +124,8 @@ names are not yet known:
 | PB2 | toggled at entry/exit of the fast DMA1 DSP handler | VERIFIED |
 | PG15 | sampled and debounced by TIM2 | VERIFIED |
 | PG4 | sampled during normal operation and awaited during final shutdown | VERIFIED |
-| PE8, PE9, PE11, PE14, PE15 | changed during startup, PA calibration, DSP operation, or shutdown | VERIFIED |
+| PE8, PE9, PE11, PE14 | changed during startup, PA calibration, DSP operation, or shutdown | VERIFIED |
+| PE15 | low during early startup, high immediately before TLV320AIC3204 initialization | VERIFIED levels; HIGH CONFIDENCE codec reset |
 | PE10 | low-delay-high pulse after external PA-bias device writes | VERIFIED |
 | PE8, PE9, PG11 and variant callback | PA calibration and normal TX enable subset | HIGH CONFIDENCE role; VERIFIED levels |
 | PE12 | per-sample active-low CW/RF envelope output; otherwise forced high | HIGH CONFIDENCE role; VERIFIED behavior |
@@ -126,7 +134,8 @@ names are not yet known:
 | PD2, PD3, PD4 | sequenced low during shutdown | VERIFIED |
 | PF11 | read by the charger/battery startup loop | VERIFIED |
 | PF13 | controlled by the charger/battery startup loop | VERIFIED |
-| PG8, PG11, PG12 | changed by startup, peripheral-reset, PA, or power-management paths | VERIFIED |
+| PG8 | input; ODR latch changes during audio startup but does not drive the pad | VERIFIED |
+| PG11, PG12 | changed by startup, peripheral-reset, PA, or power-management paths | VERIFIED |
 
 PB2 is a timing/debug marker candidate because it brackets the complete
 DSP interrupt body: HIGH CONFIDENCE. Its electrical destination is

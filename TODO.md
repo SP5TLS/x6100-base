@@ -39,6 +39,7 @@
 -   [x] Recover complete startup-only control contract for `0x4A`/`0x4C`
 -   [ ] Trace board-level electrical functions of `0x4A` and `0x4C`
 -   [x] Identify TLV320AIC3204 as 32-bit I2S BCLK/WCLK master
+-   [x] Recover PE15 TLV320AIC3204 reset lifecycle (HIGH CONFIDENCE role)
 -   [x] Recover SPI2 audio and SPI3 I/Q signal roles from DMA processing
 -   [x] Verify CS4272 as zero-IF I/Q converter and assign SPI3/I2S3
 -   [x] Assign `0x4C` fallback to the same I/Q interface (HIGH CONFIDENCE)
