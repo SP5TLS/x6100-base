@@ -1,0 +1,6 @@
+stage,address,input,operation,output,confidence
+control unpack,0x0802B73E,"register 21 bit 5","store bit in state byte 0x2000003F","requested S/P mode",VERIFIED
+jack sampling,0x0802D7FC,"GPIOF IDR bit 15 and requested S/P mode","detect either input change and reload stable countdown to 9","debounced combined mode",VERIFIED
+selector write,0x0802D85C,"PF15=0 and requested S/P mode=1","write 1 through 0x08023F10; otherwise write 0","byte 0x20008368",VERIFIED
+DMA gain,0x08026468,"byte 0x20008368","when nonzero multiply receive-volume scalar by 0.05","effective receive-audio gain",VERIFIED
+physical interpretation,not applicable,"manual S/P mode and headphone-port description","same HPR path with mode/jack-dependent attenuation","headphone versus external-speaker level selection",HIGH CONFIDENCE

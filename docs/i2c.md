@@ -188,8 +188,11 @@ electrical behavior.
 
 One additional transmit branch disables left MICPGA input routing and
 selects IN3R on the right MICPGA with a separate cached gain. Its
-physical connector or generator remains unresolved; only the IN3R
-hardware route is VERIFIED.
+internal operating flag `0x40` is constructed by `FUN_0802d7cc` from
+control register 12 bit 14, historically named `modem_trx`: VERIFIED.
+IN3R is therefore the modem-mode analog transmit source with HIGH
+CONFIDENCE. Its exact board origin between the Linux/USB audio
+subsystem and the codec pin remains unresolved.
 
 Receive-volume register 14 drives only HPR in the recovered codec
 helper. Value 0 mutes HPR. Values 1 through 29 leave HPR at 0 dB and
@@ -198,8 +201,29 @@ values 30 and above use unity digital gain and set HPR analog gain to
 `value - 30` dB. The raw arguments, thresholds, and physical HPR
 destination are VERIFIED. `FUN_0803b5d8` has the behavior and error
 handling of `powf`, making the exponential interpretation and the full
-receive-audio-output role HIGH CONFIDENCE. Speaker-versus-phone
-switching is not assigned to a codec register yet.
+receive-audio-output role HIGH CONFIDENCE. S/P selection operates on
+this same receive-audio path rather than assigning another codec
+output.
+
+The speaker/phone qualifier is now traced outside the codec register
+API. Register 21 bit 5 is stored at `0x2000003F`. The routine beginning
+at `0x0802D7FC` compares it with GPIOF input PF15, reloads a countdown
+of 9 whenever either state changes, and after stability writes a
+combined selector to `0x20008368`. The DMA audio handler reads this
+selector and multiplies the receive-volume scalar by `0.05` when it is
+nonzero: VERIFIED.
+
+The selector is nonzero only when the requested S/P mode is 1 and PF15
+is low. No codec routing register or output GPIO is changed. The
+published operation manual describes this setting as headphone-port
+selection between headphones and an external loudspeaker. Combining
+that description with the recovered behavior identifies PF15 as the
+S/P jack-detect input and the operation as a 20:1 digital level change
+on the same HPR path: HIGH CONFIDENCE. The exact state machine is in
+`analysis/i2c/audio_spmode_path.csv`.
+
+Manual reference:
+<https://xiegu.eu/wp-content/uploads/sites/4/2022/01/X6100-Operation-Manual.pdf>
 
 Startup writes page-0 register `0x1B = 0x3C`. This selects 32-bit I2S
 format and makes both BCLK and WCLK outputs: VERIFIED against the
@@ -419,8 +443,7 @@ See `docs/protocol.md` for:
 ## Remaining work
 
 - Recover the I2C1 battery block layout and checksum/version fields.
-- Identify the physical IN3R source and the final hardware consumer of
-  the speaker/phone mode bit.
+- Trace the board-level origin connected to codec IN3R in modem mode.
 - Determine the board-level electrical functions of `0x4A` and the
   `0x4C` fallback by tracing signals; their MCU control is recovered.
 - Trace the subordinate `0x4A` support function and determine whether

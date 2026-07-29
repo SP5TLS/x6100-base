@@ -134,6 +134,7 @@ names are not yet known:
 | PD2, PD3, PD4 | sequenced low during shutdown | VERIFIED |
 | PF11 | read by the charger/battery startup loop | VERIFIED |
 | PF13 | controlled by the charger/battery startup loop | VERIFIED |
+| PF15 | sampled with S/P mode; stable low state enables 0.05 receive-audio gain | VERIFIED behavior; HIGH CONFIDENCE S/P jack detect |
 | PG8 | input; ODR latch changes during audio startup but does not drive the pad | VERIFIED |
 | PG11, PG12 | changed by startup, peripheral-reset, PA, or power-management paths | VERIFIED |
 
