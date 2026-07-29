@@ -68,6 +68,11 @@ Implementation blockers, minimum drivers, safety gates, and the staged
 hardware bring-up plan are documented in
 [`docs/implementation_readiness.md`](docs/implementation_readiness.md).
 
+The deterministic cross-index generated from preserved analysis CSV
+files is
+[`docs/generated_analysis_summary.md`](docs/generated_analysis_summary.md).
+Its source manifest records the SHA-256 of every input.
+
 ## Memory layout
 
 -   Flash application base: `0x08020000`

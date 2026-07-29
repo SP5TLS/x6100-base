@@ -194,7 +194,8 @@ only as evidence boundaries, not as planned tasks.
     exact reference counts
 -   [x] Export all recovered instruction references to STM32
     peripheral and Cortex-M system-register ranges
--   [ ] Generate Markdown documentation
+-   [x] Generate a deterministic Markdown cross-index from preserved
+    analysis CSV files, including an input SHA-256 manifest
 
 ## Documentation
 
