@@ -1,0 +1,10 @@
+function,channel_mask,parameter,page,registers,exact_effect,confidence
+FUN_0802f4bc,"bit0=left; bit1=right","unsigned gain code; clamp to 0x5F","1","0x3B left; 0x3C right","select page 1; write selected MICPGA volume register only when cached value differs; code is 0.5 dB/step from 0 through 47.5 dB","VERIFIED"
+FUN_0802f568,"bit0=LOL; bit1=LOR","signed gain in dB","1","0x12 LOL; 0x13 LOR","select page 1; below -6 writes 0x40 mute; -6..28 writes signed 6-bit gain code; above 28 clamps to +29 dB; suppress unchanged writes independently per channel","VERIFIED"
+FUN_0802f628,"bit0=HPL; bit1=HPR","signed gain in dB","1","0x10 HPL; 0x11 HPR","select page 1; below -6 writes 0x40 mute; -6..28 writes signed 6-bit gain code; above 28 clamps to +29 dB; suppress unchanged writes independently per channel","VERIFIED"
+FUN_0802f6e8,"bit0=left DAC; bit1=right DAC","zero=unmute; nonzero=mute","0","0x40","select page 0; overwrite DAC Channel Setup 2 with 0x00/0x08/0x04/0x0C according to mask and mute parameter; unselected channels are encoded unmuted","VERIFIED"
+FUN_0802f758,"bit0=left ADC; bit1=right ADC","zero=unmute; nonzero=mute","0","0x52","select page 0; overwrite ADC Fine Gain Adjust with 0x00/0x80/0x08/0x88 according to mask and mute parameter; fine gain remains 0 dB and unselected channels are encoded unmuted","VERIFIED"
+FUN_0802f7c8,"bit0=left MICPGA; bit1=right MICPGA","bit0=IN1; bit1=IN2; bit2=IN3","1","0x34/0x36 left; 0x37/0x39 right","for each selected side route requested same-side IN1/IN2/IN3 positive inputs through 10 kohm; connect negative input to common mode using fixed 0x40 left or 0x80 right; zero disconnects all positive inputs but keeps negative common-mode connection","VERIFIED"
+FUN_0802f8d0,"not applicable","zero=power down; nonzero=power up","1","0x33","select page 1; write 0x20 when off or 0x60 when on; retain MICBIAS voltage selection 10 and toggle power bit D6","VERIFIED"
+FUN_0802f924,"not applicable","none","1","0x02","select page 1; write LDO Control register 0x01","VERIFIED"
+FUN_0802f964,"not applicable","none","0","0x01","select page 0; write software-reset value 0x01","VERIFIED"

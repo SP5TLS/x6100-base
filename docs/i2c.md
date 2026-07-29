@@ -119,12 +119,47 @@ Clock-programming algorithm and register writes: VERIFIED.
 The startup path requests a 100,000-Hz converter rate. This matches the
 raw DSP rate constant recovered in `docs/spi_i2s.md`: HIGH CONFIDENCE.
 
-Other codec helpers select pages and update paired left/right fields,
-power/mute state, serial-interface configuration, and page-dependent
-analog routing: VERIFIED at the transaction level. The exact
-user-facing meaning of every helper remains to be correlated with the
-codec register guide and Linux control fields before final names are
-assigned.
+### Operational audio-codec controls
+
+The small helpers following the clock-programming routine have now
+been correlated with the official codec register guide. Their complete
+machine-readable contract is in
+`analysis/i2c/tlv320aic3204_control_helpers.csv`.
+
+| Firmware function | Hardware operation | Encoding |
+| --- | --- | --- |
+| `FUN_0802f4bc` | left/right analog MICPGA gain | `0x00`–`0x5F` = 0–47.5 dB in 0.5-dB steps; larger values clamp to `0x5F` |
+| `FUN_0802f568` | LOL/LOR line-driver gain and mute | below -6 dB means mute; -6 through +29 dB use the codec's signed 6-bit gain code |
+| `FUN_0802f628` | HPL/HPR headphone-driver gain and mute | below -6 dB means mute; -6 through +29 dB use the codec's signed 6-bit gain code |
+| `FUN_0802f6e8` | left/right DAC mute | page 0 register `0x40`, bits 3 and 2 |
+| `FUN_0802f758` | left/right ADC mute | page 0 register `0x52`, bits 7 and 3; fine gain remains 0 dB |
+| `FUN_0802f7c8` | analog input routing to left/right MICPGA | argument bits 0/1/2 select IN1/IN2/IN3 respectively |
+| `FUN_0802f8d0` | MICBIAS power | page 1 register `0x33`: `0x20` off, `0x60` on |
+| `FUN_0802f924` | codec LDO control | page 1 register `0x02 = 0x01` |
+| `FUN_0802f964` | codec software reset | page 0 register `0x01 = 0x01` |
+
+Function/register mappings and encodings in this table are VERIFIED.
+The names remain descriptive documentation, not final Ghidra symbol
+renames.
+
+`FUN_0802f7c8` makes the physical analog-input behavior particularly
+clear. For each selected channel, argument bit 0 connects IN1, bit 1
+connects IN2, and bit 2 connects IN3 to the positive MICPGA input
+through 10 kOhm. It also writes a fixed common-mode connection to the
+negative input (`0x40` for the left MICPGA and `0x80` for the right).
+An argument of zero disconnects all three positive inputs while
+retaining that negative common-mode connection: VERIFIED.
+
+The DAC and ADC mute helpers overwrite their complete target register.
+Their channel mask constructs `0x08`/`0x04` for DAC mute and
+`0x80`/`0x08` for ADC mute; it does not read-modify-write or preserve
+an independently muted unselected channel. This behavior must be
+preserved by a compatible implementation: VERIFIED.
+
+`FUN_0802f8d0` keeps MICBIAS voltage-selection bits at binary `10` and
+only changes power bit D6. The exact voltage is conditional on the
+codec common-mode selection, so this documentation intentionally does
+not infer one board voltage from the register alone.
 
 Startup writes page-0 register `0x1B = 0x3C`. This selects 32-bit I2S
 format and makes both BCLK and WCLK outputs: VERIFIED against the
@@ -348,6 +383,5 @@ See `docs/protocol.md` for:
   `0x4C` fallback by tracing signals; their MCU control is recovered.
 - Trace the subordinate `0x4A` support function and determine whether
   the `0x4C` fallback is a converter or a converter-side controller.
-- Map every TLV320AIC3204 helper to its codec register semantics.
 - Verify whether the hardware-variant branch is selected by board
   revision, device presence, or another condition.
