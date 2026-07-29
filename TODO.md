@@ -32,7 +32,6 @@
 -   [x] GPIO modes, peripheral pins, shift chains, and shutdown sequence
 -   [x] Trace register `0x0030` bit 16 (`power_off`) into the ordered
     PD4/PD3/PD2 shutdown and PG4 feedback wait
--   [ ] Confirm exact PD2 power-hold and PG4 power/status board nets
 -   [x] DMA
 -   [x] ADC topology, DMA acquisition, and ADC2 filtering
 -   [x] DAC initialization and frequency-dependent DAC2 control
@@ -105,7 +104,8 @@
 -   [x] Map secondary RF index to SPI6 output-image bits
 -   [x] Recover exact secondary RF-index frequency boundaries
 -   [x] Recover frequency-change DSP reset and four-block countdown
--   [ ] Correlate remaining commands with BASE 1.1.9 consumers
+-   [x] Correlate all 56 control-register slots with BASE 1.1.9
+    consumers, including explicit unused/decoded-only slots
     - [x] Recover register 15 RF-gain serial output, DSP gain split,
       and TX-power target scaling
     - [x] Recover every consumed register 12 operation bit and the
@@ -116,13 +116,15 @@
       control, variant output behavior, and squelch threshold
     - [x] Recover register 35 signed RX complex shift and active-low
       bypass, including its shared CW-oscillator gate
+    - [x] Audit registers 22/25 as decoded-only VOX/compressor controls
+      with no recovered runtime effect
+    - [x] Recover register 24 DNF and registers 27/28 AGC field behavior
+    - [x] Audit all unnamed slots and register 16 cached-only behavior
 -   [x] Recover I2C read responses and calibration-window framing
 -   [x] Recover telemetry physical units and used calibration-block
     field semantics
 -   [x] Recover `hkey` acquisition through PD12/TIM4 PWM-input capture,
     frame decoding, validation, and release timeout
--   [ ] Confirm PD12 continuity and electrical levels at the external
-    hand-microphone/headset connector
 
 ## DSP
 

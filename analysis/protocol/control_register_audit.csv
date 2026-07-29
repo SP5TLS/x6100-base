@@ -1,0 +1,57 @@
+index,historical_label,BASE_1.1.9_status,effect,confidence
+0,vfoa_ham_band,marker-only,"low 31 bits have no recovered consumer; bit 31 is consumed as a dirty marker",VERIFIED marker; HIGH CONFIDENCE low bits ignored
+1,vfoa_freq,active,"active/inactive VFO selection; LO and RF-path update",VERIFIED
+2,vfoa_att,active,"selected VFO attenuation hardware control",VERIFIED
+3,vfoa_pre,active,"selected VFO preamplifier hardware control",VERIFIED
+4,vfoa_mode,active,"selected VFO RX/TX DSP mode",VERIFIED
+5,vfoa_agc,active,"selected VFO AGC mode",VERIFIED
+6,vfob_ham_band,marker-only,"low 31 bits have no recovered consumer; bit 31 is consumed as a dirty marker",VERIFIED marker; HIGH CONFIDENCE low bits ignored
+7,vfob_freq,active,"active/inactive VFO selection; LO and RF-path update",VERIFIED
+8,vfob_att,active,"selected VFO attenuation hardware control",VERIFIED
+9,vfob_pre,active,"selected VFO preamplifier hardware control",VERIFIED
+10,vfob_mode,active,"selected VFO RX/TX DSP mode",VERIFIED
+11,vfob_agc,active,"selected VFO AGC mode",VERIFIED
+12,sple_atue_trx,active,"operation flags; TX sources; ATU; shutdown",VERIFIED
+13,vi_vm,active,"active VFO and 0..22 calibration-table index",VERIFIED
+14,rxvol,active,"codec HPR gain and right-channel digital RX volume",VERIFIED path; HIGH CONFIDENCE role
+15,rfg_txpwr,active,"RF gain hardware/DSP split; 0.1-W TX target; auxiliary one-hot DSP selector",VERIFIED
+16,unknown,cached-only,"low two bytes copied into state; no downstream reader recovered",HIGH CONFIDENCE no effect
+17,atu_network,active,"ATU topology and two logical seven-bit banks",VERIFIED
+18,unknown,unused,"no read by the BASE 1.1.9 control updater",HIGH CONFIDENCE
+19,unknown,unused,"no read by the BASE 1.1.9 control updater",HIGH CONFIDENCE
+20,ling_loutg_imicg_hmicg,active,"TLV320 input/output gain and microphone routing state",VERIFIED path; HIGH CONFIDENCE endpoint names
+21,micsel_pttmode_chge_spmode_auxiqgen_sqlthr,partially active,"micsel chge spmode auxiqgen and sqlthr act; pttmode is cached only",VERIFIED field paths
+22,voxg_voxag_voxdly_voxe,decoded-only,"fields copied into state but no downstream reader or VOX source writer recovered",HIGH CONFIDENCE not implemented
+23,nrthr_nbw_nbthr_nre_nbe,partially active,"nrthr and nre drive spectral NR; noise-blanker fields are decoded only",VERIFIED NR; HIGH CONFIDENCE NB not implemented
+24,dnfcnt_dnfwidth_dnfe,active,"design and enable the common RX digital-notch biquad",VERIFIED
+25,cmplevel_cmpe,decoded-only,"level and enable copied into state; no downstream reader recovered",HIGH CONFIDENCE not implemented
+26,unknown,unused,"no read by the BASE 1.1.9 control updater",HIGH CONFIDENCE
+27,agcknee_agcslope_agchang,partially active,"knee and slope call no-op setters; bit 12 enables AGC hang behavior",VERIFIED
+28,agctime,active,"three packed 10/10/12-bit AGC time constants selected by AGC mode",VERIFIED
+29,monilevel,active,"TX input-monitor gain value * 0.01",VERIFIED arithmetic; HIGH CONFIDENCE role
+30,unknown,unused,"no read by the BASE 1.1.9 control updater",HIGH CONFIDENCE
+31,unknown,unused,"no read by the BASE 1.1.9 control updater",HIGH CONFIDENCE
+32,unknown,unused,"no read by the BASE 1.1.9 control updater",HIGH CONFIDENCE
+33,ks_km_kimb_cwtone_cwvol_cwtrain,active,"CW keyer mode tone monitor level and training",VERIFIED
+34,qsktime_kr,partially active,"low 16-bit QSK hold is active; upper key-ratio value is decoded but unused",VERIFIED
+35,unknown_historical,active,"signed 24-bit RX complex shift and active-low bypass",VERIFIED
+36,unknown,unused,"no read by the BASE 1.1.9 control updater",HIGH CONFIDENCE
+37,unknown,unused,"no read by the BASE 1.1.9 control updater",HIGH CONFIDENCE
+38,unknown,unused,"no read by the BASE 1.1.9 control updater",HIGH CONFIDENCE
+39,unknown,unused,"no read by the BASE 1.1.9 control updater",HIGH CONFIDENCE
+40,unknown,unused,"no read by the BASE 1.1.9 control updater",HIGH CONFIDENCE
+41,biasdrive_biasfinal,active,"two external PA bias-control codes",VERIFIED
+42,rit,active,"signed RX tuning offset",VERIFIED
+43,xit,active,"signed TX tuning offset",VERIFIED
+44,filter1_low,active,"RX filter edge",VERIFIED
+45,filter1_high,active,"RX filter edge",VERIFIED
+46,filter2_low,active,"RX filter edge",VERIFIED
+47,filter2_high,active,"RX filter edge",VERIFIED
+48,rphscmp,active,"signed value * 0.001 applied to RX phase correction",VERIFIED arithmetic; HIGH CONFIDENCE label
+49,rmagcmp,active,"signed value * 0.0001 applied to RX magnitude correction",VERIFIED arithmetic; HIGH CONFIDENCE label
+50,txiofs,active,"signed value * 5000 added to TX I Q31 output",VERIFIED arithmetic; HIGH CONFIDENCE label
+51,txqofs,active,"signed value * 5000 added to TX Q Q31 output",VERIFIED arithmetic; HIGH CONFIDENCE label
+52,unknown,unused,"no read by the BASE 1.1.9 control updater",HIGH CONFIDENCE
+53,pwrsync,active,"forwarded to selected hardware-variant callback",VERIFIED path; HIGH CONFIDENCE PSYNC role
+54,unknown,unused,"no read by the BASE 1.1.9 control updater",HIGH CONFIDENCE
+55,last,active-handshake,"bit 20 is Linux boot-ready; bit 0 purpose unresolved",VERIFIED bit 20; unknown bit 0

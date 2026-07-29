@@ -117,11 +117,18 @@ The independently recovered size is an exact match for
 
 Existence and size of the 56-entry control register file: VERIFIED.
 
-Preservation of every 1.1.6 command meaning in 1.1.9: HIGH CONFIDENCE,
-pending correlation with each BASE-side consumer.
+The 1.1.6 names are not all implemented by BASE 1.1.9. Some slots are
+active, some fields are decoded or cached without a consumer, and
+thirteen slots are not read by the control updater. Indices 1 and 7 are
+traced through the LO synthesizer; see `docs/frequency_control.md`.
 
-The consumers of indices 1 and 7 have now been traced through the LO
-synthesizer. See `docs/frequency_control.md`.
+The complete 56-slot audit is now in
+`analysis/protocol/control_register_audit.csv`. Slots
+`18, 19, 26, 30...32, 36...40, 52, 54` have no read in the recovered
+BASE 1.1.9 control updater: HIGH CONFIDENCE that they are unused in
+this image. Register 16 is different: its low two bytes are copied into
+internal state, but no downstream reader was recovered. It is therefore
+cached-only rather than proven active.
 
 ## Historical control register labels
 
@@ -374,9 +381,83 @@ Field extraction, clamp, and enable routing are VERIFIED. The recovered
 FFT framing, estimator, spectral gain, passband-bin selection, and
 output ring are documented in `docs/rx_pipeline.md`.
 
-The remaining historical noise-blanker fields in this register are
-handled separately from `FUN_08022C30`; they must not be conflated with
-the spectral noise-reduction path.
+The remaining historical noise-blanker fields are decoded separately
+from `FUN_08022C30`; they must not be conflated with the spectral
+noise-reduction path.
+
+The full consumer audit found no later reader for the decoded
+noise-blanker width, threshold, or enable fields. Only `nrthr` and
+`nre` have an effective path in BASE 1.1.9: HIGH CONFIDENCE that the
+noise-blanker controls are not implemented in this image.
+
+### Register 22: VOX controls
+
+Address: `0x0058`
+
+The updater decodes:
+
+| Bits | Historical label | BASE action |
+| ---: | --- | --- |
+| `0...6` | `voxg` | copy to internal state |
+| `7...13` | `voxag` | copy to internal state |
+| `14...25` | `voxdly` | sign-extend the 12-bit field into internal state |
+| 26 | `voxe` | copy to internal state |
+
+No downstream reader of those decoded fields was recovered. The
+complete call graph also contains no call that sets TX-source mask
+`0x20`, historically associated with VOX. Field extraction is
+VERIFIED; VOX having no runtime effect in BASE 1.1.9 is HIGH
+CONFIDENCE.
+
+### Register 24: digital notch filter
+
+Address: `0x0060`
+
+| Bits | Historical label | BASE action |
+| ---: | --- | --- |
+| `0...11` | `dnfcnt` | unsigned notch center frequency |
+| `12...23` | `dnfwidth` | unsigned width/Q control, clamped to `1...100` |
+| 24 | `dnfe` | enable the resulting RX biquad |
+
+`FUN_0802415C` designs the biquad at the common RX audio sample rate.
+It constrains the center value to between 1% and 40% of that rate,
+applies the width clamp, and writes five coefficients. The DMA RX
+handler conditionally executes this biquad after demodulation and
+common filtering. Extraction, coefficient path, enable, and placement
+are VERIFIED; interpreting the center value in hertz and the
+historical DNF labels are HIGH CONFIDENCE.
+
+### Register 25: compressor controls
+
+Address: `0x0064`
+
+The low nibble is copied as historical `cmplevel`; bit 4 is copied as
+historical `cmpe`. Neither decoded field has a recovered downstream
+reader, and no compressor enable/gain transfer from this state appears
+in the DMA handler. Extraction is VERIFIED; no runtime compressor
+effect in BASE 1.1.9 is HIGH CONFIDENCE.
+
+### Registers 27 and 28: AGC controls
+
+Register 27 at `0x006C` decodes the signed low byte (`agcknee`), the
+next byte (`agcslope` storage), and bit 12 (`agchang`). The first two
+values are passed to functions that immediately return without writing
+state: VERIFIED no-op behavior. Bit 12 is stored and controls whether
+the RX AGC waits through its hang counter before increasing gain:
+VERIFIED.
+
+Register 28 at `0x0070` packs three time values:
+
+| Bits | Use |
+| ---: | --- |
+| `0...9` | time constant used for AGC mode 1 |
+| `10...19` | decoded middle time constant; no active selection branch |
+| `20...31` | time constant used for AGC mode 2 |
+
+`FUN_08023F50` selects the applicable value according to AGC mode and
+derives the gain-recovery coefficient. Other AGC modes use fixed
+mode-dependent constants. Packing, selection, and coefficient path are
+VERIFIED.
 
 ### Register 33: CW controls
 
@@ -478,6 +559,21 @@ the maximum absolute low edge and minimum absolute high edge. NFM
 does not use the four values in its recovered filter selection.
 Branches, signed/absolute operations, and routing are VERIFIED. See
 `docs/rx_pipeline.md` for objects, rates, and table-index calculation.
+
+### Registers 48...51: live DSP corrections
+
+These registers override the corresponding band-selected calibration
+values:
+
+| Register | Historical label | Conversion and destination |
+| ---: | --- | --- |
+| 48 | `rphscmp` | signed value × `0.001`, RX phase correction |
+| 49 | `rmagcmp` | signed value × `0.0001`, RX magnitude correction |
+| 50 | `txiofs` | signed value × `5000`, TX I Q31 offset |
+| 51 | `txqofs` | signed value × `5000`, TX Q Q31 offset |
+
+Indexing, signed conversions, setters, and final DSP consumers are
+VERIFIED. Historical semantic labels are HIGH CONFIDENCE.
 
 ### Register 53: power-synchronization setting
 
