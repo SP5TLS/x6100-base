@@ -58,9 +58,10 @@
 -   [x] USART
 -   [x] Timers
 -   [x] Confirm no application IWDG/WWDG use and document software reset
--   [ ] Recover physical charger control and its ordered command/GPIO
-    sequence; correct prior PF13 confusion by auditing PE13, PF11,
-    PD3, PF12, and their startup/runtime mode changes
+-   [x] Recover firmware-visible charger control, I2C telemetry,
+    hysteresis, and ordered PF12/PCA9535 actuation; exclude PF13
+-   [ ] Identify the physical PE13 and PF11 nets and reconcile early
+    PD3 charge-loop reuse with its normal `+5R` role
 
 ## RTOS
 

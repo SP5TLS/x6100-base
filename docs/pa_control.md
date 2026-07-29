@@ -223,6 +223,13 @@ cleared first, then PD3 after five seconds, and the remaining PD2
 support-power signal after another three seconds. PD2's exact rail is
 still unknown.
 
+The early charger/service loop independently toggles PD3 while charging
+and forces it high when its full condition is reached: VERIFIED. This
+does not change the service-manual correlation during normal RX/TX, but
+the reason for the early reuse is unresolved. Charge indication,
+temporary `+5R` cycling, and an incomplete physical interpretation
+remain HYPOTHESIS alternatives. See `docs/charger.md`.
+
 ### PE12 CW hardware output
 
 PE12 is not simply a static member of the RX/TX group. In CW/CWR modes

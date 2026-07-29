@@ -204,8 +204,11 @@ recovered downstream reader.
 Bit 4 does not directly toggle a charger GPIO in this update path. It
 modifies the persisted control bit that startup also reads while
 initializing the board and battery-management subsystem: VERIFIED.
-The historical charger-enable interpretation is HIGH CONFIDENCE, but
-the later physical switching sequence remains to be recovered.
+The runtime manager consumes the cached bit as an enable policy and
+drives the selected board backend through active-low PCA9535 bit 1
+and/or active-high PF12, subject to external-power and 90/98 capacity
+hysteresis: HIGH CONFIDENCE role; VERIFIED data flow, levels, and
+thresholds. The ordered contract is documented in `docs/charger.md`.
 
 Bit 6 does not forward the requested zero/one state. Whenever its
 value differs from the cached value, firmware calls the selected board

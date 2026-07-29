@@ -66,11 +66,18 @@ destination         = 0x2000BF90
 length              = 0x200 bytes
 ```
 
-It extracts voltage-, capacity-, current-, and status-like fields from
-this block and publishes them to the Linux telemetry packet. A
-battery-pack controller or pack-side MCU role is HIGH CONFIDENCE. The
-device protocol and IC identity are unknown, so no final device name is
-assigned.
+It extracts fields at offsets `0x0C`, `0x10`, `0x16`, and `0x1B4`,
+using exact scale factors `0.0039`, `1/256`, `0.15625`, and `1.25`.
+The first field drives the 90/98 charger hysteresis, while the last is
+used as a battery-voltage-like value: VERIFIED arithmetic; HIGH
+CONFIDENCE physical quantities. The two signed middle fields remain
+semantically unresolved.
+
+The complete transaction, field table, charger state machine, and
+physical GPIO/expander actuation are documented in `docs/charger.md`.
+A battery-pack controller or pack-side MCU role for address `0x36` is
+HIGH CONFIDENCE. The device protocol and IC identity are unknown, so no
+final device name is assigned.
 
 On transfer failure, `FUN_08031cfc`:
 

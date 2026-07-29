@@ -1,0 +1,15 @@
+phase,signal,configuration_or_operation,level_or_encoding,purpose,confidence
+early_setup,PF11,configure output then write BSRRL,high,early power or status control; exact net unknown,VERIFIED operation; HYPOTHESIS role
+early_setup,PF12,configure output then write BSRRH,low,charger initially disabled,HIGH CONFIDENCE role; VERIFIED level
+early_setup,PE13,configure input,sampled low,"one of the early ""full"" conditions; exact net unknown",VERIFIED behavior
+early_setup,PG4,configure input,sampled by boot and shutdown conditions,power or boot status; exact net unknown,VERIFIED behavior
+early_setup,PD3,configure output,toggled while charging and forced high when full,early charge indication or rail reuse; exact reason unknown,VERIFIED behavior; HYPOTHESIS role
+early_setup,PD4,configure output,initial low,normal complementary TX rail control later,VERIFIED level; HIGH CONFIDENCE later role
+policy_restore,PF12,direct ODR read-modify-write,saved policy bit,restore initial charger request,HIGH CONFIDENCE role; VERIFIED operation
+policy_restore,callback 0x2000C6C8,invoke with saved policy,"PCA9535 bit 1 active-low or PF12 active-high",board-variant charger control,HIGH CONFIDENCE role; VERIFIED backends and polarity
+runtime_enable,callback 0x2000C6C8,invoke with 1,"PCA9535 bit 1 low or PF12 high",enable charger,HIGH CONFIDENCE role; VERIFIED operation
+runtime_enable,PF12,direct ODR read-modify-write,high,enable charger,HIGH CONFIDENCE role; VERIFIED operation
+runtime_disable,callback 0x2000C6C8,invoke with 0,"PCA9535 bit 1 high or PF12 low",disable charger,HIGH CONFIDENCE role; VERIFIED operation
+runtime_disable,PF12,direct ODR read-modify-write,low,disable charger,HIGH CONFIDENCE role; VERIFIED operation
+all_state_changes,FUN_08030140,call with requested state,no operation in BASE 1.1.9 (bx lr),reserved hook only,VERIFIED
+early_exit,PF11,write BSRRL,high,restore or retain early control state; exact net unknown,VERIFIED operation; HYPOTHESIS role

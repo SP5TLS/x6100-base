@@ -132,7 +132,8 @@ names are not yet known:
 | PD3 / PD4 | complementary RX/TX outputs; candidate `+5R` / `+5T` rail enables | HIGH CONFIDENCE roles; VERIFIED levels |
 | PE2 | candidate ACC `TRX`; low in RX and high in TX | HIGH CONFIDENCE role; VERIFIED levels |
 | PD2, PD3, PD4 | sequenced low during shutdown | VERIFIED |
-| PF11 | read by the charger/battery startup loop | VERIFIED |
+| PF11 | configured as output and held high by the charger/battery startup loop; exact net unknown | VERIFIED behavior |
+| PF12 | active-high runtime charger enable; also mirrors the expander-backed variant | HIGH CONFIDENCE role; VERIFIED levels |
 | PE13 | sampled by the charger/battery startup loop as part of its full/charging decision | VERIFIED behavior; physical net unresolved |
 | PF15 | sampled with S/P mode; stable low state enables 0.05 receive-audio gain | VERIFIED behavior; HIGH CONFIDENCE S/P jack detect |
 | PG8 | input; ODR latch changes during audio startup but does not drive the pad | VERIFIED |
@@ -148,13 +149,17 @@ PE13, not PF13: VERIFIED. PF13 remains the active-low KEY ring/`DA`
 input serviced by TIM3: HIGH CONFIDENCE connector role, VERIFIED GPIO
 consumer. No charger role is assigned to PF13.
 
-This correction does not yet identify the complete charger interface.
+The charger interface is now recovered at firmware level. Runtime
+enable uses active-high PF12 and board callback `0x2000C6C8`; the
+callback selects active-low PCA9535 bit 1 or active-high PF12 according
+to hardware variant: HIGH CONFIDENCE role; VERIFIED levels and
+backends. Full ordering and thresholds are in `docs/charger.md`.
+
 The startup battery loop also manipulates PD3, while later RX/TX code
 uses PD3 in the complementary PD3/PD4 pair. Whether this is deliberate
 time-multiplexing, a shared rail/control function, or an incomplete
-physical interpretation remains unresolved. The charger GPIO and
-external-device sequence requires a separate lifecycle audit:
-HYPOTHESIS alternatives; VERIFIED overlapping firmware accesses.
+physical interpretation remains unresolved: HYPOTHESIS alternatives;
+VERIFIED overlapping firmware accesses.
 
 The precise RX/TX levels and ordering of the PA-related group, and the
 I2C1 bias-control device associated with PE10, are documented in
@@ -238,6 +243,6 @@ and PB9's exact physical PTT control, remain unresolved. See
   filters.
 - Identify power, PA-enable, charger, and reset nets from the board
   schematic or controlled measurements.
-- Recover the complete charger-control contract and reconcile the
-  PE13/PF11/PD3/PF12 accesses with the later RX/TX GPIO lifecycle.
+- Identify the physical nets behind PE13 and PF11 and reconcile the
+  early PD3 charge-loop reuse with its normal `+5R` role.
 - Document initial and shutdown levels for every output pin.

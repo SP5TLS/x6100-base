@@ -1,0 +1,11 @@
+phase,condition,operation,hardware_effect,confidence
+schedule,"call counter has not reached 5000","increment counter and return","none",VERIFIED
+sample,"counter reaches 5000 and phase is read","I2C1 combined read: address byte 0x6C; register 0x00; destination 0x2000BF90; length 0x200","read battery telemetry block from 7-bit address 0x36",VERIFIED
+sample,"I2C read succeeds","decode offsets 0x0C; 0x10; 0x16; 0x1B4 and sample ADC2 source 0","update capacity; current/status-like values; battery voltage; external voltage",VERIFIED arithmetic; HIGH CONFIDENCE physical quantities
+policy,"register 21 bit 4 chge is zero","request charger inactive","callback 0x2000C6C8=0; PF12 low; publish inactive",VERIFIED
+source,"chge is one but external power state is absent","request charger inactive","callback 0x2000C6C8=0; PF12 low; publish inactive",VERIFIED
+start,"chge is one; external power is present; charger is inactive; capacity is below 90","request charger active","callback 0x2000C6C8=1; PF12 high; publish active",VERIFIED
+hold,"chge is one; external power is present; charger is active; capacity is below 98","retain active state","no transition",VERIFIED
+stop,"chge is one; external power is present; capacity is at least 98","request charger inactive","callback 0x2000C6C8=0; PF12 low; publish inactive",VERIFIED
+source_hysteresis,"external power state is absent and battery voltage is less than external voltage plus 500","set external power state present","telemetry state only",VERIFIED arithmetic; HIGH CONFIDENCE interpretation
+source_hysteresis,"external power state is present and external voltage is less than battery voltage plus 500","set external power state absent","telemetry state only",VERIFIED arithmetic; HIGH CONFIDENCE interpretation
