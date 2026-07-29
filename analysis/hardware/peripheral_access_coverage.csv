@@ -1,0 +1,11 @@
+metric,value,confidence
+exported_references,777,VERIFIED
+source_functions,69,VERIFIED
+exact_target_addresses,136,VERIFIED
+direct_reads,280,VERIFIED
+direct_writes,361,VERIFIED
+parameter_address_references,126,VERIFIED
+generic_data_references,10,VERIFIED
+previous_targeted_rows,542,VERIFIED
+previous_targeted_rows_missing_from_consolidated_export,0,VERIFIED
+new_rows_beyond_previous_targeted_exports,235,VERIFIED

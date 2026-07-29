@@ -1,5 +1,6 @@
 category,resource,pins_or_address,configuration,firmware_role,lifecycle,confidence,detail
 core,STM32F427,MCU,"Cortex-M4; Thumb-2; little-endian",BASE controller,all,VERIFIED,docs/startup.md
+core,CRC,"0x40023000 DR; 0x40023008 CR","reset then 0x409 ordered 32-bit writes",UART flow CRC32,runtime,VERIFIED,docs/protocol.md
 clock,HSE,external oscillator,25 MHz assumption,main PLL source,startup,VERIFIED firmware assumption,docs/clocks.md
 clock,SYSCLK/HCLK,N/A,250 MHz intended,CPU and AHB clock,runtime,VERIFIED configured value; HIGH CONFIDENCE physical frequency,docs/clocks.md
 clock,PCLK1/APB1 timers,N/A,"62.5 MHz / 125 MHz",I2C and timer domain,runtime,VERIFIED,docs/clocks.md

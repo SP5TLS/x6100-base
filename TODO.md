@@ -190,7 +190,8 @@
 -   [x] Export raw interrupt table
 -   [x] Export Ghidra global data labels with types, memory blocks, and
     exact reference counts
--   [ ] Find peripheral register accesses
+-   [x] Export all recovered instruction references to STM32
+    peripheral and Cortex-M system-register ranges
 -   [ ] Generate Markdown documentation
 
 ## Documentation

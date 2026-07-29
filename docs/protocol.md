@@ -789,7 +789,8 @@ through the USART6 data register at `0x40011404`.
 | CRC input length | `0x409` words = 4132 bytes |
 | CRC offset | `0x1024` |
 | Total DMA length | `0x1028` = 4136 bytes |
-| CRC polynomial evidence | `0x04C11DB7` present in the firmware CRC table |
+| CRC engine | STM32 hardware CRC at `0x40023000` |
+| CRC configuration | reset through `CRC_CR = 1`, then 32-bit words written in order |
 | Peripheral | USART6 |
 | DMA | DMA2 Stream 6 |
 
@@ -820,6 +821,15 @@ labels.
 | `0x1014` | 12 | reserved | no packet-builder writes observed | HIGH CONFIDENCE |
 | `0x1020` | 4 | hardware key code | decoded from the PD12/TIM4 PWM-input frame and cleared after timeout | VERIFIED path/format; HIGH CONFIDENCE headset role |
 | `0x1024` | 4 | CRC32 | CRC over the preceding `0x409` words | VERIFIED |
+
+Immediately before building the CRC, `FUN_080337fc` calls
+`FUN_0802e0bc`, which writes `1` to `CRC_CR` at `0x40023008`.
+`FUN_0802e0cc` then writes exactly `0x409` consecutive 32-bit packet
+words to `CRC_DR` at `0x40023000` and returns the final `CRC_DR` value:
+VERIFIED. Thus the flow CRC uses the STM32 hardware engine with its
+reset/default polynomial behavior; the presence of a software
+`0x04C11DB7` table elsewhere in the image is not evidence for this
+packet path.
 
 X6100Control interprets the voltage bytes in tenths of a volt and TX
 power in tenths of a watt. `FUN_08024010` independently establishes

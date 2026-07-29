@@ -180,6 +180,48 @@ The selected board revision and physical net names remain unresolved.
 The complete callback table is
 `analysis/pa/variant_callback_map.csv`.
 
+## Complete direct peripheral-reference export
+
+`analysis/hardware/peripheral_accesses.csv` contains every Ghidra data
+reference originating from an instruction and targeting the STM32
+peripheral, external-control, or Cortex-M system-register address
+ranges. The current export contains:
+
+- 777 references from 69 functions;
+- 136 exact target addresses;
+- 361 direct writes and 280 direct reads;
+- 126 parameter/address constructions and 10 generic data references.
+
+These counts and rows are VERIFIED properties of the current Ghidra
+analysis. All 542 peripheral-reference rows previously exported into
+subsystem-specific `*_refs.csv` files are present in the consolidated
+table: VERIFIED by exact `(site, target, reference type)` comparison.
+The consolidated export adds 235 rows that were not in those earlier
+targeted tables.
+
+`READ` and `WRITE` rows are direct register accesses. `PARAM` and
+`DATA` rows mean that an instruction constructs, passes, or otherwise
+refers to a peripheral address; they must not independently be
+described as a bus transaction. Conversely, generic drivers can
+receive a base address through a register without Ghidra recovering a
+direct reference at every call site. The table is therefore a complete
+export of recovered instruction references, not a proof that every
+dynamic peripheral access has been statically resolved.
+
+The audit exposed one previously under-documented active peripheral:
+the STM32 CRC engine. It resets `CRC_CR`, streams all `0x409` words of
+the Linux UART-flow packet through `CRC_DR`, and stores the resulting
+word at packet offset `0x1024`: VERIFIED. See `docs/protocol.md`.
+
+Reproduce the export with:
+
+```sh
+GHIDRA_INSTALL=ghidra-directory \
+JAVA_HOME=jdk-directory \
+./tools/run_headless_peripheral_accesses.sh \
+    analysis/hardware/peripheral_accesses.csv
+```
+
 ## Lifecycle checklist
 
 ### Startup
