@@ -371,10 +371,75 @@ factor of 50. NFM bypasses this entire gain branch.
 
 ## Noise reduction and interpolation
 
-An optional block processor `FUN_08022C30` consumes accumulated
-128-sample audio blocks and publishes processed blocks through a
-512-sample ring. Its detailed transform remains unresolved; identifying
-it as the user-visible noise-reduction facility is MEDIUM CONFIDENCE.
+Protocol register 23 controls the optional processor `FUN_08022C30`:
+
+| Field | Meaning | Confidence |
+|---:|---|---|
+| bits `0...7` | noise-reduction threshold, capped to 100 | VERIFIED |
+| bit `24` | noise-reduction enable | VERIFIED |
+
+The existing historical names are `nrthr` and `nre`. `FUN_0802411C`
+writes the enable byte at `0x20008FBD`; `FUN_0802412C` converts the
+threshold to float after clamping. Writers and field routing are
+VERIFIED.
+
+### Frame construction
+
+The normal 12.5-ksample/s audio path accumulates 128 samples before
+calling `FUN_08022C30`. The function constructs a 256-sample frame from
+the previous and current 128-sample blocks, giving 50-percent overlap.
+It applies a 256-point square-root Hann window exported from
+`0x0803D818`, creates a complex buffer with zero imaginary inputs, and
+calls the same 256-point transform helper in forward and inverse
+directions.
+
+Frame size, overlap, real-to-complex layout, transform calls, and
+window values are VERIFIED. Identification of the transform as a
+complex FFT/IFFT is HIGH CONFIDENCE from its call contract and
+surrounding spectral operations.
+
+After inverse transformation, the same square-root Hann window is
+applied and the first 128 samples are overlap-added with the saved
+second half from the preceding frame. The exact window is in
+`analysis/rx_pipeline/noise_reduction_window_256.csv`.
+
+### Spectral estimator and gain
+
+The processor calculates squared magnitude for 128 positive-frequency
+bins. On enable or reset it initializes per-bin state, then spends 41
+frames accumulating the initial noise-power estimate with a `0.025`
+coefficient. It subsequently maintains:
+
+- instantaneous signal/noise power ratios, limited to
+  `0.001...1000`;
+- a nonnegative excess-SNR estimate with `0.98/0.02` smoothing;
+- adaptive per-bin noise estimates bounded by threshold-dependent
+  tests;
+- a nonlinear spectral gain with a floor of `0.001`.
+
+The state machine, constants, bounds, and per-bin updates are VERIFIED.
+Its functional identity as adaptive spectral noise reduction is HIGH
+CONFIDENCE. Reproducing every OEM estimator coefficient is optional
+for an independent receiver; a conventional Wiener/spectral-subtraction
+implementation with equivalent enable, threshold, passband, framing,
+and latency is compatible at the functional level.
+
+Processing is limited to bins derived from the active RX band:
+
+```text
+low_bin  = clamp(int(low_edge  / 12500 * 256) - 2, 1, 126)
+high_bin = clamp(int(high_edge / 12500 * 256) + 2,
+                 low_bin + 1, 127)
+```
+
+The conversion, margins, and bounds are VERIFIED. The selected edges
+are the maximum of the two low edges and minimum of the two high edges.
+
+Processed 128-sample blocks are multiplied by `1.414` and published
+through a 512-sample ring. The consumer substitutes samples from this
+ring for the normal post-filter audio before factor-8 interpolation.
+Buffer sizes, gain, substitution, and underrun-to-zero behavior are
+VERIFIED.
 
 With that facility disabled, the 16 common-path samples at `0x20005FC4`
 are sent directly to the factor-8 FIR interpolator at `0x20006C30`.
@@ -406,8 +471,6 @@ are assigned here without evidence.
 - Export and independently validate the runtime-selected RX biquad
   coefficient sets. Rate-conversion FIRs are complete.
 - Resolve every common audio filter to its control field and response.
-- Recover `FUN_08022C30` sufficiently to implement the optional
-  noise-reduction path.
 - Assign the final audio-mixer sources and fixed-point output contract.
 - Verify I/Q polarity, sideband polarity, gain, and sample rates with
   known RF and audio captures.

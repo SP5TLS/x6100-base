@@ -134,7 +134,8 @@
     (none found; later mode-dependent high-pass stages documented)
 -   [x] AGC topology, look-ahead, bounds, and bypass
 -   [x] SSB/CW/AM/NFM demodulation topology
--   [ ] Recover optional RX block noise-reduction transform
+-   [x] Recover optional RX block spectral noise-reduction transform,
+    register control, FFT framing, estimator, and overlap-add
 -   [ ] Recover final RX audio mixer and fixed-point DMA output contract
 
 ### TX

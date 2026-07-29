@@ -358,6 +358,25 @@ bit 16 selects one of two network topologies. Packing is VERIFIED.
 Electrical assignment of the banks to inductors and capacitors remains
 unresolved; see `docs/atu.md`.
 
+### Register 23: noise reduction and noise blanker
+
+Address: `0x005C`
+
+The noise-reduction fields consumed by BASE 1.1.9 are:
+
+| Bits | Historical label | Effect |
+|---:|---|---|
+| `0...7` | `nrthr` | unsigned threshold, capped to 100 |
+| `24` | `nre` | enable the 256-point overlapped spectral processor |
+
+Field extraction, clamp, and enable routing are VERIFIED. The recovered
+FFT framing, estimator, spectral gain, passband-bin selection, and
+output ring are documented in `docs/rx_pipeline.md`.
+
+The remaining historical noise-blanker fields in this register are
+handled separately from `FUN_08022C30`; they must not be conflated with
+the spectral noise-reduction path.
+
 ### Register 33: CW controls
 
 Address: `0x0084`

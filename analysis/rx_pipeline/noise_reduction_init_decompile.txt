@@ -1,0 +1,69 @@
+/* 080236f8 FUN_080236f8 */
+
+void FUN_080236f8(float param_1,undefined1 *param_2)
+
+{
+  int iVar1;
+  int iVar2;
+  int iVar3;
+  undefined4 uVar4;
+
+  iVar3 = 1;
+  param_2[0x74] = 1;
+  *(undefined4 *)(param_2 + 0x269c) = 0x43800000;
+  *(float *)(param_2 + 0x26a0) = param_1;
+  FUN_08037e20(param_2 + 0x78,0,0x400);
+  FUN_08037e20(param_2 + 0xc78,0,0xe00);
+  FUN_08037e20(param_2 + 0x478,0,0x800);
+  FUN_08037f1e(param_2 + 0x1a78,&DAT_0803d818,0x400);
+  param_1 = 1.0 / param_1;
+  *(undefined4 *)(param_2 + 0x6c) = 0x3f4c8b44;
+  *(undefined4 *)(param_2 + 0x68) = 0;
+  *(undefined4 *)(param_2 + 0x60) = 0x41200000;
+  *(undefined4 *)(param_2 + 100) = 0xbf800000;
+  *(undefined4 *)(param_2 + 0x70) = 0x3f6b851f;
+  uVar4 = FUN_0803b510(-(param_1 * 128.0) * 14.084507);
+  *(undefined4 *)(param_2 + 0x28) = uVar4;
+  uVar4 = FUN_0803b510(-(param_1 * 128.0) * 6.5789475);
+  *(undefined4 *)(param_2 + 0x4c) = 0x3ecccccd;
+  *(undefined4 *)(param_2 + 0x48) = 0x40800000;
+  *(undefined4 *)(param_2 + 0x2c) = uVar4;
+  *param_2 = 1;
+  *(undefined2 *)(param_2 + 2) = 0;
+  *(undefined4 *)(param_2 + 0x268c) = 0x3f7d70a4;
+  *(undefined4 *)(param_2 + 0x2690) = 0x3c23d70a;
+  *(undefined4 *)(param_2 + 0x2694) = 0x3f000000;
+  *(undefined4 *)(param_2 + 0x2698) = 0x3f000000;
+  *(undefined4 *)(param_2 + 0x20) = 0x42340000;
+  *(undefined4 *)(param_2 + 0x24) = 0x42340000;
+  *(undefined4 *)(param_2 + 0x30) = 0x46f70d8e;
+  *(undefined4 *)(param_2 + 0x34) = 0xbf7ffded;
+  *(undefined4 *)(param_2 + 0x38) = 0x46f70f8e;
+  *(undefined4 *)(param_2 + 0x3c) = 0x447a0000;
+  *(undefined4 *)(param_2 + 0x40) = 0x3a83126f;
+  *(undefined4 *)(param_2 + 0x2678) = 0;
+  iVar1 = (int)(param_1 * 76800.0) + -2;
+  *(undefined4 *)(param_2 + 0x54) = 0x453b8000;
+  *(undefined4 *)(param_2 + 0x50) = 0x43960000;
+  *(float *)(param_2 + 0x2684) = param_1 * 76800.0;
+  iVar2 = (int)(param_1 * 768000.0) + 2;
+  *(float *)(param_2 + 0x2688) = param_1 * 768000.0;
+  if (iVar1 < 1) {
+    *(undefined4 *)(param_2 + 0x267c) = 1;
+  }
+  else {
+    if (0x7e < iVar1) {
+      iVar1 = 0x7e;
+    }
+    *(int *)(param_2 + 0x267c) = iVar1;
+    iVar3 = iVar1;
+  }
+  if (iVar2 <= iVar3) {
+    iVar2 = iVar3 + 1;
+  }
+  if (0x7e < iVar2) {
+    iVar2 = 0x7f;
+  }
+  *(int *)(param_2 + 0x2680) = iVar2;
+  return;
+}

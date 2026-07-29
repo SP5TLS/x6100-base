@@ -1,0 +1,24 @@
+/* 0802411c FUN_0802411c */
+
+void FUN_0802411c(undefined1 param_1)
+
+{
+  DAT_20008fbd = param_1;
+  return;
+}
+
+
+
+/* 0802412c FUN_0802412c */
+
+void FUN_0802412c(uint param_1)
+
+{
+  uint in_fpscr;
+
+  if (99 < param_1) {
+    param_1 = 100;
+  }
+  DAT_20009030 = VectorUnsignedToFloat(param_1,(byte)(in_fpscr >> 0x16) & 3);
+  return;
+}

@@ -1,0 +1,16 @@
+property,value,confidence
+protocol_register,23 / 0x005C,VERIFIED
+enable_field,bit 24,VERIFIED
+threshold_field,bits 0..7 capped to 100,VERIFIED
+sample_rate,12500,VERIFIED firmware domain
+hop_size,128 samples,VERIFIED
+transform_size,256 complex points,HIGH CONFIDENCE identity; VERIFIED size
+window,256-point square-root Hann at 0x0803D818,VERIFIED values
+initial_noise_learning,41 frames with 0.025 accumulation coefficient,VERIFIED
+instantaneous_ratio_bounds,0.001..1000,VERIFIED
+excess_snr_smoothing,0.98 old + 0.02 new,VERIFIED
+spectral_gain_floor,0.001,VERIFIED
+low_bin,"clamp(int(low_edge / 12500 * 256) - 2, 1, 126)",VERIFIED
+high_bin,"clamp(int(high_edge / 12500 * 256) + 2, low_bin + 1, 127)",VERIFIED
+synthesis,same window and 50-percent overlap-add,VERIFIED
+published_block,128 samples times 1.414 into 512-sample ring,VERIFIED
