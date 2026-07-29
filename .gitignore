@@ -20,3 +20,11 @@ analysis/memory/FUN_*
 analysis/frequency_control/FUN_*
 analysis/rf_switching/FUN_*
 analysis/tx_filters/FUN_*
+
+# Preserve decompiler/disassembly evidence for independent implementation
+# verification. These files remain reference evidence, not source code for
+# the replacement firmware.
+!analysis/**/*_decompile.c
+!analysis/**/*_decompile.txt
+!analysis/**/*_decompilation.txt
+!analysis/**/*_disassembly.txt

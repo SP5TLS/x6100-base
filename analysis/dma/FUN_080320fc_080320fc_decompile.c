@@ -1,0 +1,75 @@
+
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+
+void FUN_080320fc(undefined4 *param_1)
+
+{
+  undefined4 local_38;
+  undefined4 local_34;
+  undefined4 local_30;
+  undefined4 local_2c;
+  undefined4 local_28;
+  undefined2 local_24;
+  
+  FUN_0802e91c(0x4000,1);
+  FUN_0802e91c(0x8000,1);
+  FUN_0802e938(0x4000,1);
+  FUN_0802e954(0x4000,1);
+  FUN_0802e954(0x8000,1);
+  FUN_0802e954(0x4000,0);
+  FUN_0802e954(0x8000,0);
+  FUN_0802e584(0x40020400,0xc,5);
+  FUN_0802e584(0x40020400,0xd,5);
+  FUN_0802e584(0x40020400,0xe,6);
+  FUN_0802e584(0x40020400,0xf,5);
+  FUN_0802e584(0x40020000,0xf,6);
+  FUN_0802e584(0x40020800,10,6);
+  FUN_0802e584(0x40020800,0xb,5);
+  FUN_0802e584(0x40020800,0xc,6);
+  local_34 = 0x1000302;
+  local_38 = 0xf000;
+  FUN_0802e4e8(0x40020400,&local_38);
+  local_38 = 0x8000;
+  FUN_0802e4e8(0x40020000,&local_38);
+  local_38 = 0x1c00;
+  FUN_0802e4e8(0x40020800,&local_38);
+  local_30 = 0x100;
+  local_2c = 5;
+  local_28 = 2;
+  local_24 = 0;
+  FUN_0802e9e0(&DAT_40003800,&local_30);
+  FUN_0802eb0c(&DAT_40003400,&local_30);
+  FUN_0802e9e0(&DAT_40003c00,&local_30);
+  FUN_0802eb0c(&DAT_40004000,&local_30);
+  FUN_0802eb64(&DAT_40003800,1);
+  FUN_0802eb64(&DAT_40003400,2,1);
+  FUN_0802eb64(&DAT_40003c00,1);
+  FUN_0802eb64(&DAT_40004000,2,1);
+  FUN_0802e900(0x200000,1);
+  _DAT_40026084 = 0;
+  _DAT_4002607c = param_1[7];
+  _DAT_40026080 = param_1[8];
+  _DAT_40026078 = 0x4000340c;
+  _DAT_40026074 = *param_1;
+  _DAT_40026070 = 0x4062d40;
+  _DAT_4002606c = 0;
+  _DAT_40026064 = param_1[5];
+  _DAT_40026068 = param_1[6];
+  _DAT_40026060 = 0x4000380c;
+  _DAT_4002605c = _DAT_40026074;
+  _DAT_40026058 = 0x52d00;
+  _DAT_4002609c = 0;
+  _DAT_40026094 = param_1[0xb];
+  _DAT_40026098 = param_1[0xc];
+  _DAT_40026090 = 0x4000400c;
+  _DAT_4002608c = _DAT_40026074;
+  _DAT_40026088 = 0x4062d40;
+  _DAT_40026024 = 0;
+  _DAT_4002601c = param_1[9];
+  _DAT_40026020 = param_1[10];
+  _DAT_40026018 = 0x40003c0c;
+  _DAT_40026014 = _DAT_40026074;
+  _DAT_40026010 = 0x52d00;
+  return;
+}
+

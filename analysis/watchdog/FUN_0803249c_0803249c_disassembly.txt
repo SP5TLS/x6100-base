@@ -1,0 +1,14 @@
+0803249c  push {lr}
+0803249e  mov.w r3,#0x348
+080324a2  sub sp,#0xc
+080324a4  movt r3,#0x2
+080324a8  add r0,sp,#0x4
+080324aa  str r3,[sp,#0x4]
+080324ac  bl 0x0802dee8
+080324b0  movw r3,#0x349
+080324b4  movt r3,#0x3
+080324b8  add r0,sp,#0x4
+080324ba  str r3,[sp,#0x4]
+080324bc  bl 0x0802dee8
+080324c0  add sp,#0xc
+080324c2  pop.w pc

@@ -1,0 +1,8 @@
+08033e24  push {r4,lr}
+08033e26  mov r0,r1
+08033e28  mov r4,r2
+08033e2a  mov r1,r2
+08033e2c  bl 0x08032f4c
+08033e30  bl 0x08032f38
+08033e34  mov r0,r4
+08033e36  pop {r4,pc}

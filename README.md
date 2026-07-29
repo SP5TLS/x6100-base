@@ -73,6 +73,13 @@ files is
 [`docs/generated_analysis_summary.md`](docs/generated_analysis_summary.md).
 Its source manifest records the SHA-256 of every input.
 
+Decompiler and disassembly exports used to verify the independent
+implementation are retained under `analysis/`. Their deterministic
+path/size/SHA-256 index is
+[`analysis/decompile_disassembly_manifest.csv`](analysis/decompile_disassembly_manifest.csv).
+These files are evidence only; OEM C-like output must not be copied
+into the replacement firmware.
+
 ## Memory layout
 
 -   Flash application base: `0x08020000`

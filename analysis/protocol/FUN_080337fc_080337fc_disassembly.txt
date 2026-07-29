@@ -1,0 +1,95 @@
+080337fc  push {r4,r5,r6,lr}
+080337fe  movw r3,#0xe7e2
+08033802  movt r3,#0x2000
+08033806  movw r4,#0xe7e0
+0803380a  ldrb r6,[r3,#0x0]
+0803380c  movt r4,#0x2000
+08033810  cbnz r6,0x0803381e
+08033812  ldrb r5,[r4,#0x0]
+08033814  cbz r5,0x08033824
+08033816  cmp r5,#0x1
+08033818  beq 0x080338c6
+0803381a  cmp r5,#0x2
+0803381c  beq 0x080338b0
+0803381e  movs r3,#0x0
+08033820  strb r3,[r4,#0x0]
+08033822  pop {r4,r5,r6,pc}
+08033824  movw r6,#0x13f8
+08033828  movt r6,#0x2000
+0803382c  subw r0,r6,#0xffc
+08033830  bl 0x08023c88
+08033834  movw r3,#0x1420
+08033838  movt r3,#0x2000
+0803383c  ldrb r0,[r6,#0x8]
+0803383e  ldr r2,[r3,#0x0]
+08033840  ldrb r1,[r3,#0x5]
+08033842  str r2,[r6,#0x4]
+08033844  ldr r2,[r6,#0x10]
+08033846  strb r5,[r3,#0x4]
+08033848  orr.w r0,r0,r1, lsl #0x8
+0803384c  lsrs r2,r2,#0x10
+0803384e  ldrb r1,[r3,#0xe]
+08033850  ldrb r5,[r3,#0x9]
+08033852  lsls r2,r2,#0x10
+08033854  orrs r2,r1
+08033856  ldrb r1,[r3,#0x8]
+08033858  orr.w r1,r1,r5, lsl #0x8
+0803385c  ldrb r5,[r3,#0xf]
+0803385e  orr.w r2,r2,r5, lsl #0x8
+08033862  ldrb r5,[r3,#0x6]
+08033864  orr.w r0,r0,r5, lsl #0x10
+08033868  ldrb r5,[r3,#0xa]
+0803386a  orr.w r1,r1,r5, lsl #0x10
+0803386e  ldrb r5,[r3,#0x7]
+08033870  orr.w r0,r0,r5, lsl #0x18
+08033874  str r0,[r6,#0x8]
+08033876  ldrb r0,[r3,#0xb]
+08033878  ldrb r3,[r3,#0xd]
+0803387a  bic r2,r2,#0xff0000
+0803387e  orr.w r2,r2,r3, lsl #0x10
+08033882  orr.w r1,r1,r0, lsl #0x18
+08033886  strd r1,r2,[r6,#0xc]
+0803388a  bl 0x0802e0bc
+0803388e  movw r1,#0x409
+08033892  sub.w r0,r6,#0x1000
+08033896  bl 0x0802e0cc
+0803389a  movw r1,#0x1028
+0803389e  mov r3,r0
+080338a0  sub.w r0,r6,#0x1000
+080338a4  str r3,[r6,#0x24]
+080338a6  bl 0x08032fc8
+080338aa  movs r3,#0x1
+080338ac  strb r3,[r4,#0x0]
+080338ae  pop {r4,r5,r6,pc}
+080338b0  movw r2,#0xe7e1
+080338b4  movt r2,#0x2000
+080338b8  ldrb r3,[r2,#0x0]
+080338ba  adds r3,#0x1
+080338bc  uxtb r3,r3
+080338be  cmp r3,#0x9
+080338c0  strb r3,[r2,#0x0]
+080338c2  bhi 0x0803381e
+080338c4  b 0x08033822
+080338c6  movs r1,#0x0
+080338c8  movw r0,#0x64a0
+080338cc  movt r1,#0x2020
+080338d0  movt r0,#0x4002
+080338d4  bl 0x0802e1dc
+080338d8  cmp r0,#0x1
+080338da  bne 0x08033822
+080338dc  movs r1,#0x0
+080338de  movw r0,#0x64a0
+080338e2  movt r1,#0x2020
+080338e6  movt r0,#0x4002
+080338ea  bl 0x0802e214
+080338ee  movs r1,#0x0
+080338f0  movw r0,#0x64a0
+080338f4  movt r1,#0x2010
+080338f8  movt r0,#0x4002
+080338fc  bl 0x0802e214
+08033900  movw r3,#0xe7e1
+08033904  movt r3,#0x2000
+08033908  movs r2,#0x2
+0803390a  strb r6,[r3,#0x0]
+0803390c  strb r2,[r4,#0x0]
+0803390e  pop {r4,r5,r6,pc}

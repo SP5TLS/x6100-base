@@ -1,0 +1,14 @@
+08032470  push {lr}
+08032472  mov.w r3,#0x348
+08032476  sub sp,#0xc
+08032478  movt r3,#0x102
+0803247c  add r0,sp,#0x4
+0803247e  str r3,[sp,#0x4]
+08032480  bl 0x0802dee8
+08032484  movw r3,#0x349
+08032488  movt r3,#0x103
+0803248c  add r0,sp,#0x4
+0803248e  str r3,[sp,#0x4]
+08032490  bl 0x0802dee8
+08032494  add sp,#0xc
+08032496  pop.w pc

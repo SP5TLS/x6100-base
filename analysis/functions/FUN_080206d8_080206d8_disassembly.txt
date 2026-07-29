@@ -1,0 +1,117 @@
+080206d8  push {r4,r5,r6,lr}
+080206da  mov.w r12,#0xff
+080206de  orr r12,r12,#0x700
+080206e2  ands.w r4,r12,r1, lsr #0x14
+080206e6  ittte ne
+080206e8  ands.ne.w r5,r12,r3, lsr #0x14
+080206ec  teq.ne.w r4,r12
+080206f0  teq.ne.w r5,r12
+080206f4  bl.eq 0x080208b4
+080206f8  add r4,r5
+080206fa  eor.w r6,r1,r3
+080206fe  bic.w r1,r1,r12, lsl #0x15
+08020702  bic.w r3,r3,r12, lsl #0x15
+08020706  orrs.w r5,r0,r1, lsl #0xc
+0802070a  it ne
+0802070c  orrs.ne.w r5,r2,r3, lsl #0xc
+08020710  orr r1,r1,#0x100000
+08020714  orr r3,r3,#0x100000
+08020718  beq 0x0802078c
+0802071a  umull r12,lr,r0,r2
+0802071e  mov.w r5,#0x0
+08020722  umlal lr,r5,r1,r2
+08020726  and r2,r6,#0x80000000
+0802072a  umlal lr,r5,r0,r3
+0802072e  mov.w r6,#0x0
+08020732  umlal r5,r6,r1,r3
+08020736  teq r12,#0x0
+0802073a  it ne
+0802073c  orr.ne lr,lr,#0x1
+08020740  sub.w r4,r4,#0xff
+08020744  cmp.w r6,#0x200
+08020748  sbc r4,r4,#0x300
+0802074c  bcs 0x08020758
+0802074e  lsls.w lr,lr,#0x1
+08020752  adcs r5,r5
+08020754  adc.w r6,r6,r6
+08020758  orr.w r1,r2,r6, lsl #0xb
+0802075c  orr.w r1,r1,r5, lsr #0x15
+08020760  lsl.w r0,r5,#0xb
+08020764  orr.w r0,r0,lr, lsr #0x15
+08020768  lsl.w lr,lr,#0xb
+0802076c  subs.w r12,r4,#0xfd
+08020770  it hi
+08020772  cmp.hi.w r12,#0x700
+08020776  bhi 0x080207b6
+08020778  cmp.w lr,#0x80000000
+0802077c  it eq
+0802077e  lsrs.eq.w lr,r0,#0x1
+08020782  adcs r0,r0,#0x0
+08020786  adc.w r1,r1,r4, lsl #0x14
+0802078a  pop {r4,r5,r6,pc}
+0802078c  and r6,r6,#0x80000000
+08020790  orr.w r1,r6,r1
+08020794  orr.w r0,r0,r2
+08020798  eor.w r1,r1,r3
+0802079c  subs.w r4,r4,r12, lsr #0x1
+080207a0  ittt gt
+080207a2  rsbs.gt r5,r4,r12
+080207a6  orr.gt.w r1,r1,r4, lsl #0x14
+080207aa  pop.gt {r4,r5,r6,pc}
+080207ac  orr r1,r1,#0x100000
+080207b0  mov.w lr,#0x0
+080207b4  subs r4,#0x1
+080207b6  bgt.w 0x08020910
+080207ba  cmn r4,#0x36
+080207be  ittt le
+080207c0  mov.le r0,#0x0
+080207c2  and.le r1,r1,#0x80000000
+080207c6  pop.le {r4,r5,r6,pc}
+080207c8  rsb.w r4,r4,#0x0
+080207cc  subs r4,#0x20
+080207ce  bge 0x0802083c
+080207d0  adds r4,#0xc
+080207d2  bgt 0x0802080c
+080207d4  add.w r4,r4,#0x14
+080207d8  rsb.w r5,r4,#0x20
+080207dc  lsl.w r3,r0,r5
+080207e0  lsr.w r0,r0,r4
+080207e4  lsl.w r2,r1,r5
+080207e8  orr.w r0,r0,r2
+080207ec  and r2,r1,#0x80000000
+080207f0  bic r1,r1,#0x80000000
+080207f4  adds.w r0,r0,r3, lsr #0x1f
+080207f8  lsr.w r6,r1,r4
+080207fc  adc.w r1,r2,r6
+08020800  orrs.w lr,lr,r3, lsl #0x1
+08020804  it eq
+08020806  bic.eq.w r0,r0,r3, lsr #0x1f
+0802080a  pop {r4,r5,r6,pc}
+0802080c  rsb.w r4,r4,#0xc
+08020810  rsb.w r5,r4,#0x20
+08020814  lsl.w r3,r0,r4
+08020818  lsr.w r0,r0,r5
+0802081c  lsl.w r2,r1,r4
+08020820  orr.w r0,r0,r2
+08020824  and r1,r1,#0x80000000
+08020828  adds.w r0,r0,r3, lsr #0x1f
+0802082c  adc r1,r1,#0x0
+08020830  orrs.w lr,lr,r3, lsl #0x1
+08020834  it eq
+08020836  bic.eq.w r0,r0,r3, lsr #0x1f
+0802083a  pop {r4,r5,r6,pc}
+0802083c  rsb.w r5,r4,#0x20
+08020840  lsl.w r2,r0,r5
+08020844  orr.w lr,lr,r2
+08020848  lsr.w r3,r0,r4
+0802084c  lsl.w r2,r1,r5
+08020850  orr.w r3,r3,r2
+08020854  lsr.w r0,r1,r4
+08020858  and r1,r1,#0x80000000
+0802085c  lsr.w r2,r1,r4
+08020860  bic.w r0,r0,r2
+08020864  add.w r0,r0,r3, lsr #0x1f
+08020868  orrs.w lr,lr,r3, lsl #0x1
+0802086c  it eq
+0802086e  bic.eq.w r0,r0,r3, lsr #0x1f
+08020872  pop {r4,r5,r6,pc}

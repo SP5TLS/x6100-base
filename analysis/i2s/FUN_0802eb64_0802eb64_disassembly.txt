@@ -1,0 +1,9 @@
+0802eb64  ldrh r3,[r0,#0x4]
+0802eb66  uxth r3,r3
+0802eb68  cbz r2,0x0802eb70
+0802eb6a  orrs r3,r1
+0802eb6c  strh r3,[r0,#0x4]
+0802eb6e  bx lr
+0802eb70  bic.w r3,r3,r1
+0802eb74  strh r3,[r0,#0x4]
+0802eb76  bx lr

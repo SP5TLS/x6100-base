@@ -1,0 +1,46 @@
+08020cc8  lsl.w r2,r1,#0x1
+08020ccc  subs.w r3,r2,#0x70000000
+08020cd0  itt cs
+08020cd2  subs.cs.w r12,r3,#0x200000
+08020cd6  rsbs.cs.w r12,r12,#0x1fc00000
+08020cda  bls 0x08020cf8
+08020cdc  and r12,r1,#0x80000000
+08020ce0  lsl.w r2,r0,#0x3
+08020ce4  orr.w r0,r12,r0, lsr #0x1d
+08020ce8  cmp.w r2,#0x80000000
+08020cec  adc.w r0,r0,r3, lsl #0x2
+08020cf0  it eq
+08020cf2  bic.eq r0,r0,#0x1
+08020cf6  bx lr
+08020cf8  tst r1,#0x40000000
+08020cfc  bne 0x08020d42
+08020cfe  adds.w r2,r3,#0x2e00000
+08020d02  itt lt
+08020d04  and.lt r0,r1,#0x80000000
+08020d08  bx.lt lr
+08020d0a  orr r1,r1,#0x100000
+08020d0e  lsr.w r2,r2,#0x15
+08020d12  rsb.w r2,r2,#0x18
+08020d16  rsb.w r12,r2,#0x20
+08020d1a  lsls.w r3,r0,r12
+08020d1e  lsr.w r0,r0,r2
+08020d22  it ne
+08020d24  orr.ne r0,r0,#0x1
+08020d28  lsl.w r3,r1,#0xb
+08020d2c  lsr.w r3,r3,#0xb
+08020d30  lsl.w r12,r3,r12
+08020d34  orr.w r0,r0,r12
+08020d38  lsr.w r3,r3,r2
+08020d3c  lsl.w r3,r3,#0x1
+08020d40  b 0x08020cdc
+08020d42  mvns.w r3,r2, asr #0x15
+08020d46  bne 0x08020d58
+08020d48  orrs.w r3,r0,r1, lsl #0xc
+08020d4c  ittt ne
+08020d4e  mov.ne.w r0,#0x7f000000
+08020d52  orr.ne r0,r0,#0xc00000
+08020d56  bx.ne lr
+08020d58  and r0,r1,#0x80000000
+08020d5c  orr r0,r0,#0x7f000000
+08020d60  orr r0,r0,#0x800000
+08020d64  bx lr

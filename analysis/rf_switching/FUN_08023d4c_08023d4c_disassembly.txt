@@ -1,0 +1,16 @@
+08023d4c  movw r0,#0x7590
+08023d50  movt r0,#0x2000
+08023d54  movs r3,#0x64
+08023d56  ldrb.w r1,[r0,#0xd9a]
+08023d5a  movs r2,#0x0
+08023d5c  cbz r2,0x08023d6a
+08023d5e  cbz r1,0x08023d64
+08023d60  subs r3,#0x1
+08023d62  bne 0x08023d5c
+08023d64  strb.w r1,[r0,#0xd9a]
+08023d68  bx lr
+08023d6a  cmp r1,#0x0
+08023d6c  bne 0x08023d60
+08023d6e  movs r1,#0x4
+08023d70  movs r2,#0x1
+08023d72  b 0x08023d60

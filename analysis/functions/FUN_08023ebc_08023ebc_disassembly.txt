@@ -1,0 +1,10 @@
+08023ebc  vmov s15,r0
+08023ec0  movw r3,#0xcccd
+08023ec4  movt r3,#0x3b4c
+08023ec8  vmov s14,r3
+08023ecc  vcvt.f32.u32 s15,s15
+08023ed0  movw r3,#0x82e4
+08023ed4  vmul.f32 s15,s15,s14
+08023ed8  movt r3,#0x2000
+08023edc  vstr.32 s15,[r3]
+08023ee0  bx lr

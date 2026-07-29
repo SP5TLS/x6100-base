@@ -1,0 +1,32 @@
+
+void FUN_0802f758(uint param_1,int param_2)
+
+{
+  undefined2 local_14;
+  
+  if (param_1 != 0) {
+    if ((int)(param_1 << 0x1f) < 0) {
+      if (param_2 != 0) {
+        if ((param_1 & 2) == 0) {
+          param_2 = 0x80;
+        }
+        else {
+          param_2 = 0x88;
+        }
+      }
+    }
+    else if ((param_1 & 2) == 0) {
+      param_2 = 0;
+    }
+    else if (param_2 != 0) {
+      param_2 = 8;
+    }
+    local_14 = 0;
+    FUN_08031890(0x40005800,0x30,&local_14,2,10000);
+    local_14 = CONCAT11((char)param_2,0x52);
+    FUN_08031890(0x40005800,0x30,&local_14,2,10000);
+    return;
+  }
+  return;
+}
+

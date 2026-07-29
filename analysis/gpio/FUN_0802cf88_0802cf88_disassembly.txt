@@ -1,0 +1,173 @@
+0802cf88  mov.w r3,#0x800
+0802cf8c  movt r3,#0x4002
+0802cf90  lsls r1,r0,#0x1a
+0802cf92  ldr r2,[r3,#0x14]
+0802cf94  ite mi
+0802cf96  orr.mi r2,r2,#0x20
+0802cf9a  bic.pl r2,r2,#0x20
+0802cf9e  str r2,[r3,#0x14]
+0802cfa0  mov.w r3,#0x400
+0802cfa4  movt r3,#0x4002
+0802cfa8  ldr r2,[r3,#0x14]
+0802cfaa  orr r2,r2,#0x1
+0802cfae  str r2,[r3,#0x14]
+0802cfb0  nop
+0802cfb2  nop
+0802cfb4  nop
+0802cfb6  nop
+0802cfb8  nop
+0802cfba  nop
+0802cfbc  nop
+0802cfbe  nop
+0802cfc0  nop
+0802cfc2  nop
+0802cfc4  ldr r2,[r3,#0x14]
+0802cfc6  bic r2,r2,#0x1
+0802cfca  str r2,[r3,#0x14]
+0802cfcc  mov.w r3,#0x800
+0802cfd0  movt r3,#0x4002
+0802cfd4  lsls r1,r0,#0x1b
+0802cfd6  ldr r2,[r3,#0x14]
+0802cfd8  ite mi
+0802cfda  orr.mi r2,r2,#0x20
+0802cfde  bic.pl r2,r2,#0x20
+0802cfe2  str r2,[r3,#0x14]
+0802cfe4  mov.w r3,#0x400
+0802cfe8  movt r3,#0x4002
+0802cfec  ldr r2,[r3,#0x14]
+0802cfee  orr r2,r2,#0x1
+0802cff2  str r2,[r3,#0x14]
+0802cff4  nop
+0802cff6  nop
+0802cff8  nop
+0802cffa  nop
+0802cffc  nop
+0802cffe  nop
+0802d000  nop
+0802d002  nop
+0802d004  nop
+0802d006  nop
+0802d008  ldr r2,[r3,#0x14]
+0802d00a  bic r2,r2,#0x1
+0802d00e  str r2,[r3,#0x14]
+0802d010  mov.w r3,#0x800
+0802d014  movt r3,#0x4002
+0802d018  lsls r1,r0,#0x1c
+0802d01a  ldr r2,[r3,#0x14]
+0802d01c  ite mi
+0802d01e  orr.mi r2,r2,#0x20
+0802d022  bic.pl r2,r2,#0x20
+0802d026  str r2,[r3,#0x14]
+0802d028  mov.w r3,#0x400
+0802d02c  movt r3,#0x4002
+0802d030  ldr r2,[r3,#0x14]
+0802d032  orr r2,r2,#0x1
+0802d036  str r2,[r3,#0x14]
+0802d038  nop
+0802d03a  nop
+0802d03c  nop
+0802d03e  nop
+0802d040  nop
+0802d042  nop
+0802d044  nop
+0802d046  nop
+0802d048  nop
+0802d04a  nop
+0802d04c  ldr r2,[r3,#0x14]
+0802d04e  bic r2,r2,#0x1
+0802d052  str r2,[r3,#0x14]
+0802d054  mov.w r3,#0x800
+0802d058  movt r3,#0x4002
+0802d05c  lsls r1,r0,#0x1d
+0802d05e  ldr r2,[r3,#0x14]
+0802d060  ite mi
+0802d062  orr.mi r2,r2,#0x20
+0802d066  bic.pl r2,r2,#0x20
+0802d06a  str r2,[r3,#0x14]
+0802d06c  mov.w r3,#0x400
+0802d070  movt r3,#0x4002
+0802d074  ldr r2,[r3,#0x14]
+0802d076  orr r2,r2,#0x1
+0802d07a  str r2,[r3,#0x14]
+0802d07c  nop
+0802d07e  nop
+0802d080  nop
+0802d082  nop
+0802d084  nop
+0802d086  nop
+0802d088  nop
+0802d08a  nop
+0802d08c  nop
+0802d08e  nop
+0802d090  ldr r2,[r3,#0x14]
+0802d092  bic r2,r2,#0x1
+0802d096  str r2,[r3,#0x14]
+0802d098  mov.w r3,#0x800
+0802d09c  movt r3,#0x4002
+0802d0a0  lsls r1,r0,#0x1e
+0802d0a2  ldr r2,[r3,#0x14]
+0802d0a4  ite mi
+0802d0a6  orr.mi r2,r2,#0x20
+0802d0aa  bic.pl r2,r2,#0x20
+0802d0ae  str r2,[r3,#0x14]
+0802d0b0  mov.w r3,#0x400
+0802d0b4  movt r3,#0x4002
+0802d0b8  ldr r2,[r3,#0x14]
+0802d0ba  orr r2,r2,#0x1
+0802d0be  str r2,[r3,#0x14]
+0802d0c0  nop
+0802d0c2  nop
+0802d0c4  nop
+0802d0c6  nop
+0802d0c8  nop
+0802d0ca  nop
+0802d0cc  nop
+0802d0ce  nop
+0802d0d0  nop
+0802d0d2  nop
+0802d0d4  ldr r2,[r3,#0x14]
+0802d0d6  bic r2,r2,#0x1
+0802d0da  str r2,[r3,#0x14]
+0802d0dc  mov.w r3,#0x800
+0802d0e0  movt r3,#0x4002
+0802d0e4  lsls r1,r0,#0x1f
+0802d0e6  ldr r2,[r3,#0x14]
+0802d0e8  ite mi
+0802d0ea  orr.mi r2,r2,#0x20
+0802d0ee  bic.pl r2,r2,#0x20
+0802d0f2  str r2,[r3,#0x14]
+0802d0f4  mov.w r3,#0x400
+0802d0f8  movt r3,#0x4002
+0802d0fc  ldr r2,[r3,#0x14]
+0802d0fe  orr r2,r2,#0x1
+0802d102  str r2,[r3,#0x14]
+0802d104  nop
+0802d106  nop
+0802d108  nop
+0802d10a  nop
+0802d10c  nop
+0802d10e  nop
+0802d110  nop
+0802d112  nop
+0802d114  nop
+0802d116  nop
+0802d118  ldr r2,[r3,#0x14]
+0802d11a  bic r2,r2,#0x1
+0802d11e  str r2,[r3,#0x14]
+0802d120  ldr r2,[r3,#0x14]
+0802d122  orr r2,r2,#0x2
+0802d126  str r2,[r3,#0x14]
+0802d128  nop
+0802d12a  nop
+0802d12c  nop
+0802d12e  nop
+0802d130  nop
+0802d132  nop
+0802d134  nop
+0802d136  nop
+0802d138  nop
+0802d13a  nop
+0802d13c  ldr r2,[r3,#0x14]
+0802d13e  bic r2,r2,#0x2
+0802d142  str r2,[r3,#0x14]
+0802d144  bx lr

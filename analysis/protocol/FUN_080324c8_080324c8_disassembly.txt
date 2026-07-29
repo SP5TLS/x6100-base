@@ -1,0 +1,26 @@
+080324c8  push {r7}
+080324ca  sub sp,#0x14
+080324cc  add r7,sp,#0x0
+080324ce  str r0,[r7,#0x4]
+080324d0  b 0x080324e6
+080324d2  movs r3,#0x0
+080324d4  strh r3,[r7,#0xe]
+080324d6  b 0x080324de
+080324d8  ldrh r3,[r7,#0xe]
+080324da  adds r3,#0x1
+080324dc  strh r3,[r7,#0xe]
+080324de  ldrh r3,[r7,#0xe]
+080324e0  cmp.w r3,#0x320
+080324e4  bcc 0x080324d8
+080324e6  ldr r3,[r7,#0x4]
+080324e8  subs r3,#0x1
+080324ea  str r3,[r7,#0x4]
+080324ec  ldr r3,[r7,#0x4]
+080324ee  cmp r3,#0x0
+080324f0  bge 0x080324d2
+080324f2  nop
+080324f4  nop
+080324f6  adds r7,#0x14
+080324f8  mov sp,r7
+080324fa  pop.w r7
+080324fe  bx lr

@@ -1,0 +1,7 @@
+080306a0  ldr r3,[r0,#0x4]
+080306a2  cmp r2,#0x1
+080306a4  ite eq
+080306a6  orr.eq r3,r1
+080306a8  bic.ne r3,r1
+080306aa  str r3,[r0,#0x4]
+080306ac  bx lr

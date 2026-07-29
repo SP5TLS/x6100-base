@@ -1,0 +1,5 @@
+080243d0  movw r3,#0x7590
+080243d4  movt r3,#0x2000
+080243d8  movs r2,#0x1
+080243da  strb.w r2,[r3,#0xd98]
+080243de  bx lr

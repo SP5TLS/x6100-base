@@ -1,0 +1,36 @@
+0802dee8  push {r4,lr}
+0802deea  ldrb r2,[r0,#0x0]
+0802deec  ldrb r3,[r0,#0x3]
+0802deee  movs r1,#0x1
+0802def0  and r4,r2,#0x1f
+0802def4  lsr.w lr,r2,#0x5
+0802def8  lsls r1,r4
+0802defa  cbz r3,0x0802df40
+0802defc  mov.w r3,#0xed00
+0802df00  movt r3,#0xe000
+0802df04  ldrb r4,[r0,#0x1]
+0802df06  ldr r3,[r3,#0xc]
+0802df08  mvn.w r12,r3
+0802df0c  ubfx r12,r12,#0x8,#0x3
+0802df10  ldrb r3,[r0,#0x2]
+0802df12  rsb.w r0,r12,#0x4
+0802df16  uxtb r0,r0
+0802df18  lsl.w r0,r4,r0
+0802df1c  movs r4,#0xf
+0802df1e  asr.w r4,r4,r12
+0802df22  uxtb r0,r0
+0802df24  ands r3,r4
+0802df26  orrs r3,r0
+0802df28  mov.w r0,#0xe100
+0802df2c  movt r0,#0xe000
+0802df30  lsls r3,r3,#0x4
+0802df32  add r2,r0
+0802df34  uxtb r3,r3
+0802df36  strb.w r3,[r2,#0x300]
+0802df3a  str.w r1,[r0,lr,lsl #0x2]
+0802df3e  pop {r4,pc}
+0802df40  mov.w r3,#0xe100
+0802df44  movt r3,#0xe000
+0802df48  add.w lr,lr,#0x20
+0802df4c  str.w r1,[r3,lr,lsl #0x2]
+0802df50  pop {r4,pc}

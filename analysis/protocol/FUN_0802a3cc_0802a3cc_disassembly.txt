@@ -1,0 +1,26 @@
+0802a3cc  cbz r1,0x0802a420
+0802a3ce  push {lr}
+0802a3d0  movw r12,#0xdc3c
+0802a3d4  sub.w lr,r0,#0x4
+0802a3d8  add.w r1,lr,r1, lsl #0x2
+0802a3dc  mov.w r0,#0xffffffff
+0802a3e0  movt r12,#0x803
+0802a3e4  ldr.w r3,[lr,#0x4]!
+0802a3e8  eors r0,r3
+0802a3ea  lsrs r3,r0,#0x18
+0802a3ec  cmp r1,lr
+0802a3ee  ldr.w r3,[r12,r3,lsl #0x2]
+0802a3f2  eor.w r3,r3,r0, lsl #0x8
+0802a3f6  lsr.w r2,r3,#0x18
+0802a3fa  ldr.w r2,[r12,r2,lsl #0x2]
+0802a3fe  eor.w r2,r2,r3, lsl #0x8
+0802a402  lsr.w r3,r2,#0x18
+0802a406  ldr.w r3,[r12,r3,lsl #0x2]
+0802a40a  eor.w r3,r3,r2, lsl #0x8
+0802a40e  lsr.w r2,r3,#0x18
+0802a412  ldr.w r0,[r12,r2,lsl #0x2]
+0802a416  eor.w r0,r0,r3, lsl #0x8
+0802a41a  bne 0x0802a3e4
+0802a41c  pop.w pc
+0802a420  mov.w r0,#0xffffffff
+0802a424  bx lr

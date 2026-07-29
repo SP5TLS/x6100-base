@@ -1,0 +1,8 @@
+08023d78  movw r3,#0x3590
+08023d7c  movt r3,#0x2000
+08023d80  add.w r3,r3,#0x8000
+08023d84  strb.w r0,[r3,#0x1a8]
+08023d88  cbnz r0,0x08023d92
+08023d8a  sub.w r3,r3,#0x4000
+08023d8e  strh.w r0,[r3,#0xd65]
+08023d92  bx lr

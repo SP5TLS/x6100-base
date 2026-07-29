@@ -1,0 +1,13 @@
+0802e150  movs r3,#0x1
+0802e152  mov.w r2,#0x7400
+0802e156  lsls r3,r0
+0802e158  movt r2,#0x4000
+0802e15c  cbz r1,0x0802e166
+0802e15e  ldr r1,[r2,#0x0]
+0802e160  orrs r3,r1
+0802e162  str r3,[r2,#0x0]
+0802e164  bx lr
+0802e166  ldr r1,[r2,#0x0]
+0802e168  bic.w r3,r1,r3
+0802e16c  str r3,[r2,#0x0]
+0802e16e  bx lr

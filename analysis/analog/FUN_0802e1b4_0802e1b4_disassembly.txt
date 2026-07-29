@@ -1,0 +1,14 @@
+0802e1b4  sub sp,#0x8
+0802e1b6  mov.w r3,#0x7400
+0802e1ba  movs r2,#0x0
+0802e1bc  movt r3,#0x4000
+0802e1c0  str r2,[sp,#0x4]
+0802e1c2  str r3,[sp,#0x4]
+0802e1c4  ldr r3,[sp,#0x4]
+0802e1c6  adds r3,#0x14
+0802e1c8  add r3,r0
+0802e1ca  str r3,[sp,#0x4]
+0802e1cc  ldr r3,[sp,#0x4]
+0802e1ce  str r1,[r3,#0x0]
+0802e1d0  add sp,#0x8
+0802e1d2  bx lr

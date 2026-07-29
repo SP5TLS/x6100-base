@@ -1,0 +1,4 @@
+080312f4  movw r3,#0xc6d8
+080312f8  movt r3,#0x2000
+080312fc  ldr r0,[r3,#0x0]
+080312fe  bx lr

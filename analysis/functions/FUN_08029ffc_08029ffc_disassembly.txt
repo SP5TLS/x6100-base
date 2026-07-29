@@ -1,0 +1,4 @@
+08029ffc  movw r3,#0xbf88
+0802a000  movt r3,#0x2000
+0802a004  ldrb r0,[r3,#0x4]
+0802a006  bx lr

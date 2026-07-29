@@ -1,0 +1,4 @@
+0802a008  movw r3,#0xbf88
+0802a00c  movt r3,#0x2000
+0802a010  ldrb r0,[r3,#0x6]
+0802a012  bx lr
