@@ -1,0 +1,8 @@
+field,bits,input_range,hardware_or_dsp_action,confidence
+rfg,0..7,0..36,"shift 0x3F through PC5/PB0 and latch with PB1; set DSP scalar to pow(10.0, (rfg * 0.5 - 18.0) * 0.05)",VERIFIED
+rfg,0..7,37..100,"shift (100 - rfg) through PC5/PB0 and latch with PB1; set DSP scalar to 1.0",VERIFIED
+rfg,0..7,101..255,"shift 0x00 through PC5/PB0 and latch with PB1; set DSP scalar to 1.0",VERIFIED
+txpwr,8..15,0..255,"log integer code; pass code * 0.1 as the closed-loop TX output target",VERIFIED
+auxiliary_tx_field,16..19,0..3,"FUN_08023db8 stores 1 << value at 0x200089DE",VERIFIED
+auxiliary_tx_field,16..19,4..15,"FUN_08023db8 clamps the index to 4 and stores 0x10 at 0x200089DE",VERIFIED
+unused_by_consumer,20..31,any,"no effect in the recovered register-15 update block",HIGH CONFIDENCE

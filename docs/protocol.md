@@ -228,6 +228,46 @@ bit 16 selects one of two network topologies. Packing is VERIFIED.
 Electrical assignment of the banks to inductors and capacitors remains
 unresolved; see `docs/atu.md`.
 
+### Register 15: RF gain and TX-power target
+
+Address: `0x003C`
+
+The historical `rfg_txpwr` label is confirmed field by field in BASE
+1.1.9.
+
+The low byte is an RF-gain command. In the active hardware path
+(`FUN_0803147c` returns the constant 1), the firmware implements this
+piecewise transfer:
+
+| `rfg` input | Six-bit serial output | DSP scalar |
+| ---: | ---: | ---: |
+| `0...36` | `0x3F` | `10^((0.5*rfg - 18)*0.05)` |
+| `37...100` | `100-rfg` | `1.0` |
+| `101...255` | `0x00` | `1.0` |
+
+The six-bit value is shifted through PC5/PB0 and latched with PB1 by
+`FUN_0802cf88`: VERIFIED. The serial bits therefore control an
+external stepped RF gain/attenuation network: HIGH CONFIDENCE. Exact
+gain contribution of each physical bit remains unknown. The scalar is
+applied in the DSP path through `FUN_08023dd8`: VERIFIED.
+
+Bits `8...15` are converted to floating point, multiplied by `0.1`,
+and supplied to `FUN_08024010`. That function resets and configures the
+closed-loop TX output controller described in `docs/tx_pipeline.md`.
+Packing, scale, and controller routing are VERIFIED; the historical
+`txpwr` label is HIGH CONFIDENCE because absolute RF-power calibration
+is not yet recovered.
+
+Bits `16...19` are passed to `FUN_08023db8`. Inputs `0...3` produce the
+one-hot byte `1 << value`; inputs `4...15` are clamped to index 4 and
+produce `0x10`. The byte is stored at `0x200089DE`: VERIFIED. Its
+downstream DSP or hardware meaning is not yet resolved, so the field
+must not be given a final name. Bits `20...31` have no observed effect
+in the register-15 update block: HIGH CONFIDENCE.
+
+The exact transfer is exported in
+`analysis/protocol/register15_rfg_txpwr.csv`.
+
 ### Register 33: CW controls
 
 Address: `0x0084`

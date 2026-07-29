@@ -82,6 +82,8 @@
 -   [x] Recover exact secondary RF-index frequency boundaries
 -   [x] Recover frequency-change DSP reset and four-block countdown
 -   [ ] Correlate remaining commands with BASE 1.1.9 consumers
+    - [x] Recover register 15 RF-gain serial output, DSP gain split,
+      and TX-power target scaling
 -   [x] Recover I2C read responses and calibration-window framing
 -   [ ] Recover telemetry physical-unit calibration and calibration-field semantics
 
