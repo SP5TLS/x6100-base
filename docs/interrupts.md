@@ -178,7 +178,3 @@ PROJECT_NAME=ghidra-project-name \
 The second application to the current persistent project made no
 changes, confirming that all seven rows were already applied:
 VERIFIED.
-
-## Remaining work
-
-- Map TIM2/TIM3 GPIO inputs to schematic signals.

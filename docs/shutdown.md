@@ -87,11 +87,3 @@ symbol name requires continuity or voltage evidence.
 - Provide a timeout or fail-safe policy only as an explicitly
   documented deviation from OEM behavior; the recovered firmware waits
   indefinitely for PG4.
-
-## Remaining evidence work
-
-- Confirm PD2 continuity to the board power-hold or support-power net.
-- Identify the electrical source and polarity semantics behind PG4.
-- Identify PE11's individual schematic net.
-- Measure PD2, PG4, and supply rails during a Linux-requested shutdown.
-- Confirm the delay helper's physical timebase on hardware.

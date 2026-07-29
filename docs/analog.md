@@ -271,12 +271,4 @@ CONFIDENCE.
 
 ## Remaining work
 
-- Confirm the PA0/PA1 directional-detector assignment against the board
-  schematic or injected-signal measurements.
-- Recover the external scaling and protection network between ACC
-  `ALC_V` and PA2.
-- Correlate PA6/PA7 and PC4 with the board schematic.
-- Recover the physical units for ADC2 indices 0 and 1.
 - Identify the ADC2 channel 14 consumer or external role.
-- Identify the external PA bias-control device and its transfer
-  function from board or bus evidence.

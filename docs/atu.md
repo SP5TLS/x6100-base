@@ -302,5 +302,5 @@ symbol is assigned.
 ## Remaining work
 
 - Name tune result states 1 and 3 from an independent consumer.
-- Identify whether protection exists in hardware or another firmware
-  component.
+- Identify whether another available firmware artifact implements an
+  SWR-protection policy.

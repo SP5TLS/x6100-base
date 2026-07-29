@@ -1,5 +1,14 @@
 # TODO
 
+## Scope
+
+Only software artifacts are in scope: BASE firmware, Linux binaries,
+Ghidra databases, exported analysis data, and documentation automation.
+PCB/schematic study, continuity tracing, signal measurements, component
+identification from board markings, and other physical-board work are
+explicitly out of scope. Known physical uncertainties remain documented
+only as evidence boundaries, not as planned tasks.
+
 ## High priority
 
 ### Startup
@@ -40,7 +49,6 @@
 -   [x] I2C1/I2C2 masters, codec, variants, and I2C3 slave
 -   [x] Identify I2C2 address `0x10` as CS4272 and decode its startup
 -   [x] Recover complete startup-only control contract for `0x4A`/`0x4C`
--   [ ] Trace board-level electrical functions of `0x4A` and `0x4C`
 -   [x] Identify TLV320AIC3204 as 32-bit I2S BCLK/WCLK master
 -   [x] Recover PE15 TLV320AIC3204 reset lifecycle (HIGH CONFIDENCE role)
 -   [x] Export complete ordered TLV320AIC3204 startup contract and
@@ -69,8 +77,6 @@
     reset/hibernate/pack-configuration recovery writes
 -   [x] Map the runtime `0x36`/512-byte MAX17205 snapshot, its four
     consumed registers, failure behavior, cadence, and Linux fields
--   [ ] Identify the physical PE13 and PF11 nets and reconcile early
-    PD3 charge-loop reuse with its normal `+5R` role
 
 ## RTOS
 
@@ -91,8 +97,6 @@
 -   [x] Recover Linux GPIO 203 software-CW/IAP-strap sharing and GPIO
     204 reset sequence
 -   [x] Recover BASE IAP commands and complete 1K XMODEM sender contract
--   [ ] Resolve current OEM Linux termios `0x1009` versus BASE 1.1.9
-    1,500,000-baud initializer by hardware measurement
 -   [x] Bound BASE IAP post-transfer behavior: Linux sends no command
     after EOT ACK, and the exact jump/reset path resides in the missing
     `0x08000000`–`0x0801FFFF` boot-resident range
@@ -161,7 +165,6 @@
 -   [x] Map CW input flags to STM32 GPIO pins
 -   [x] Map PF13/PF14 to KEY tip/ring contacts
 -   [x] Recover TX-request arbitration and hardware-PTT GPIO
--   [ ] Map PB9/PA11/PD0 to physical TX controls
 -   [x] RX/TX block-boundary handoff and first digital input gain
 -   [x] Recover TX ALC topology, limits, and final complex scaling
 -   [x] Correlate ADC1 directional-detector inputs with TX-power/VSWR telemetry
@@ -175,13 +178,11 @@
 -   [x] Separate PA calibration-enable subset and recover PE12 CW output
 -   [x] Correlate PD3/PD4 with service-manual +5R/+5T rails
 -   [x] Recover ACC TRX, BAND_V, and ALC_V MCU mappings
--   [ ] Identify PA-control IC and resolve individual enable/routing GPIO nets
 -   [x] Trace VSWR measurement into the antenna-tuner search
 -   [x] Recover ATU state packing, relay-bit permutation, and search phases
 -   [x] Recover ATU result publication and register-17 reapplication path
 -   [x] Recover physical ATU output through SPI6 and PG12 latch
 -   [x] Audit direct VSWR consumers for a firmware hard-trip path
--   [ ] Identify any hardware or external-controller SWR protection
 
 ## Tooling
 

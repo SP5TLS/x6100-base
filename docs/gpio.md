@@ -254,15 +254,6 @@ and PB9's exact physical PTT control, remain unresolved. See
 
 ## Remaining work
 
-- Assign final physical roles and connector contacts to PA11, PA12,
-  PD0, PB9, and PE3.
 - Correlate shifted RF-control bits with frequency ranges and hardware
   filters.
-- Identify power, PA-enable, charger, and reset nets from the board
-  schematic or controlled measurements.
-- Confirm by continuity or voltage capture that PD2 is the final
-  support-power/power-hold output and identify the source observed by
-  PG4 during register-`0x0030` bit-16 shutdown.
-- Identify the physical nets behind PE13 and PF11 and reconcile the
-  early PD3 charge-loop reuse with its normal `+5R` role.
 - Document initial and shutdown levels for every output pin.

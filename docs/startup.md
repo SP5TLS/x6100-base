@@ -237,6 +237,5 @@ The matching power-off path is intentionally documented separately in
 
 - Recover the complete call graph rooted at `FUN_08034178`.
 - Correlate RAM ranges with linker sections and global references.
-- Confirm exact PF11, PE13, PD2, and PG4 board-net names.
 - Apply candidate or final names in the persistent Ghidra project only
   after the evidence review.

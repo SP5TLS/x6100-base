@@ -79,10 +79,3 @@ contact is HIGH CONFIDENCE.
   third-party equipment.
 - Preserve the connector contact order. Do not treat the four-contact
   ACC jack as an ordinary three-contact stereo connector.
-
-## Remaining work
-
-- Confirm PE2 continuity to the ACC `TRX` interface circuit.
-- Measure the unloaded and loaded `BAND_V` staircase at the connector.
-- Recover the external scaling/protection network between `ALC_V` and
-  PA2.

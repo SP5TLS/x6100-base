@@ -171,8 +171,5 @@ names remain HYPOTHESES and are not assigned.
 
 ## Remaining work
 
-- Associate PCA9535/direct-GPIO codes with board revisions.
-- Identify the physical filters or relays selected by each primary and
-  secondary code.
 - Determine whether the four-block counter has an external diagnostic
   purpose or is vestigial synchronization logic.

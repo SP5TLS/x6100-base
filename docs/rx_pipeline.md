@@ -518,6 +518,4 @@ Evidence:
 
 ## Remaining evidence work
 
-- Verify I/Q polarity, sideband polarity, gain, and sample rates with
-  known RF and audio captures.
 - Establish out-of-range float-to-Q31 behavior.

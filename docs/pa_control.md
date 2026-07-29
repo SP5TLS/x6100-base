@@ -310,15 +310,3 @@ RX transition. This correspondence is VERIFIED.
   bias channels, matching the recovered order.
 - Keep all unknown GPIOs and the variant callback under provisional
   names until board-level evidence identifies their nets.
-
-## Remaining hardware work
-
-- Identify the external two-channel device from PCB markings or bus
-  capture and recover its electrical transfer function.
-- Confirm PD3/PD4 as `+5R`/`+5T` enables by continuity measurement.
-- Resolve PE8, PE9, PG11, and the PE12 CW-key output to schematic nets.
-- Confirm PE2 continuity through the ACC `TRX` interface circuit.
-- Assign the PCA9535 output-bit-0 / PD14 logical signal to its physical
-  board net.
-- Measure the required settling time represented by the PE10 callback
-  argument `10`.

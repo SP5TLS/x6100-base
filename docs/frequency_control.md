@@ -218,12 +218,8 @@ CONFIDENCE.
 
 ## Remaining work
 
-- Find a schematic or board measurement connecting output 4 to `PSYNC`.
 - Locate another firmware build in which `FUN_0803147c` returns a value
   other than 1, or establish that the alternative path is dead legacy
   code.
 - Correlate internal receive/transmit offset storage with the complete
   wire-register update path.
-- Map the recovered RF output codes to physical relay/filter names.
-- Confirm PA5 continuity and loaded voltage scaling at the ACC
-  `BAND_V` contact.

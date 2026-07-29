@@ -545,11 +545,6 @@ implementation: VERIFIED.
 - Determine why the table's nominal 3 kHz selection produces roughly
   `-7.16 dB` at exactly 3 kHz rather than a conventional `-3 dB`
   corner.
-- Correlate PB9, PA11, and PD0 with body PTT, microphone PTT, ACC
-  `TRX`, or any remaining internal sources.
-- Recover the absolute RF-power calibration unit.
-- Recover the external scaling/protection network from ACC `ALC_V` to
-  ADC1 channel 2 / PA2.
 - Determine the source and exact purpose of common Q31 correction
   `0x2000BA58`.
 - Determine whether the inactive zero-gain override is used by another

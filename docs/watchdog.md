@@ -126,8 +126,6 @@ blocking I2C timeouts before selecting a deadline.
 
 ## Remaining work
 
-- Read option bytes from a physical unit to verify IWDG hardware/software
-  start configuration.
 - Determine whether the bootloader records or consumes RCC reset flags.
-- Identify the GPIOG4 condition that gates the final software reset.
-- Measure the units used by the final 100-unit delay.
+- Recover the units used by the final 100-unit delay from software
+  evidence, if present in another firmware artifact.

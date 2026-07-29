@@ -539,11 +539,5 @@ See `docs/protocol.md` for:
 
 - Determine whether an independent implementation should improve on
   OEM behavior by reading MAX17205 Status/FStat before accepting data.
-- Determine the board-level electrical functions of `0x4A` and the
-  `0x4C` fallback by tracing signals; their MCU control is recovered.
-- Determine by board tracing whether `0x4A` is routing, conditioning,
-  or another support function, and whether `0x4C` is the converter
-  itself or a converter-side controller. Firmware provides no further
-  discriminator.
 - Verify whether the hardware-variant branch is selected by board
   revision, device presence, or another condition.
