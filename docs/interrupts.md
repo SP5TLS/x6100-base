@@ -22,9 +22,7 @@ Vector value: `0x08034A69`
 
 Code address: `0x08034A68`
 
-Current Ghidra name: `FUN_08034a68`
-
-Proposed name: `Default_Handler`
+Persistent Ghidra name: `Default_Handler`
 
 Confidence: VERIFIED
 
@@ -43,12 +41,12 @@ this address. The function is a non-returning branch to itself.
 | 73 | I2C3 error | `0x08033B88` | `I2C3_ER_IRQHandler` | VERIFIED |
 
 The final handler names are justified by their exact vector positions,
-not inferred solely from handler behavior. They have not yet been
-applied to the persistent Ghidra project.
+not inferred solely from handler behavior. All seven VERIFIED names
+have been applied to the persistent Ghidra project.
 
 ## DMA1 Stream 3
 
-Current name: `FUN_08024528`
+Persistent Ghidra name: `DMA1_Stream3_IRQHandler`
 
 The handler:
 
@@ -73,7 +71,7 @@ mixers.
 
 ## TIM2
 
-Current name: `FUN_08034950`
+Persistent Ghidra name: `TIM2_IRQHandler`
 
 The handler tests and clears the TIM2 update interrupt at
 `0x40000000`, then invokes four processing routines. Its final path
@@ -93,7 +91,7 @@ The physical signal connected to GPIOG pin 15 is unknown.
 
 ## TIM3
 
-Current name: `FUN_0802db2c`
+Persistent Ghidra name: `TIM3_IRQHandler`
 
 The handler tests and clears the TIM3 update interrupt at
 `0x40000400`. It debounces multiple GPIO-backed inputs, updates a shared
@@ -108,7 +106,7 @@ The GPIO-to-front-panel or RF-control signal mapping remains unknown.
 
 ## TIM4
 
-Current name: `FUN_08034988`
+Persistent Ghidra name: `TIM4_IRQHandler`
 
 The handler tests and clears TIM4 interrupt source `0x0002`, reads
 `TIM4_CCR1` and `TIM4_CCR2` at offsets `0x34` and `0x38`, and passes
@@ -123,7 +121,7 @@ CONFIDENCE; see `docs/hkey.md`.
 
 ## I2C3 event
 
-Current name: `FUN_08033990`
+Persistent Ghidra name: `I2C3_EV_IRQHandler`
 
 The initialized pointer at `0x20001464` is `0x40005C00`, the I2C3
 register base. The event handler reads I2C status registers, implements
@@ -145,7 +143,7 @@ meaning is not yet established.
 
 ## I2C3 error
 
-Current name: `FUN_08033b88`
+Persistent Ghidra name: `I2C3_ER_IRQHandler`
 
 The handler reads I2C3 status, tests a sequence of error conditions,
 clears the first active condition, sets the peripheral ACK bit, and
@@ -156,9 +154,31 @@ Peripheral identity and error-clearing role: VERIFIED.
 The exact mapping of helper masks to I2C error flags still needs to be
 recorded.
 
+## Reproducible renaming
+
+`analysis/interrupts/verified_handler_renames.csv` is the authoritative
+rename set. `ghidra_scripts/RenameVerifiedFromCsv.java` accepts only
+rows explicitly marked `VERIFIED`, checks the expected current or
+already-applied name, rejects collisions, and is idempotent. If an
+address from the verified vector table has not yet been disassembled
+or made into a function, it performs those two steps before assigning
+the final name.
+
+Apply it to a persistent project with:
+
+```sh
+GHIDRA_INSTALL=ghidra-directory \
+JAVA_HOME=jdk-directory \
+PROJECT_DIR=ghidra-project-directory \
+PROJECT_NAME=ghidra-project-name \
+./tools/run_headless_verified_renames.sh \
+    analysis/interrupts/verified_handler_renames.csv
+```
+
+The second application to the current persistent project made no
+changes, confirming that all seven rows were already applied:
+VERIFIED.
+
 ## Remaining work
 
-- Apply the six VERIFIED names and `Default_Handler` to the persistent
-  Ghidra project.
 - Map TIM2/TIM3 GPIO inputs to schematic signals.
-- Separate the RX and TX sub-pipelines inside DMA1 Stream 3.

@@ -1,0 +1,8 @@
+address,current_name,new_name,confidence,evidence
+08034a68,FUN_08034a68,Default_Handler,VERIFIED,all unused core and external vectors plus self-loop body
+08024528,FUN_08024528,DMA1_Stream3_IRQHandler,VERIFIED,STM32F427 external vector 14
+08034950,FUN_08034950,TIM2_IRQHandler,VERIFIED,STM32F427 external vector 28
+0802db2c,FUN_0802db2c,TIM3_IRQHandler,VERIFIED,STM32F427 external vector 29
+08034988,FUN_08034988,TIM4_IRQHandler,VERIFIED,STM32F427 external vector 30
+08033990,FUN_08033990,I2C3_EV_IRQHandler,VERIFIED,STM32F427 external vector 72
+08033b88,FUN_08033b88,I2C3_ER_IRQHandler,VERIFIED,STM32F427 external vector 73

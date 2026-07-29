@@ -16,7 +16,8 @@
 
 -   [x] Recover complete vector table
 -   [x] Identify all active IRQ handlers
--   [ ] Rename verified handlers
+-   [x] Apply the seven VERIFIED interrupt-handler names through an
+    idempotent CSV-driven Ghidra script
 
 ### Memory
 
