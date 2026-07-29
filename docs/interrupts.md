@@ -116,9 +116,10 @@ both capture values to `FUN_08030334` with state at `0x2000C670`.
 
 Peripheral identity and capture-register reads: VERIFIED.
 
-Input-capture measurement role: HIGH CONFIDENCE.
-
-The external signal being measured is unknown.
+The source is PD12/AF2. `FUN_08030334` decodes a ratio-encoded
+hardware-key frame and publishes it to the UART flow packet:
+VERIFIED. Its external hand-microphone/headset-key role is HIGH
+CONFIDENCE; see `docs/hkey.md`.
 
 ## I2C3 event
 

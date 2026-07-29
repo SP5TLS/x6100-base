@@ -76,10 +76,11 @@ Additional subsystem initializers establish these mappings:
 | USART1 | PA9, PA10 | AF7 | VERIFIED |
 | USART6 | PC6, PC7 | AF8 | VERIFIED |
 | TIM4 channel input | PD12 | AF2 | VERIFIED |
-| Full-duplex I2S sample interfaces | PA15, PC10–PC12, PD12–PD15 | AF5/AF6 | VERIFIED |
+| Full-duplex I2S sample interfaces | PA15, PB12–PB15, PC10–PC12 | AF5/AF6 | VERIFIED |
 
-PD12 is initially configured for TIM4 AF2 and later reconfigured for
-the active I2S setup at AF5. Exact I2S direction and clock roles are
+PD12 remains configured for TIM4 AF2 and carries the encoded
+hardware-key waveform: VERIFIED acquisition, HIGH CONFIDENCE external
+hand-microphone/headset role. Exact I2S direction and clock roles are
 documented in `docs/spi_i2s.md`.
 
 The analog assignments are:

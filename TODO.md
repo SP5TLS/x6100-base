@@ -119,6 +119,10 @@
 -   [x] Recover I2C read responses and calibration-window framing
 -   [x] Recover telemetry physical units and used calibration-block
     field semantics
+-   [x] Recover `hkey` acquisition through PD12/TIM4 PWM-input capture,
+    frame decoding, validation, and release timeout
+-   [ ] Confirm PD12 continuity and electrical levels at the external
+    hand-microphone/headset connector
 
 ## DSP
 

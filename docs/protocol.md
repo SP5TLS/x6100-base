@@ -722,7 +722,7 @@ labels.
 | `0x100F` | 1 | reserved | copied with the preceding three bytes | VERIFIED layout |
 | `0x1010` | 4 | ATU parameters | topology and two seven-bit bank values supplied by the ATU sequence; high byte retained | VERIFIED |
 | `0x1014` | 12 | reserved | no packet-builder writes observed | HIGH CONFIDENCE |
-| `0x1020` | 4 | hardware key code | written only through `FUN_08033968`, called by key-input functions | HIGH CONFIDENCE |
+| `0x1020` | 4 | hardware key code | decoded from the PD12/TIM4 PWM-input frame and cleared after timeout | VERIFIED path/format; HIGH CONFIDENCE headset role |
 | `0x1024` | 4 | CRC32 | CRC over the preceding `0x409` words | VERIFIED |
 
 X6100Control interprets the voltage bytes in tenths of a volt and TX

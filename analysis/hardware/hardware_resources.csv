@@ -19,7 +19,7 @@ serial,USART1,"PA9 TX; PA10 RX; AF7","115200 8-N-1",diagnostic/stdio,startup/run
 serial,USART6,"PC6 TX; PC7 RX; AF8; Linux /dev/ttyS1","BASE initializer 1500000; Linux termios token 0x1009",Linux IQ/telemetry flow and IAP,runtime,VERIFIED role; unresolved physical baud,docs/usart.md
 linux_gpio,GPIO203,"gpiochip0 line 203; legacy sysfs GPIO203",active-low runtime CW; low IAP strap across reset,Linux software CW and BASE IAP entry,runtime/update,VERIFIED sequence; HIGH CONFIDENCE shared role,docs/linux_hardware_interface.md
 linux_gpio,GPIO204,legacy sysfs GPIO204,high then low pulse,BASE IAP reset,update,VERIFIED sequence; HIGH CONFIDENCE reset role,docs/base_firmware_update.md
-i2s,SPI2/I2S2 plus I2S2ext,"PD12-PD15 AF5 within the recovered I2S pin set","32-bit stereo; slave RX/TX; external clocks",audio sample pair,startup/runtime,VERIFIED role and format; exact signal labels deferred,docs/spi_i2s.md
+i2s,SPI2/I2S2 plus I2S2ext,"PB12-PB15 AF5/AF6 within the recovered I2S pin set","32-bit stereo; slave RX/TX; external clocks",audio sample pair,startup/runtime,VERIFIED role and format; exact signal labels deferred,docs/spi_i2s.md
 i2s,SPI3/I2S3 plus I2S3ext,"PA15 AF6; PC10 AF6; PC11 AF5; PC12 AF6","32-bit stereo; slave RX/TX; external clocks",complex I/Q sample pair,startup/runtime,VERIFIED role and format; exact signal labels deferred,docs/spi_i2s.md
 spi,SPI6 output chain,"PG13 SCK AF5; PG14 MOSI AF5; PG12 latch",24-bit high-byte-first; latch high then low,ATU relays and secondary RF index,startup/runtime,VERIFIED,docs/atu.md
 gpio_serial,RF shift chains,"PC5 data; PB0 clock; PB1 or PG6 latch","6-bit chain or 16-bit MSB-first chain",additional RF relay/filter control,startup/frequency change,VERIFIED protocol; HIGH CONFIDENCE role,docs/gpio.md
@@ -28,7 +28,7 @@ adc,ADC2,"PA6 ch6; PA7 ch7; PC4 ch14","DMA2 Stream2 channel1; 15 halfwords",exte
 dac,DAC1/2,"PA4 DAC1; PA5 DAC2","both enabled; DAC1 zero; DAC2 12-bit staircase",ACC BAND_V on DAC2,startup/frequency change,VERIFIED writes; HIGH CONFIDENCE BAND_V,docs/acc.md
 timer,TIM2,APB1,"PSC 20; ARR 4000; update IRQ about 1487.72 Hz",flow scheduler and ADC2 filter service,runtime,VERIFIED,docs/timers.md
 timer,TIM3,APB1,"PSC 124; ARR 5000; update IRQ about 199.96 Hz",GPIO debounce and RF telemetry,runtime,VERIFIED,docs/timers.md
-timer,TIM4,"PD12 AF2 during capture setup; later reused as I2S AF5","PSC 8; ARR 0xFFFF; CC2 IRQ",hardware-key capture,runtime,HIGH CONFIDENCE role; VERIFIED registers; physical input unresolved,docs/timers.md
+timer,TIM4,"PD12 AF2 retained at runtime","PSC 8; ARR 0xFFFF; paired PWM input; capture IRQ",encoded hardware-key capture,runtime,HIGH CONFIDENCE headset role; VERIFIED acquisition and decoder,docs/hkey.md
 dma,DMA1 Streams 0/3/4/5,SPI2/SPI3/I2S2ext/I2S3ext,"circular double-buffer; 512 halfwords per bank",audio/IQ sample transport,runtime,VERIFIED,docs/dma.md
 dma,DMA2 Streams 0/2,ADC1/ADC2,"3 and 15 halfword scans",analog acquisition,runtime,VERIFIED,docs/analog.md
 dma,DMA2 Streams 1/5/6/7,USART6/USART1,"RX buffers and on-demand TX",serial transport,runtime,VERIFIED,docs/dma.md

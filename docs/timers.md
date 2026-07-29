@@ -96,7 +96,7 @@ for TX power, VSWR, and ALC. These consumers independently establish
 TIM3 as the roughly 5-ms measurement/input service timer: HIGH
 CONFIDENCE.
 
-## TIM4: hardware-key input capture
+## TIM4: external hardware-key PWM input
 
 Recovered base configuration:
 
@@ -108,18 +108,20 @@ Recovered base configuration:
 | Counter tick | approximately 13.889 MHz |
 | Tick period | 72 ns |
 | Full 16-bit span | approximately 4.719 ms |
-| Interrupt source checked by handler | capture/compare 2 |
+| Interrupt source checked by handler | capture/compare 1 (`0x0002`) |
 
-The initialization configures capture/compare operation rather than
-using TIM4 as a simple periodic update timer. On a valid interrupt,
+PD12 is configured as AF2/TIM4_CH1. The timer uses paired PWM-input
+capture rather than a periodic update. On a valid interrupt,
 `TIM4_IRQHandler` reads `TIM4_CCR1` and `TIM4_CCR2` and passes both
-captures to `FUN_08030334`. That function ultimately updates the
-32-bit hardware-key field in the UART flow packet through
-`FUN_08033968`.
+captures to `FUN_08030334`.
 
-TIM4 input-capture role and connection to hardware-key reporting: HIGH
-CONFIDENCE. Exact edge polarity, input pin, and key pulse encoding
-remain to be recovered before final symbols are assigned.
+The decoder classifies their ratio near 2, 3, or 5; recognizes seven
+preamble symbols, a delimiter, and 39 payload bits; validates a
+repeated field; and publishes the extracted key through
+`FUN_08033968`. After 200 TIM2 service ticks without refresh it
+publishes zero. Acquisition and decoding are VERIFIED; connection to
+external hand-microphone/headset keys is HIGH CONFIDENCE. See
+`docs/hkey.md`.
 
 ## Reproducible evidence
 

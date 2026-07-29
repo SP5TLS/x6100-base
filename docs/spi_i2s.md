@@ -31,9 +31,13 @@ the I2S peripherals:
 | GPIOC | 10 | AF6 |
 | GPIOC | 11 | AF5 |
 | GPIOC | 12 | AF6 |
-| GPIOD | 12–15 | AF5 |
+| GPIOB | 12–13, 15 | AF5 |
+| GPIOB | 14 | AF6 |
 
-Pin and AF assignments: VERIFIED. Exact board-net names remain to be
+Pin and AF assignments: VERIFIED. The GPIO base passed for pins
+12...15 is `0x40020400` (GPIOB), not GPIOD. This correction also
+confirms that the separate PD12/TIM4 hardware-key input is not
+reconfigured by I2S startup. Exact board-net names remain to be
 correlated with a schematic or direct signal tracing.
 
 ## Serial format and clock ownership

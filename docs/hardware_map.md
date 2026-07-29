@@ -74,7 +74,7 @@ double-buffer bank contains 512 halfwords, or 128 stereo 32-bit frames.
 The firmware constants indicate 100-kHz raw framing and a 1.28-ms bank
 deadline: HIGH CONFIDENCE. See `docs/spi_i2s.md` and `docs/dma.md`.
 
-Configured alternate-function pins are PA15, PC10–PC12, and PD12–PD15.
+Configured alternate-function pins are PA15, PB12–PB15, and PC10–PC12.
 Exact signal-to-pin names should be taken from `docs/spi_i2s.md`; they
 must not be inferred merely from the peripheral role.
 
@@ -109,7 +109,7 @@ HIGH CONFIDENCE. Full transfer functions and RF calibration are in
 | --- | --- | --- | --- |
 | TIM2 | about 1487.72-Hz update | UART-flow scheduler, ADC2 filtering, PG15 debounce | VERIFIED |
 | TIM3 | about 199.96-Hz update | input debounce and TX-power/VSWR/ALC telemetry | VERIFIED |
-| TIM4 | capture/compare, approximately 72-ns tick | hardware-key capture/reporting; initial PD12 AF2 is later reused by I2S | HIGH CONFIDENCE role; VERIFIED configuration, physical input unresolved |
+| TIM4 | PD12/AF2 PWM-input capture, approximately 72-ns tick | encoded external hardware-key capture/reporting | HIGH CONFIDENCE headset role; VERIFIED acquisition and decoding |
 | DMA1 Streams 0/3/4/5 | circular double-buffer I2S | synchronized audio/IQ transport | VERIFIED |
 | DMA2 Streams 0/2 | ADC1/ADC2 scans | analog acquisition | VERIFIED |
 | DMA2 Streams 1/5/6/7 | USART6/USART1 RX/TX | Linux flow and diagnostics | VERIFIED |

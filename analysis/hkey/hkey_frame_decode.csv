@@ -1,0 +1,8 @@
+stage,accepted_ratio_CCR1_over_CCR2,count,state_effect,confidence
+preamble,1.7..2.3,7,"require seven consecutive symbol-0 captures; any other symbol resets",VERIFIED
+delimiter,4.25..5.75,1,"after the preamble clear both bit accumulators and enter payload state",VERIFIED
+payload zero,1.7..2.3,39,"append bit 0, least-significant bit first",VERIFIED
+payload one,2.5500002..3.4499998,39,"append bit 1, least-significant bit first",VERIFIED
+validation,N/A,1,"compare accumulator bits 12..19 under mask 0x000FF000",VERIFIED
+published key,N/A,1,"((first_word >> 6) & 0xF0) | ((first_word & 0x7FFFF) >> 15)",VERIFIED
+timeout,N/A,200 TIM2 ticks,"clear decoder state and publish hkey=0 after no accepted capture refresh",VERIFIED
