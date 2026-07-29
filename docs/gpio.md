@@ -48,7 +48,10 @@ pin before being copied into an independent implementation.
 Some pins appear in more than one group because the initializer
 deliberately reconfigures them during its sequence. PG6 and PG12 are
 first included in an input/output setup and later explicitly configured
-as outputs.
+as outputs. PG11 is initially configured as a pulled-up input, but the
+direct-GPIO hardware-variant path later configures PG10 and PG11 as
+outputs before installing its callbacks: VERIFIED. Runtime PA/TX writes
+to PG11 therefore do not conflict with the initial table.
 
 ## Peripheral alternate functions
 
@@ -127,7 +130,7 @@ The precise RX/TX levels and ordering of the PA-related group, and the
 I2C1 bias-control device associated with PE10, are documented in
 `docs/pa_control.md`. Individual physical net names remain unresolved.
 The hardware-variant PA callback is now resolved to PCA9535 output bit
-1 on one variant and PD14 on the other: VERIFIED.
+0 on one variant and PD14 on the other: VERIFIED.
 
 The main routine clears PD4, waits five seconds, clears PD3, waits three
 seconds, then clears PD2 before its final shutdown wait. Interpretation
@@ -150,7 +153,7 @@ identified.
 
 The primary RF-band callback has now been resolved. One implementation
 uses a PCA9535-compatible I2C2 expander; the other writes the index as
-a binary value on PG9, PG10, PG11, and PG13. A secondary one-hot RF
+a binary value on PD9, PD10, PD11, and PD13. A secondary one-hot RF
 index is transmitted through SPI6, with PG12 used by its completion
 path. Exact mappings are documented in `docs/rf_switching.md`.
 

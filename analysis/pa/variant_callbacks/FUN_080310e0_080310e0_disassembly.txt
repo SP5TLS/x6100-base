@@ -1,0 +1,10 @@
+080310e0  push {r4,lr}
+080310e2  movw r4,#0x360
+080310e6  movt r4,#0x2000
+080310ea  mov r2,r0
+080310ec  mov.w r1,#0x4000
+080310f0  mov r0,r4
+080310f2  bl 0x080306a0
+080310f6  mov r0,r4
+080310f8  pop.w {r4,lr}
+080310fc  b.w 0x080306b0

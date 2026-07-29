@@ -1,0 +1,8 @@
+slot,expander_backend,direct_gpio_backend,argument_behavior,confidence
+0x2000C6BC,PCA9535 bit 2 active-low,PG2 active-low or active-high selected by board flag,logical polarity is board-dependent,VERIFIED
+0x2000C6C0,PCA9535 bit 10,PG3,set or clear from argument,VERIFIED
+0x2000C6C4,PCA9535 bit 14,PG5,set or clear from argument,VERIFIED
+0x2000C6C8,PCA9535 bit 1 active-low,PF12 active-high,backend electrical polarity differs,VERIFIED
+0x2000C6CC,PCA9535 bit 0,PD14,set or clear from argument,VERIFIED
+0x2000C6D0,PCA9535 bit 15,PD15,set or clear from argument,VERIFIED
+0x2000C6D4,PCA9535 one-hot mask 0x3BF8,PD9 PD10 PD11 PD13 binary code,primary RF index backend,VERIFIED

@@ -214,14 +214,34 @@ the detected hardware variant:
 
 | Variant implementation | Effect of argument `0` / `1` | Confidence |
 | --- | --- | --- |
-| `FUN_08031120` | clear/set output bit 1 in the PCA9535-compatible I2C2 expander at 7-bit address `0x20`, then commit the output word | VERIFIED |
+| `FUN_08031120` | clear/set output bit 0 in the PCA9535-compatible I2C2 expander at 7-bit address `0x20`, then commit the output word | VERIFIED |
 | `FUN_080312bc` | clear/set GPIOD ODR bit 14 (PD14) directly | VERIFIED |
 
 Thus this callback is one logical board signal implemented either as
-PCA9535 output 1 or PD14: VERIFIED. Its participation in every RX/TX
+PCA9535 output bit 0 or PD14: VERIFIED. Its participation in every RX/TX
 transition makes a PA/RF enable or routing role HIGH CONFIDENCE. Its
 exact physical net and active semantics beyond the observed RX=`0`,
 TX=`1` remain unknown.
+
+This callback is one member of a seven-slot board-abstraction table.
+The complete recovered backend correspondence is:
+
+| Slot | PCA9535 backend | Direct-GPIO backend |
+| --- | --- | --- |
+| `0x2000C6BC` | bit 2, active-low | PG2, polarity selected by a board flag |
+| `0x2000C6C0` | bit 10 | PG3 |
+| `0x2000C6C4` | bit 14 | PG5 |
+| `0x2000C6C8` | bit 1, active-low | PF12 |
+| `0x2000C6CC` | bit 0 | PD14 |
+| `0x2000C6D0` | bit 15 | PD15 |
+| `0x2000C6D4` | one-hot RF mask | binary RF code on PD9/PD10/PD11/PD13 |
+
+Callback addresses, affected bits, and GPIOs: VERIFIED. The logical
+signal names remain unknown. This wider table confirms that
+PCA9535-bit-0/PD14 is a board-revision abstraction rather than two
+unrelated operations. Machine-readable mappings and reusable Ghidra
+exports are under `analysis/pa/variant_callback_map.csv` and
+`analysis/pa/variant_callbacks/`.
 
 `FUN_08023f20` and `FUN_08033974`, although adjacent to the GPIO writes,
 only update RAM state/dirty bits; they are not direct hardware
@@ -254,7 +274,7 @@ RX transition. This correspondence is VERIFIED.
 - Confirm PD3/PD4 as `+5R`/`+5T` enables by continuity measurement.
 - Resolve PE8, PE9, PG11, and the PE12 CW-key output to schematic nets.
 - Confirm PE2 continuity through the ACC `TRX` interface circuit.
-- Assign the PCA9535 output-1 / PD14 logical signal to its physical
+- Assign the PCA9535 output-bit-0 / PD14 logical signal to its physical
   board net.
 - Measure the required settling time represented by the PE10 callback
   argument `10`.

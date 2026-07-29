@@ -109,18 +109,18 @@ If the expander probe does not select the first implementation,
 
 | Weight | GPIO |
 | ---: | --- |
-| 1 | PG9 |
-| 2 | PG10 |
-| 4 | PG11 |
-| 8 | PG13 |
+| 1 | PD9 |
+| 2 | PD10 |
+| 4 | PD11 |
+| 8 | PD13 |
 
 The bit values are written through the STM32 GPIO set/reset register.
-For example, index 5 drives PG11 and PG9 high and PG13/PG10 low.
+For example, index 5 drives PD11 and PD9 high and PD13/PD10 low.
 Mapping and binary encoding for indices 0–9: VERIFIED.
 
 The firmware therefore supports two RF-control board implementations:
 one-hot outputs through an I2C2 PCA9535-compatible expander, or a
-four-bit binary code directly on GPIOG. This compatibility behavior is
+four-bit binary code directly on GPIOD. This compatibility behavior is
 VERIFIED. Which electrical board revision uses each implementation is
 unknown.
 

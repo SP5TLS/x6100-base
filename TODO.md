@@ -97,7 +97,8 @@
 -   [ ] Recover absolute RF-power units
 -   [x] Identify ADC1 channel 2 / PA2 as the ACC ALC input
 -   [x] Recover PA bias-device protocol and ordered RX/TX hardware controls
--   [x] Resolve hardware-variant PA callback to PCA9535 bit 1 / PD14
+-   [x] Resolve hardware-variant PA callback to PCA9535 bit 0 / PD14
+-   [x] Export the complete PCA9535/direct-GPIO variant callback table
 -   [x] Separate PA calibration-enable subset and recover PE12 CW output
 -   [x] Correlate PD3/PD4 with service-manual +5R/+5T rails
 -   [x] Recover ACC TRX, BAND_V, and ALC_V MCU mappings
