@@ -1,0 +1,25 @@
+id,subsystem,minimum_implementation,bringup_phase,current_evidence,safety_gate,primary_document
+D01,platform clock,"safe STM32F427 clock tree; derived peripheral clocks",0 bench foundation,contract recovered,"do not assume OEM 250 MHz is safe",docs/clocks.md
+D02,GPIO safe state,"configure every used pin and assert RX/PA-off/charger-safe outputs",0 bench foundation,mostly recovered,"verify unresolved power pins before energizing PA",docs/gpio.md
+D03,timebase,"monotonic delays and TIM2/TIM3 service scheduling",0 bench foundation,recovered,"recalculate for selected clock tree",docs/timers.md
+D04,USART1 diagnostic,"115200 8-N-1 output; DMA optional initially",0 bench foundation,recovered,none,docs/usart.md
+D05,I2C1 master,"blocking reads/writes plus ten-clock bus recovery",1 board discovery,recovered,"serialize MAX17205 LO and PA-bias access",docs/i2c.md
+D06,I2C2 master,"blocking writes and probe result handling",1 board discovery,recovered,"preserve 0x10 versus 0x4C branch",docs/i2c.md
+D07,board variant,"probe PCA9535 and install expander/direct-GPIO backend",1 board discovery,recovered,"default all PA and charger outputs inactive",docs/rf_switching.md
+D08,MAX17205,"primary-page telemetry and selected startup/recovery commands",1 board services,recovered,none,docs/charger.md
+D09,charger manager,"chge policy; power and 90/98 hysteresis; PF12/expander actuation",1 board services,recovered,"start disabled until voltage sensing is verified",docs/charger.md
+D10,ADC/DAC,"ADC1/ADC2 DMA scans; ADC2 filter; DAC2 band staircase",2 signal I/O,recovered,"do not use uncalibrated RF values for protection",docs/analog.md
+D11,audio codec,"ordered TLV320AIC3204 reset/startup and runtime routing/gain",2 sample transport,recovered,"verify external BCLK/WCLK before enabling DMA",docs/i2c.md
+D12,IQ converter backend,"CS4272 startup or exact 0x4C fallback; unconditional 0x4A sequence",2 sample transport,recovered,"honor both fallback delays",docs/i2c.md
+D13,I2S/DMA,"four synchronized circular double buffers; 128 stereo frames per bank",2 sample transport,recovered,"prove deadline with selected clock/architecture",docs/dma.md
+D14,LO synthesizer,"frequency formulas; 5P49V60 register programming; ordered commit",3 receive RF path,recovered,"keep TX disabled during initial frequency validation",docs/frequency_control.md
+D15,RF switching,"primary variant backend; secondary SPI6 image; GPIO shift chains",3 receive RF path,recovered,"preserve unrelated expander/SPI6 bits",docs/rf_switching.md
+D16,RX DSP,"DC removal; IQ correction; shift; filtering; AGC; demodulation",3 receive radio,incomplete,"not a hardware-safety gate but blocks usable receiver",TODO.md
+D17,Linux control,"I2C3 register service; boot handshake; writable/read windows",4 Linux integration,mostly recovered,"validate bounds before accepting writes",docs/protocol.md
+D18,Linux flow,"USART6 DMA packet; flags; telemetry; CRC",4 Linux integration,recovered,"preserve 4136-byte framing and 1.5-Mbaud timing",docs/protocol.md
+D19,key and PTT,"TIM3 debounce; CW inputs; PTT arbitration; TIM4 capture if required",5 transmit preparation,partially recovered,"ignore unresolved inputs until explicitly enabled",docs/tx_pipeline.md
+D20,PA bias and TX GPIO,"two-channel bias writes; PE10 pulse; ordered RX/TX tuple",5 transmit preparation,protocol recovered; transfer function incomplete,"bench-only with PA inhibited until currents are measured",docs/pa_control.md
+D21,TX DSP and ALC,"mode generators; interpolation; ALC; complex output",5 transmit preparation,topology recovered; absolute units incomplete,"dummy load and external power/SWR monitoring required",docs/tx_pipeline.md
+D22,RF protection,"forward/reflected calibration; hard power/SWR limits",5 transmit preparation,incomplete,"mandatory before unattended or antenna-connected TX",docs/analog.md
+D23,ATU,"fresh VSWR handshake; search; shared SPI6 image; result publication",6 optional services,recovered,"run only after safe low-power TX and protection exist",docs/atu.md
+D24,shutdown/reset,"ordered PD4/PD3/PD2 shutdown; PG4 gate; controlled reset",6 productization,partially recovered,"retain conservative ordering until nets are measured",docs/watchdog.md

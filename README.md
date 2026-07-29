@@ -64,6 +64,10 @@ The consolidated implementation-oriented hardware index is
 resource inventory is
 [`analysis/hardware/hardware_resources.csv`](analysis/hardware/hardware_resources.csv).
 
+Implementation blockers, minimum drivers, safety gates, and the staged
+hardware bring-up plan are documented in
+[`docs/implementation_readiness.md`](docs/implementation_readiness.md).
+
 ## Memory layout
 
 -   Flash application base: `0x08020000`

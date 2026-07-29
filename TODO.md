@@ -166,6 +166,8 @@
 ## Documentation
 
 -   [x] hardware_map.md and machine-readable hardware resource inventory
+-   [x] implementation_readiness.md with driver inventory, safety gates,
+    blockers, and staged bring-up
 -   [x] startup.md
 -   [x] interrupts.md
 -   [x] memory_map.md
