@@ -320,6 +320,13 @@ The keyer structure begins at `0x200082EC`. Its byte at `+9`
 can remain asserted for a programmable hold interval after the monitor
 key releases. Separate monitor/RF outputs and hold behavior: VERIFIED.
 
+The fast DMA handler also converts the current CW RF-envelope sample
+into a direct GPIO output: a positive sample clears PE12 and a zero or
+negative sample sets PE12. Outside CW/CWR or after TX is disabled it
+forces PE12 high. Per-sample behavior and polarity: VERIFIED. PE12 as
+the active-low external CW/RF key signal is HIGH CONFIDENCE. See
+`docs/pa_control.md`.
+
 Register 33 fields control the generator:
 
 | Bits | Recovered behavior | Historical label correlation |

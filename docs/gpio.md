@@ -110,7 +110,9 @@ names are not yet known:
 | PG4 | sampled during normal operation and awaited during final shutdown | VERIFIED |
 | PE8, PE9, PE11, PE14, PE15 | changed during startup, PA calibration, DSP operation, or shutdown | VERIFIED |
 | PE10 | low-delay-high pulse after external PA-bias device writes | VERIFIED |
-| PE2, PE8, PE9, PE12, PG11, PD3, PD4 | ordered RX/TX hardware transition group | VERIFIED |
+| PE8, PE9, PG11 and variant callback | PA calibration and normal TX enable subset | HIGH CONFIDENCE role; VERIFIED levels |
+| PE12 | per-sample active-low CW/RF envelope output; otherwise forced high | HIGH CONFIDENCE role; VERIFIED behavior |
+| PE2, PD3, PD4 | remaining ordered RX/TX hardware transition group | VERIFIED |
 | PD2, PD3, PD4 | sequenced low during shutdown | VERIFIED |
 | PF11 | read by the charger/battery startup loop | VERIFIED |
 | PF13 | controlled by the charger/battery startup loop | VERIFIED |

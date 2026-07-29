@@ -13,6 +13,7 @@ Primary evidence:
 - `analysis/pa/pre_main_bias_init_decompilation.txt`;
 - `analysis/pa/bias_device_object_refs.csv`;
 - `analysis/pa/bias_device_object.csv`;
+- `analysis/pa/gpio_odr_refs.csv`;
 - disassembly and decompilation under `analysis/pa/callbacks/`.
 
 Firmware SHA-256:
@@ -135,6 +136,46 @@ GPIO group as PA/RF enable and routing controls is HIGH CONFIDENCE, but
 assigning individual relay, gate-bias, or supply-enable net names is
 still a HYPOTHESIS without schematic or measurements.
 
+### PA-calibration subset
+
+The startup current-calibration procedure does not assert the complete
+TX group. Before applying either bias code it performs:
+
+1. board-variant PA-control callback = `1`;
+2. PE9 low;
+3. PE8 high;
+4. PG11 high.
+
+After testing both stages it restores:
+
+1. board-variant PA-control callback = `0`;
+2. PE8 low;
+3. PE9 high;
+4. PG11 low.
+
+PE2, PD3, PD4, and PE12 are not changed by this calibration enable
+window. Therefore the callback plus PE8/PE9/PG11 form the directly
+PA-related enable/bias-measurement subset: HIGH CONFIDENCE. PE2 and
+the complementary PD3/PD4 pair are more likely RX/TX routing or
+support-power controls, but their exact roles remain HYPOTHESIS.
+
+### PE12 CW hardware output
+
+PE12 is not simply a static member of the RX/TX group. In CW/CWR modes
+the fast DMA1 Stream 3 handler compares the current RF-envelope sample
+with zero on every generated sample:
+
+```
+sample > 0  -> PE12 low
+sample <= 0 -> PE12 high
+```
+
+When TX is disabled or a non-CW mode is selected, the same path forces
+PE12 high. The comparison, per-sample update, mode restriction, and
+safe-high state are VERIFIED. PE12 being an active-low hardware CW/RF
+key output is HIGH CONFIDENCE; the external net and destination remain
+unknown.
+
 ## Board-variant PA-control callback
 
 `FUN_0803131c` assigns the callback stored at `0x2000C6CC` according to
@@ -168,6 +209,8 @@ RX transition. This correspondence is VERIFIED.
 - Keep both bias channels at zero in startup and RX safe states.
 - Apply the stored channel-0 and channel-1 codes before asserting the
   remaining TX GPIO group, matching the recovered order.
+- In CW/CWR, reproduce the active-low PE12 update from the current RF
+  envelope rather than treating PE12 as a once-per-transition signal.
 - On return to RX, disable the board-level path before zeroing both
   bias channels, matching the recovered order.
 - Keep all unknown GPIOs and the variant callback under provisional
@@ -177,7 +220,8 @@ RX transition. This correspondence is VERIFIED.
 
 - Identify the external two-channel device from PCB markings or bus
   capture and recover its electrical transfer function.
-- Resolve PE2, PE8, PE9, PE12, PG11, PD3, and PD4 to schematic nets.
+- Resolve PE2, PE8, PE9, PG11, PD3, PD4, and the PE12 CW-key output to
+  schematic nets.
 - Assign the PCA9535 output-1 / PD14 logical signal to its physical
   board net.
 - Measure the required settling time represented by the PE10 callback
