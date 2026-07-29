@@ -58,6 +58,9 @@
 -   [x] USART
 -   [x] Timers
 -   [x] Confirm no application IWDG/WWDG use and document software reset
+-   [ ] Recover physical charger control and its ordered command/GPIO
+    sequence; correct prior PF13 confusion by auditing PE13, PF11,
+    PD3, PF12, and their startup/runtime mode changes
 
 ## RTOS
 
