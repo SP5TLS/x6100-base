@@ -42,6 +42,8 @@
 -   [x] Recover SPI2 audio and SPI3 I/Q signal roles from DMA processing
 -   [x] Verify CS4272 as zero-IF I/Q converter and assign SPI3/I2S3
 -   [x] Assign `0x4C` fallback to the same I/Q interface (HIGH CONFIDENCE)
+-   [x] Audit PG8 around converter startup; it remains an input and is
+    not a verified reset line
 -   [x] USART
 -   [x] Timers
 -   [x] Confirm no application IWDG/WWDG use and document software reset

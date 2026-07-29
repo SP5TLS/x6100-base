@@ -45,6 +45,12 @@ PG0 and PG8 are configured with pull-downs; PG1 and PG11 with pull-ups:
 VERIFIED. Other pull and output-type details should be checked pin by
 pin before being copied into an independent implementation.
 
+`FUN_080244b4` clears and later sets GPIOG ODR bit 8 around audio/IQ
+startup. PG8 remains configured as an input throughout this sequence,
+and no later output-mode configuration was found: VERIFIED. These ODR
+writes therefore update only the latent output latch and do not
+constitute verified physical reset control.
+
 Some pins appear in more than one group because the initializer
 deliberately reconfigures them during its sequence. PG6 and PG12 are
 first included in an input/output setup and later explicitly configured

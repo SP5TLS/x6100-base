@@ -177,8 +177,7 @@ supports the recovered 100,000-Hz raw DSP rate. The CS4272 is the
 external stereo converter in the zero-IF I/Q path: VERIFIED. The
 service-manual block diagram places it directly between the receive/
 transmit quadrature mixers and the STM32. Combined with the verified DMA
-signal roles and PG8 startup sequence, this assigns it to SPI3/I2S3:
-VERIFIED.
+signal roles, this assigns it to SPI3/I2S3: VERIFIED.
 
 Primary device reference:
 
@@ -271,14 +270,16 @@ complete ordered policy is in
 
 The complete firmware-visible control policy is:
 
-1. hold PG8 low;
+1. clear GPIOG ODR bit 8; PG8 remains an input, so this is an output
+   latch update rather than a verified physical reset assertion;
 2. initialize both STM32 I2S pairs and their DMA streams;
 3. drive PE15 low, wait 1 ms, then drive it high;
 4. initialize TLV320AIC3204 at `0x18`, including 100-kHz dividers and
    32-bit master-I2S operation;
 5. wait 100 ms;
 6. send the fixed six-transfer sequence to `0x4A`, ignoring results;
-7. enable the DMA/I2S sample machinery, then drive PG8 high;
+7. enable the DMA/I2S sample machinery, then set GPIOG ODR bit 8; PG8
+   still remains an input;
 8. probe `0x10` using payload `07 03`;
 9. on success, send the remaining seven CS4272 writes;
 10. on failure, wait 10 ms and send the four fixed writes to `0x4C`.
@@ -286,6 +287,12 @@ The complete firmware-visible control policy is:
 Order, branch, delays, payload lengths, and absence of reads: VERIFIED.
 For `0x4A` and `0x4C`, reproducing these bytes and timing is the complete
 control interface currently observable from firmware.
+
+The PG8 ODR writes must not be described as converter reset control.
+Central GPIO initialization configures PG8 as a pulled-down input, and
+no later mode change to output was found: VERIFIED. On STM32F4, changing
+ODR while the pin is in input mode does not drive the pad. The purpose
+of these otherwise ineffective latch writes is unknown.
 
 `FUN_08031890` performs a raw transaction: START, address byte, supplied
 payload bytes, STOP, then an internal post-transfer delay. It does not

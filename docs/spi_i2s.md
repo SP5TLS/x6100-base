@@ -131,7 +131,7 @@ The combined evidence assigns the converters as follows:
 | Device | Reset-related GPIO | I2S pair | Confidence |
 | --- | --- | --- | --- |
 | TLV320AIC3204 at `0x18` | PE15 toggled immediately before initialization | SPI2/I2S2 audio pair | VERIFIED |
-| CS4272 at `0x10` | PG8 released immediately before its probe/configuration | SPI3/I2S3 I/Q pair | VERIFIED |
+| CS4272 at `0x10` | no verified reset GPIO; PG8 remains an input | SPI3/I2S3 I/Q pair | VERIFIED |
 | unidentified fallback at `0x4C` | same startup branch as CS4272 | SPI3/I2S3 I/Q pair | HIGH CONFIDENCE |
 
 The CS4272 assignment is corroborated by the X6100 service-manual block
