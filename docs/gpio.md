@@ -132,6 +132,11 @@ I2C1 bias-control device associated with PE10, are documented in
 The hardware-variant PA callback is now resolved to PCA9535 output bit
 0 on one variant and PD14 on the other: VERIFIED.
 
+Across all recovered lifecycle paths, PE8 and PG11 have identical
+levels, PE9 is their complement, and the variant callback follows their
+asserted/deasserted state. The firmware-level four-signal PA enable
+tuple is VERIFIED; its individual schematic nets remain unknown.
+
 The main routine clears PD4, waits five seconds, clears PD3, waits three
 seconds, then clears PD2 before its final shutdown wait. Interpretation
 as an ordered power-rail shutdown sequence is HIGH CONFIDENCE; the

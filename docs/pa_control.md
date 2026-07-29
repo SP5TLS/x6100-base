@@ -164,6 +164,39 @@ connector contains an MCU-controlled `TRX` signal, and PE2 has the
 matching RX=`0`, TX=`1` behavior. PE2 as ACC `TRX` is HIGH CONFIDENCE;
 the firmware levels are VERIFIED. See `docs/acc.md`.
 
+### PA enable tuple
+
+An exhaustive audit of the known startup, normal RX/TX, PA-calibration,
+post-calibration, and shutdown paths gives:
+
+| State | PE8 | PE9 | PG11 | PCA9535 bit 0 / PD14 |
+| --- | ---: | ---: | ---: | ---: |
+| startup/RX safe | 0 | 1 | 0 | 0 |
+| normal RX | 0 | 1 | 0 | 0 |
+| normal TX | 1 | 0 | 1 | 1 |
+| PA bias calibration | 1 | 0 | 1 | 1 |
+| post-calibration RX | 0 | 1 | 0 | 0 |
+| shutdown | 0 | 1 | 0 | 0 |
+
+The levels in every listed path are VERIFIED. PE8 and PG11 always
+share one level, PE9 is always their complement, and the
+PCA9535-bit-0/PD14 callback follows the asserted/deasserted state of
+PE8 and PG11. No recovered path independently stages these four
+logical controls.
+
+This establishes a single firmware-level PA enable tuple:
+
+`disabled = {PE8=0, PE9=1, PG11=0, callback=0}`
+
+`enabled  = {PE8=1, PE9=0, PG11=1, callback=1}`
+
+Treating the tuple as the PA bias-measurement/TX enable condition is
+HIGH CONFIDENCE because exactly the same asserted state is required
+during both ordinary TX and bias-current calibration. Assigning
+individual schematic names remains unsafe without continuity evidence.
+The lifecycle table is exported in
+`analysis/pa/pa_gpio_lifecycle.csv`.
+
 ### PD3/PD4 receive/transmit supply correlation
 
 The X6100 service manual identifies separate middle-board rails:
@@ -205,7 +238,8 @@ When TX is disabled or a non-CW mode is selected, the same path forces
 PE12 high. The comparison, per-sample update, mode restriction, and
 safe-high state are VERIFIED. PE12 being an active-low hardware CW/RF
 key output is HIGH CONFIDENCE; the external net and destination remain
-unknown.
+unknown. PE12 remains high throughout PA bias calibration and is not
+part of the PA enable tuple: VERIFIED.
 
 ## Board-variant PA-control callback
 
@@ -260,6 +294,9 @@ RX transition. This correspondence is VERIFIED.
 - Keep both bias channels at zero in startup and RX safe states.
 - Apply the stored channel-0 and channel-1 codes before asserting the
   remaining TX GPIO group, matching the recovered order.
+- Preserve the complete PE8/PE9/PG11/variant-callback tuple. There is no
+  firmware evidence that any member may be omitted or combined with
+  another output electrically.
 - In CW/CWR, reproduce the active-low PE12 update from the current RF
   envelope rather than treating PE12 as a once-per-transition signal.
 - On return to RX, disable the board-level path before zeroing both

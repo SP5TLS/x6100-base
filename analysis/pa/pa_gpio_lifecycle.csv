@@ -1,0 +1,7 @@
+state,PE8,PE9,PG11,PCA9535_bit0_or_PD14,PE12,confidence
+startup_RX_safe,0,1,0,0,1,VERIFIED
+normal_RX,0,1,0,0,1,VERIFIED
+normal_TX,1,0,1,1,high except active-low per-sample CW envelope,VERIFIED
+PA_bias_calibration,1,0,1,1,unchanged high,VERIFIED
+post_calibration_RX,0,1,0,0,high,VERIFIED
+shutdown,0,1,0,0,high,VERIFIED
