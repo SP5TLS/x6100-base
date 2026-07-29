@@ -191,8 +191,36 @@ selects IN3R on the right MICPGA with a separate cached gain. Its
 internal operating flag `0x40` is constructed by `FUN_0802d7cc` from
 control register 12 bit 14, historically named `modem_trx`: VERIFIED.
 IN3R is therefore the modem-mode analog transmit source with HIGH
-CONFIDENCE. Its exact board origin between the Linux/USB audio
-subsystem and the codec pin remains unresolved.
+CONFIDENCE.
+
+Cross-checking two independent companion projects resolves the
+board-side distinction without requiring an exact IC name.
+`x6100_base_patch` commit `4413870` identifies IN3R as the MAIN-to-BASE
+audio stream and deliberately enables it for Linux-side playback and
+recording. The `x6100_gui` audio layer uses PulseAudio's
+`alsa_output.platform-sound` and `alsa_input.platform-sound` devices.
+Together with the verified 1.1.9 modem route, this identifies IN3R as
+MAIN/Linux-board playback into the BASE ADC: HIGH CONFIDENCE. A
+schematic or continuity measurement would still be required for
+VERIFIED board-net status.
+
+The same cross-check completes the converter's external audio
+topology:
+
+| TLV320 node | Board-level role | Confidence |
+| --- | --- | --- |
+| IN1L | built-in microphone into BASE | HIGH CONFIDENCE |
+| IN2L | hand microphone into BASE | HIGH CONFIDENCE |
+| IN2R | C-Media/USB-card playback into BASE | HIGH CONFIDENCE |
+| IN3R | MAIN/Linux-board playback into BASE | HIGH CONFIDENCE |
+| HPL | BASE output to MAIN/Linux-board capture | HIGH CONFIDENCE |
+| HPR | headphone/external-speaker receive output | HIGH CONFIDENCE |
+| LOL/LOR | BASE output to C-Media/USB-card capture | HIGH CONFIDENCE |
+
+Current 1.1.9 register actions remain the primary evidence. The older
+projects only resolve external endpoint names, and therefore do not
+raise these board assignments to VERIFIED. Evidence is summarized in
+`analysis/i2c/audio_board_topology_evidence.csv`.
 
 Receive-volume register 14 drives only HPR in the recovered codec
 helper. Value 0 mutes HPR. Values 1 through 29 leave HPR at 0 dB and
@@ -443,7 +471,6 @@ See `docs/protocol.md` for:
 ## Remaining work
 
 - Recover the I2C1 battery block layout and checksum/version fields.
-- Trace the board-level origin connected to codec IN3R in modem mode.
 - Determine the board-level electrical functions of `0x4A` and the
   `0x4C` fallback by tracing signals; their MCU control is recovered.
 - Trace the subordinate `0x4A` support function and determine whether

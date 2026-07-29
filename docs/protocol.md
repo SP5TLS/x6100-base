@@ -175,7 +175,7 @@ direct TLV320AIC3204 writes in the current firmware:
 | 20 | 31:24 | `hmicg` | left MICPGA gain for IN2L without MICBIAS | HIGH CONFIDENCE hand microphone |
 | 21 | 1:0 | `micsel` | 0=IN1L/MICBIAS, 1=IN2L, 2=automatic choice | HIGH CONFIDENCE source names; VERIFIED routing |
 | 21 | 5 | `spmode` | combine with PF15 jack state; apply 0.05 receive-audio gain when both conditions select it | HIGH CONFIDENCE S/P role; VERIFIED gain path |
-| 12 | 14 | `modem_trx` | construct operating flag `0x40`, enter TX, and route right MICPGA from IN3R | HIGH CONFIDENCE modem source; VERIFIED flag/routing |
+| 12 | 14 | `modem_trx` | construct operating flag `0x40`, enter TX, and route MAIN/Linux-board audio from IN3R | HIGH CONFIDENCE board source; VERIFIED flag/routing |
 
 The exact register-to-hardware mapping is in
 `analysis/i2c/audio_control_register_mapping.csv`. This correlation
@@ -187,6 +187,11 @@ output GPIO in BASE 1.1.9. It participates in a debounced condition
 with PF15 and changes the receive-audio scalar by a factor of `0.05`.
 The detailed path is exported in
 `analysis/i2c/audio_spmode_path.csv`.
+
+IN3R is identified as the MAIN/Linux-board playback path with HIGH
+CONFIDENCE by correlation with `x6100_base_patch` commit `4413870` and
+the `x6100_gui` platform-sound playback path. This is an endpoint
+assignment, not a VERIFIED schematic-net name.
 
 ## Semantics verified in BASE 1.1.9
 

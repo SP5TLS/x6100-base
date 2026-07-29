@@ -1,0 +1,8 @@
+codec_node,current_1_1_9_firmware_evidence,cross_project_evidence,assigned_role,confidence
+IN1L,"selected with imicg and MICBIAS","X6100Control names field imicg; x6100_base_patch aic3204.h says imic","built-in microphone to BASE ADC","HIGH CONFIDENCE"
+IN2L,"selected with hmicg and without MICBIAS","X6100Control names field hmicg; x6100_base_patch aic3204.h says hmic","hand microphone to BASE ADC","HIGH CONFIDENCE"
+IN2R,"selected with ling gain in data modes","X6100Control names field ling; x6100_base_patch aic3204.h says line_in from CMedia USB sound card","C-Media/USB-card playback into BASE ADC","HIGH CONFIDENCE"
+IN3R,"selected when register 12 modem_trx produces TX flag 0x40","x6100_base_patch commit 4413870 identifies MAIN-to-BASE audio stream; x6100_gui uses platform-sound playback/capture","MAIN/Linux-board playback into BASE ADC","HIGH CONFIDENCE"
+HPL,"current startup routes left DAC to HPL","x6100_base_patch aic3204.h identifies MAIN-board output","BASE DAC output to MAIN/Linux-board capture","HIGH CONFIDENCE"
+HPR,"rxvol controls HPR; S/P mode and PF15 apply 0.05 scalar","X6100 operation manual identifies S/P as headphone/external-speaker output","headphone/external-speaker receive audio","HIGH CONFIDENCE"
+LOL/LOR,"loutg controls both line drivers; startup routes left/right DACs","X6100Control names field loutg; x6100_base_patch aic3204.h identifies USB card","BASE DAC output to C-Media/USB-card capture","HIGH CONFIDENCE"

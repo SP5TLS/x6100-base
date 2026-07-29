@@ -140,6 +140,14 @@ STM32. The diagram separately places IC3204 in the MIC/speaker audio
 path. Together with the independently verified SPI3 I/Q and SPI2 audio
 DMA roles, this also verifies the TLV320AIC3204-to-SPI2 assignment.
 
+The TLV320 analog endpoints form two additional bidirectional
+board-audio links: HPL/IN3R connect the BASE audio codec with the
+MAIN/Linux-board sound path, while LOL/LOR and IN2R connect it with the
+C-Media/USB-card path: HIGH CONFIDENCE. Exact codec routing is
+VERIFIED; endpoint names are cross-correlated with X6100Control,
+`x6100_gui`, and `x6100_base_patch`. See
+`analysis/i2c/audio_board_topology_evidence.csv`.
+
 If the CS4272 probe fails, startup configures an unidentified device at
 I2C2 address `0x4C` instead. The mutually exclusive branch and its
 placement in audio startup identify it as an alternate sample-converter

@@ -46,7 +46,8 @@
     microphone, hand microphone, and line input (HIGH CONFIDENCE)
 -   [x] Trace speaker/phone mode through PF15 to the DMA audio-gain
     selector (HIGH CONFIDENCE jack-detect role)
--   [ ] Trace the board-level modem-mode source connected to codec IN3R
+-   [x] Assign IN3R/HPL to the MAIN/Linux-board audio path and
+    IN2R/LOL/LOR to the C-Media/USB-card path (HIGH CONFIDENCE)
 -   [x] Recover SPI2 audio and SPI3 I/Q signal roles from DMA processing
 -   [x] Verify CS4272 as zero-IF I/Q converter and assign SPI3/I2S3
 -   [x] Assign `0x4C` fallback to the same I/Q interface (HIGH CONFIDENCE)
