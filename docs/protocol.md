@@ -612,6 +612,13 @@ power, VSWR, and ALC in tenths of their displayed units. The BASE-side
 scaling and byte locations agree, but the physical-unit calibration of
 the measurement producers has not yet been recovered.
 
+External voltage at `0x100C` originates specifically from PA6:
+ADC2 channel 6 → filtered ADC2 getter index 0 → multiplication by
+`4.835165` → internal state `0x200000F0` → multiplication by `0.01` →
+flow byte. Every software step and address in this path is VERIFIED;
+the external-supply interpretation and tenths-of-a-volt unit are HIGH
+CONFIDENCE. See `docs/analog.md`.
+
 The three low bytes of `atu_params` are the tune result in order:
 topology, direct-bank value, permuted-bank value. The reverse control
 path is register 17. BASE publishes a result but does not persist it in

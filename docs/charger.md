@@ -54,9 +54,14 @@ scale factors. Buffer offset is therefore `register × 2`.
 | `0x16` | `0x0B AvgCurrent` | signed × `0.15625`; stored but no downstream reader recovered | VERIFIED register/arithmetic; HIGH CONFIDENCE 10-mΩ sense scaling |
 | `0x1B4` | `0xDA Batt` | unsigned × `1.25` mV; power detection and Linux battery voltage | VERIFIED |
 
-ADC2 source 0 is separately multiplied by `4.835165` and treated as an
-external-supply-voltage-like value: VERIFIED arithmetic; HIGH
-CONFIDENCE physical interpretation.
+External supply is measured independently of the MAX17205. PA6 is
+ADC2 channel 6 and occupies getter index 0. The filtered getter result
+is multiplied by `4.835165` and stored at `0x200000F0`: VERIFIED
+hardware/software path and arithmetic; HIGH CONFIDENCE external-voltage
+role. This value participates in external-power hysteresis and is
+published to Linux at flow offset `0x100C` after multiplication by
+`0.01`. The complete acquisition/filter path is documented in
+`docs/analog.md`.
 
 On a successful read the four values are decoded and the sample-valid
 byte is set. On failure the failure counter at `0x200000DC` is

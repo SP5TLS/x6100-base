@@ -70,9 +70,44 @@ Observed consumers establish the following partial semantic map:
 | 1 | 7 / PA7 | PA current feedback used while calibrating both drive and final-stage bias | HIGH CONFIDENCE |
 | 2 | 14 / PC4 | no direct consumer identified yet | VERIFIED channel, unknown role |
 
+### External-supply voltage path
+
+The complete firmware path for the external-supply measurement is:
+
+```
+PA6
+  -> ADC2 channel 6
+  -> first value in each ch6/ch7/ch14 DMA scan
+  -> filtered state 0x2000C688
+  -> FUN_08030808(0)
+  -> raw * 4.835165
+  -> state 0x200000F0
+  -> raw_scaled * 0.01
+  -> Linux flow byte at offset 0x100C
+```
+
+The pin, ADC channel, DMA position, filter, getter index, constants,
+state addresses, and flow-packet destination are VERIFIED. Identifying
+this measurement as the external DC-supply voltage is HIGH CONFIDENCE
+because it is published in the historical external-voltage field and
+is compared with MAX17205 `Batt` to derive the external-power-present
+flag.
+
+In formula form:
+
+```
+external_internal = FUN_08030808(0) * 4.835165
+flow[0x100C]       = uint8(unsigned(external_internal * 0.01))
+```
+
+The internal value behaves as millivolts and the flow byte as tenths of
+a volt: HIGH CONFIDENCE. The exact resistor-divider values and analog
+calibration remain unresolved, so `4.835165` must be preserved as the
+VERIFIED firmware scale rather than recalculated from an assumed
+schematic.
+
 The exact electrical units, divider/gain values, and physical net names
-remain unresolved. In particular, `4.835165` is a verified firmware
-scale factor but is not sufficient by itself to assign a final unit.
+for the other ADC2 channels remain unresolved.
 
 ## ADC1 fast measurements
 
