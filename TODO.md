@@ -42,6 +42,9 @@
 -   [x] Recover PE15 TLV320AIC3204 reset lifecycle (HIGH CONFIDENCE role)
 -   [x] Map TLV320AIC3204 control helpers to analog routing, gain,
     MICBIAS, and ADC/DAC mute semantics
+-   [x] Correlate codec IN1L/IN2L/IN2R and gain controls with built-in
+    microphone, hand microphone, and line input (HIGH CONFIDENCE)
+-   [ ] Identify the codec IN3R source and speaker/phone output switch
 -   [x] Recover SPI2 audio and SPI3 I/Q signal roles from DMA processing
 -   [x] Verify CS4272 as zero-IF I/Q converter and assign SPI3/I2S3
 -   [x] Assign `0x4C` fallback to the same I/Q interface (HIGH CONFIDENCE)

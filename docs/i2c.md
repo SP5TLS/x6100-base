@@ -161,6 +161,46 @@ only changes power bit D6. The exact voltage is conditional on the
 codec common-mode selection, so this documentation intentionally does
 not infer one board voltage from the register alone.
 
+### Physical audio-source correlation
+
+The current 1.1.9 control-update path was correlated with the historical
+X6100Control 1.1.6 field names. The cross-version names alone are not
+treated as proof; confidence also uses the current codec routing,
+MICBIAS behavior, gain destinations, and mode-selection logic. The
+result is exported in
+`analysis/i2c/audio_control_register_mapping.csv`, while the relevant
+current-firmware functions are reproducibly exported in
+`analysis/i2c/audio_route_callers_decompile.txt`.
+
+| Physical role | Control field | Current 1.1.9 hardware action | Confidence |
+| --- | --- | --- | --- |
+| built-in microphone | register 20 bits 23:16, historical `imicg` | value is doubled, applied to left MICPGA, and IN1L is selected; MICBIAS is enabled | HIGH CONFIDENCE |
+| hand microphone | register 20 bits 31:24, historical `hmicg` | value is applied to left MICPGA and IN2L is selected; MICBIAS is not enabled | HIGH CONFIDENCE |
+| line input | register 20 bits 7:0, historical `ling` | value is applied to right MICPGA and IN2R is selected | HIGH CONFIDENCE |
+| line output | register 20 bits 15:8, historical `loutg` | value minus 7 dB is applied to both LOL and LOR drivers | HIGH CONFIDENCE |
+
+Register 21 bits 1:0 select the microphone source. Value 0 selects the
+IN1L/MICBIAS path, value 1 selects IN2L, and value 2 automatically
+chooses between them from operating-state bit 1: VERIFIED behavior.
+Calling these built-in, hand, and automatic microphone selection is
+HIGH CONFIDENCE from the independent 1.1.6 labels and the 1.1.9
+electrical behavior.
+
+One additional transmit branch disables left MICPGA input routing and
+selects IN3R on the right MICPGA with a separate cached gain. Its
+physical connector or generator remains unresolved; only the IN3R
+hardware route is VERIFIED.
+
+Receive-volume register 14 drives only HPR in the recovered codec
+helper. Value 0 mutes HPR. Values 1 through 29 leave HPR at 0 dB and
+call `FUN_0803b5d8(10.0, (value - 30) * 0.05)` for the digital scalar;
+values 30 and above use unity digital gain and set HPR analog gain to
+`value - 30` dB. The raw arguments, thresholds, and physical HPR
+destination are VERIFIED. `FUN_0803b5d8` has the behavior and error
+handling of `powf`, making the exponential interpretation and the full
+receive-audio-output role HIGH CONFIDENCE. Speaker-versus-phone
+switching is not assigned to a codec register yet.
+
 Startup writes page-0 register `0x1B = 0x3C`. This selects 32-bit I2S
 format and makes both BCLK and WCLK outputs: VERIFIED against the
 TLV320AIC3204 register map. The codec is therefore the serial-clock
@@ -379,6 +419,8 @@ See `docs/protocol.md` for:
 ## Remaining work
 
 - Recover the I2C1 battery block layout and checksum/version fields.
+- Identify the physical IN3R source and the final hardware consumer of
+  the speaker/phone mode bit.
 - Determine the board-level electrical functions of `0x4A` and the
   `0x4C` fallback by tracing signals; their MCU control is recovered.
 - Trace the subordinate `0x4A` support function and determine whether

@@ -43,9 +43,11 @@ filter/modulation stages.
 
 The floating-point gain is stored at `0x2000B778` and written by
 `FUN_080243f0`. During TX entry, `FUN_0802aaf4` first writes `1.0`; for
-one audio-routing branch it later writes `5.0`. Values and branching:
-VERIFIED. Interpreting the two branches as particular microphone
-connectors is not yet supported, so no source names are assigned.
+the IN1L/MICBIAS branch it later writes `5.0`. Values, branching, and
+IN1L destination: VERIFIED. Correlation with the historical
+`imicg`/built-in-microphone field makes the `5.0` branch the built-in
+microphone path with HIGH CONFIDENCE. The IN2L hand-microphone and
+right-channel line/auxiliary branches retain `1.0`.
 
 The gain is therefore a digital TX input gain: HIGH CONFIDENCE. It is
 not the external PA bias/drive value, because it is consumed directly
@@ -520,8 +522,8 @@ implementation: VERIFIED.
 - Clear mode-dependent histories when dirty bit `0x08` is consumed.
 - Sum the two recovered input channels before applying the first TX
   gain.
-- Preserve the observed `1.0` and `5.0` routing-dependent gains until
-  their physical input sources and codec gains are fully correlated.
+- Preserve the built-in-microphone path's additional `5.0` digital
+  gain and the `1.0` gain used by the other recovered input routes.
 - Do not reuse this gain as PA power control or bias.
 - Implement the mode switch as complex-baseband generators with
   explicit orientation, not merely as audio routing.
@@ -537,7 +539,6 @@ implementation: VERIFIED.
 
 ## Remaining work
 
-- Associate the `1.0` and `5.0` branches with physical audio inputs.
 - Determine why the table's nominal 3 kHz selection produces roughly
   `-7.16 dB` at exactly 3 kHz rather than a conventional `-3 dB`
   corner.

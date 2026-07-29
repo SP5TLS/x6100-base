@@ -1,0 +1,8 @@
+register_index,register_offset,field_bits,historical_1_1_6_name,current_1_1_9_destination,current_1_1_9_transform,physical_role,confidence
+14,0x0038,7:0,rxvol,"FUN_0802c7d0; HPR driver plus DAT_20008360","0=mute HPR; 1..29 set HPR 0 dB and call candidate_powf(10.0 (value-30)*0.05) for the digital scalar; 30..59 set digital scalar 1.0 and HPR gain value-30 dB","receive-audio output volume","HIGH CONFIDENCE role and exponential interpretation; VERIFIED raw calls and thresholds"
+20,0x0050,7:0,ling,"right MICPGA volume and IN2R routing","gain code written unchanged","line-input gain","HIGH CONFIDENCE"
+20,0x0050,15:8,loutg,"LOL and LOR driver gain","unsigned byte converted to signed dB by subtracting 7","line-output gain","HIGH CONFIDENCE"
+20,0x0050,23:16,imicg,"left MICPGA volume and IN1L routing","gain byte multiplied by 2 before codec write","built-in-microphone gain","HIGH CONFIDENCE"
+20,0x0050,31:24,hmicg,"left MICPGA volume and IN2L routing","gain code written unchanged","hand-microphone gain","HIGH CONFIDENCE"
+21,0x0054,1:0,micsel,"FUN_0802aaf4 analog input selector","0 selects IN1L and MICBIAS; 1 selects IN2L without MICBIAS; 2 selects one automatically from operating-state bit 1","built-in / hand / automatic microphone selection","HIGH CONFIDENCE"
+21,0x0054,5,spmode,"cached as state byte +0x1B","no direct TLV320 register write in the decoded update block","speaker/phone mode according to Linux 1.1.6; exact 1.1.9 hardware consumer not yet recovered","MEDIUM CONFIDENCE"

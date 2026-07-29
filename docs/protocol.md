@@ -161,6 +161,25 @@ are currently HIGH CONFIDENCE rather than final symbol names.
 Unlisted entries remain unnamed. They must not be assumed unused
 without checking BASE 1.1.9.
 
+### Audio-control fields verified in BASE 1.1.9
+
+The historical names for registers 14, 20, and 21 now correlate with
+direct TLV320AIC3204 writes in the current firmware:
+
+| Register | Bits | 1.1.6 name | BASE 1.1.9 effect | Confidence |
+| ---: | ---: | --- | --- | --- |
+| 14 | 7:0 | `rxvol` | combined HPR analog gain and digital receive-audio scalar | HIGH CONFIDENCE role; VERIFIED thresholds/raw calls |
+| 20 | 7:0 | `ling` | right MICPGA gain for IN2R | HIGH CONFIDENCE line input |
+| 20 | 15:8 | `loutg` | LOL/LOR gain after subtracting 7 dB | HIGH CONFIDENCE line output |
+| 20 | 23:16 | `imicg` | doubled gain code for left MICPGA/IN1L with MICBIAS | HIGH CONFIDENCE built-in microphone |
+| 20 | 31:24 | `hmicg` | left MICPGA gain for IN2L without MICBIAS | HIGH CONFIDENCE hand microphone |
+| 21 | 1:0 | `micsel` | 0=IN1L/MICBIAS, 1=IN2L, 2=automatic choice | HIGH CONFIDENCE source names; VERIFIED routing |
+
+The exact register-to-hardware mapping is in
+`analysis/i2c/audio_control_register_mapping.csv`. This correlation
+supports using the historical field names in an independent Linux
+implementation, but does not justify final Ghidra symbol names.
+
 ## Semantics verified in BASE 1.1.9
 
 ### Registers 1 and 7: VFO frequencies
