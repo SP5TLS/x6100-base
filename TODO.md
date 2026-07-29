@@ -124,7 +124,8 @@
 ### RX
 
 -   [x] IQ buffers and Q31 input conversion
--   [ ] DC removal
+-   [x] Audit converter-input DC removal
+    (no dedicated complex-input stage found)
 -   [x] Adaptive IQ imbalance correction
 -   [x] Complex frequency shift
 -   [x] Export and validate all RX rate-conversion FIR coefficients
@@ -136,7 +137,7 @@
 -   [x] SSB/CW/AM/NFM demodulation topology
 -   [x] Recover optional RX block spectral noise-reduction transform,
     register control, FFT framing, estimator, and overlap-add
--   [ ] Recover final RX audio mixer and fixed-point DMA output contract
+-   [x] Recover final RX audio mixer and fixed-point DMA output contract
 
 ### TX
 

@@ -492,16 +492,16 @@ the required serial order for each 32-bit sample. Conversion, additions,
 packing, destination, and pair count: VERIFIED.
 
 The selected I2S2ext transmit bank at `0x200003C8` is populated in the
-same final loop from a separate audio path. It does not receive the
-complex buffer. Thus the final routing is:
+same final loop from the RX/input-monitor/CW-monitor audio mixer. It
+does not receive the complex buffer. Thus the final routing is:
 
 | Output | DMA stream | Recovered payload |
 | --- | ---: | --- |
-| I2S2ext | DMA1 Stream 4 | two related audio-level samples |
+| I2S2ext | DMA1 Stream 4 | left full mix; right receive-volume-scaled mix |
 | I2S3ext | DMA1 Stream 5 | interleaved 32-bit TX I/Q |
 
-Routing and packing are VERIFIED. The physical devices connected to
-the two serial outputs are not named here without board-level evidence.
+Routing and packing are VERIFIED. The exact I2S2ext frame contract and
+codec output correlation are documented in `docs/rx_pipeline.md`.
 
 Additional direct-reference evidence:
 

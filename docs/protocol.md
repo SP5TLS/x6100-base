@@ -191,6 +191,7 @@ direct TLV320AIC3204 writes in the current firmware:
 | 20 | 31:24 | `hmicg` | left MICPGA gain for IN2L without MICBIAS | HIGH CONFIDENCE hand microphone |
 | 21 | 1:0 | `micsel` | 0=IN1L/MICBIAS, 1=IN2L, 2=automatic choice | HIGH CONFIDENCE source names; VERIFIED routing |
 | 21 | 5 | `spmode` | combine with PF15 jack state; apply 0.05 receive-audio gain when both conditions select it | HIGH CONFIDENCE S/P role; VERIFIED gain path |
+| 29 | 7:0 | `monilevel` | convert to `value * 0.01` and use as the TX input-monitor gain in the final audio mixer | HIGH CONFIDENCE role; VERIFIED arithmetic/path |
 | 12 | 14 | `modem_trx` | construct operating flag `0x40`, enter TX, and route MAIN/Linux-board audio from IN3R | HIGH CONFIDENCE board source; VERIFIED flag/routing |
 
 The exact register-to-hardware mapping is in

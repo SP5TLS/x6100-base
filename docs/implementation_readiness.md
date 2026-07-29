@@ -77,14 +77,15 @@ assumptions are recalculated.
 | four-stream I2S DMA | synchronized double buffers | recovered |
 | LO generator | divider calculation and ordered commit | recovered |
 | RF switching | variant primary index and shared SPI6 image | recovered |
-| RX DSP | input, I/Q correction, frequency shift, all mode demodulators, AGC, and rate graph recovered; coefficients, optional noise reduction, and final mixer incomplete | partial |
+| RX DSP | input, I/Q correction, frequency shift, rate conversion, filters, all mode demodulators, AGC, optional noise reduction, and final mixer | recovered |
 
 The principal RX topology is documented in `docs/rx_pipeline.md`.
-Exact RX coefficient exports, any distinct converter-DC removal, the
-optional noise-reduction transform, and the final audio mixer remain
-functional blockers to a faithful receiver. Hardware acquisition can
-still be validated by capturing raw I/Q banks and comparing spectrum,
-phase, polarity, gain, and sample cadence off-target.
+No distinct complex-input DC-removal stage exists in the recovered
+path; later mode-dependent high-pass filters are documented instead.
+Remaining RX work is physical validation of sample rates, I/Q and
+sideband polarity, gain, and out-of-range float-to-Q31 behavior.
+Hardware acquisition can be validated by capturing raw I/Q banks and
+comparing those properties off-target.
 
 ### Linux integration
 

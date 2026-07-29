@@ -1,0 +1,26 @@
+/* 08024298 FUN_08024298 */
+
+void FUN_08024298(undefined4 param_1)
+
+{
+  uint in_fpscr;
+  float fVar1;
+  
+  fVar1 = (float)VectorUnsignedToFloat(param_1,(byte)(in_fpscr >> 0x16) & 3);
+  DAT_2000836c = fVar1 * 0.01;
+  return;
+}
+
+
+
+/* 080243e0 FUN_080243e0 */
+
+void FUN_080243e0(undefined1 param_1)
+
+{
+  DAT_20008374 = param_1;
+  return;
+}
+
+
+

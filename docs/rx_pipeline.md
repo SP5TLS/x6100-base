@@ -65,10 +65,10 @@ coefficient `0.0` and amplitude coefficient `1.0`. The arithmetic and
 fallback are VERIFIED. Its purpose as adaptive quadrature
 cross-coupling/amplitude-imbalance correction is HIGH CONFIDENCE.
 
-No independent complex-input DC-subtraction stage has yet been
-identified. The filters later in the audio path and the NFM
-post-demodulator recurrence must not be presented as proof of converter
-DC removal. This remains an open item.
+The complete complex front end contains no independent input
+DC-subtraction stage: VERIFIED absence in the recovered path. The
+filters later in the audio path and the NFM post-demodulator recurrence
+must not be presented as converter DC removal.
 
 ## Optional complex frequency shift
 
@@ -447,11 +447,58 @@ With it enabled, samples from the processed ring feed the same
 interpolator. The resulting 128-sample block starts at `0x200061C4`.
 The interpolation topology is VERIFIED.
 
-The interpolated RX signal is subsequently combined with monitor and
-other audio sources and converted back to a signed fixed-point DMA
-output. Exact source names, mixer gains, saturation behavior, and the
-final SPI2 DMA-bank layout remain work items; no semantic source names
-are assigned here without evidence.
+## Final audio mixer and I2S2ext output
+
+The final 128-frame loop combines three sources:
+
+```text
+input_monitor = (spi2_input_left + spi2_input_right) * monitor_gain
+rx             = interpolated_rx * rx_gate
+mix            = input_monitor + rx + cw_monitor
+
+I2S2ext left  = Q31(mix)
+I2S2ext right = Q31(mix * receive_volume * sp_attenuation)
+```
+
+The buffer sources, arithmetic, and destination are VERIFIED:
+
+| Term | Source/control | Behavior |
+| --- | --- | --- |
+| `spi2_input_left/right` | float buffers at `0x20004990` and `0x20004B90` | two real TLV320 ADC channels already used as TX audio |
+| `monitor_gain` | register 29 `monilevel`, converted by `value * 0.01` | selected during normal TX; other route states select fixed `0`, `0.5`, or the same configured gain |
+| `interpolated_rx` | 128-sample buffer at `0x200061C4` | output of the factor-8 RX interpolator |
+| `rx_gate` | transition ramp at `0x20008378` | forced to zero during TX or while squelch is closed |
+| `cw_monitor` | local CW oscillator and 120-sample envelope | nonzero only in modes 4 and 5 |
+| `receive_volume` | register 14 digital scalar | `0`, exponential below setting 30, unity at and above 30 |
+| `sp_attenuation` | register 21 bit 5 combined with PF15 | `0.05` when selected, otherwise `1.0` |
+
+The historical `monilevel` label and its exact scaling are HIGH
+CONFIDENCE/VERIFIED respectively. Calling the first term an input
+monitor is HIGH CONFIDENCE: it is the sum of the codec ADC channels
+used by the TX chain and it is admitted at the configured monitor
+level during TX.
+
+Each float is converted with the ARM signed fixed-point conversion
+used by the firmware (`32` total bits, `31` fractional bits). The two
+16-bit halves of each Q31 word are exchanged before storage. The
+selected I2S2ext DMA bank therefore contains 128 interleaved frames:
+
+| Word in frame | Payload | Codec destination |
+| ---: | --- | --- |
+| 0 | unscaled full mix | left DAC/HPL, MAIN/Linux-board capture |
+| 1 | receive-volume/S-P-scaled full mix | right DAC/HPR, headphone or speaker |
+
+Word order and TLV320 left/right routing are VERIFIED. The external
+endpoint names are HIGH CONFIDENCE from the Linux-side cross-check.
+No explicit clamp is visible around the float-to-Q31 instruction;
+behavior for an out-of-range mixer value remains unverified and should
+be established by an instruction-level test or hardware capture.
+
+Evidence:
+
+- `analysis/rx_pipeline/final_audio_state_refs.csv`;
+- `analysis/rx_pipeline/final_audio_control_decompile.txt`;
+- `analysis/i2c/audio_board_topology_evidence.csv`.
 
 ## Independent implementation requirements
 
@@ -462,15 +509,15 @@ are assigned here without evidence.
 - Reproduce the two mode-dependent decimation trees and demodulators.
 - Run common audio processing at 12.5 ksample/s and return 128 samples
   through the factor-8 interpolator.
+- Build 128 I2S2ext stereo frames using the recovered monitor/RX/CW
+  mix, apply receive volume only to the right/HPR word, and exchange
+  the two 16-bit halves of every Q31 word.
 - Keep converter I/Q polarity configurable until verified on hardware.
-- Do not claim converter DC removal until a distinct stage or measured
-  equivalent is established.
+- Do not add a dedicated converter-DC stage merely to mirror the OEM
+  path; make it an independently justified optional improvement.
 
 ## Remaining evidence work
 
-- Export and independently validate the runtime-selected RX biquad
-  coefficient sets. Rate-conversion FIRs are complete.
-- Resolve every common audio filter to its control field and response.
-- Assign the final audio-mixer sources and fixed-point output contract.
 - Verify I/Q polarity, sideband polarity, gain, and sample rates with
   known RF and audio captures.
+- Establish out-of-range float-to-Q31 behavior.

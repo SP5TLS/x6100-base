@@ -77,9 +77,13 @@ The two receive pairs do not have interchangeable signal roles:
 
 At the end of the TX path, the handler writes 128 interleaved signed
 Q31 I/Q pairs to the selected I2S3ext transmit bank at `0x200003D0`.
-It writes a separate two-level audio signal to the selected I2S2ext
-bank at `0x200003C8`. Buffer-to-interface routing is VERIFIED; see
-`docs/tx_pipeline.md` for scaling and packing.
+It writes 128 stereo audio frames to the selected I2S2ext bank at
+`0x200003C8`: the left word is the full RX/input-monitor/CW-monitor
+mix, while the right word applies receive volume and the optional
+PF15/S-P factor of `0.05`. Both are signed Q31 with their 16-bit halves
+exchanged. Buffer-to-interface routing, frame layout, and arithmetic
+are VERIFIED; see `docs/rx_pipeline.md` for the mixer and
+`docs/tx_pipeline.md` for complex-output packing.
 
 Therefore SPI2/I2S2 is the full-duplex audio pair and SPI3/I2S3 is the
 full-duplex I/Q pair: VERIFIED from both receive and transmit buffer
