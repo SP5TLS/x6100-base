@@ -113,7 +113,7 @@ names are not yet known:
 | PE8, PE9, PG11 and variant callback | PA calibration and normal TX enable subset | HIGH CONFIDENCE role; VERIFIED levels |
 | PE12 | per-sample active-low CW/RF envelope output; otherwise forced high | HIGH CONFIDENCE role; VERIFIED behavior |
 | PD3 / PD4 | complementary RX/TX outputs; candidate `+5R` / `+5T` rail enables | HIGH CONFIDENCE roles; VERIFIED levels |
-| PE2 | remaining ordered RX/TX hardware transition output | VERIFIED |
+| PE2 | candidate ACC `TRX`; low in RX and high in TX | HIGH CONFIDENCE role; VERIFIED levels |
 | PD2, PD3, PD4 | sequenced low during shutdown | VERIFIED |
 | PF11 | read by the charger/battery startup loop | VERIFIED |
 | PF13 | controlled by the charger/battery startup loop | VERIFIED |
@@ -134,6 +134,13 @@ seconds, then clears PD2 before its final shutdown wait. Interpretation
 as an ordered power-rail shutdown sequence is HIGH CONFIDENCE; the
 service manual's complementary `+5R`/`+5T` rails correlate with PD3
 and PD4 respectively at HIGH CONFIDENCE. PD2 remains unknown.
+
+The user manual exposes an ACC `TRX` contact, and the service manual
+directs technicians to check its MCU-controlled switching level. PE2 is
+the only remaining direct GPIO in the central RX/TX transition with
+RX=`0` and TX=`1`. Identifying PE2 as the ACC `TRX` control is HIGH
+CONFIDENCE; continuity through the external interface circuit remains
+to be measured. See `docs/acc.md`.
 
 GPIO-backed callbacks selected by `FUN_0803131c` provide two hardware
 variants for several power and RF-control operations. The callback

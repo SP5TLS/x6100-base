@@ -81,8 +81,9 @@ The DMA1 Stream 3 DSP handler reads the three halfwords at
 
 - ADC1 channel 0 is the forward RF-detector path: HIGH CONFIDENCE;
 - ADC1 channel 1 is the reflected RF-detector path: HIGH CONFIDENCE;
-- ADC1 channel 2 participates in an ALC correction multiplier, but its
-  physical net remains unknown: VERIFIED use, unknown identity.
+- ADC1 channel 2 participates in an ALC correction multiplier:
+  VERIFIED use. Correlation of PA2 with the external ACC `ALC_V`
+  contact is HIGH CONFIDENCE.
 
 Channels 0 and 1 pass through identical conversions. For raw ADC sample
 `adc`, the firmware calculates:
@@ -121,8 +122,10 @@ Channel 2 produces:
 `correction = clamp(1 + 0.005 × (4000 - adc), 1, 20)`
 
 This multiplier enters the TX ALC feedback calculation. Formula and use
-are VERIFIED. It is not safe to infer a final physical net name from
-the arithmetic alone.
+are VERIFIED. The user-manual ACC connector exposes an `ALC_V` input,
+and PA2 is the only recovered ADC input with this role. Identifying PA2
+as the ACC `ALC_V` path is therefore HIGH CONFIDENCE. See
+`docs/acc.md`.
 
 Direct references for the derived RF measurement state are exported in
 `analysis/analog/adc1_rf_measurement_refs.csv`.
@@ -176,11 +179,13 @@ boundaries and the parallel RF-band classification are documented in
 `docs/frequency_control.md` and
 `analysis/frequency_control/frequency_bands.csv`.
 
-Its physical purpose is unknown. Band-dependent RF bias or tuning
-control is HIGH CONFIDENCE because the code increases monotonically
-across frequency regions and is updated immediately before the LO
-commit. DAC channel 1 is initialized to zero, but no later application
-write has been identified: HIGH CONFIDENCE.
+At a 3.3 V DAC reference, the recovered codes produce an approximately
+230 mV-per-step staircase. This matches the published behavior of the
+ACC `BAND_V` output, and DAC channel 2 is routed to PA5. Identifying
+PA5/DAC2 as ACC `BAND_V` is HIGH CONFIDENCE; code generation and MCU
+routing are VERIFIED. See `docs/acc.md`. DAC channel 1 is initialized
+to zero, but no later application write has been identified: HIGH
+CONFIDENCE.
 
 ## Reimplementation implications
 
@@ -200,7 +205,8 @@ write has been identified: HIGH CONFIDENCE.
 
 - Confirm the PA0/PA1 directional-detector assignment against the board
   schematic or injected-signal measurements.
-- Identify the physical role of the PA2 ALC correction input.
+- Recover the external scaling and protection network between ACC
+  `ALC_V` and PA2.
 - Correlate PA6/PA7 and PC4 with the board schematic.
 - Recover the physical units for ADC2 indices 0 and 1.
 - Identify the ADC2 channel 14 consumer or external role.

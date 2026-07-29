@@ -458,8 +458,10 @@ paths. Channel 0 supplies the published TX-power value; channels 0 and
 forward and reflected RF detectors is HIGH CONFIDENCE, with the
 arithmetic and telemetry routing VERIFIED. ADC1 channel 2 supplies a
 clamped `1...20` correction multiplier to the ALC feedback calculation;
-its physical identity remains unknown. Exact formulas and qualification
-logic are documented in `docs/analog.md`.
+the external ACC connector provides an `ALC_V` input, making PA2 /
+ADC1 channel 2 its HIGH CONFIDENCE MCU-side correlation. Exact formulas
+and qualification logic are documented in `docs/analog.md` and the
+connector correlation in `docs/acc.md`.
 
 Direct-reference evidence is exported in
 `analysis/tx_filters/tx_output_control_refs.csv`.
@@ -541,8 +543,9 @@ implementation: VERIFIED.
   corner.
 - Correlate PB9, PA11, and PD0 with body PTT, microphone PTT, ACC
   `TRX`, or any remaining internal sources.
-- Recover the absolute RF-power calibration unit and identify the
-  physical role of ADC1 channel 2.
+- Recover the absolute RF-power calibration unit.
+- Recover the external scaling/protection network from ACC `ALC_V` to
+  ADC1 channel 2 / PA2.
 - Determine the source and exact purpose of common Q31 correction
   `0x2000BA58`.
 - Determine whether the inactive zero-gain override is used by another

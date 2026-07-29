@@ -159,6 +159,11 @@ PA-related enable/bias-measurement subset: HIGH CONFIDENCE. PE2 and
 the complementary PD3/PD4 pair are more likely RX/TX routing or
 support-power controls, but their exact roles remain HYPOTHESIS.
 
+The later ACC correlation narrows PE2 further: the published ACC
+connector contains an MCU-controlled `TRX` signal, and PE2 has the
+matching RX=`0`, TX=`1` behavior. PE2 as ACC `TRX` is HIGH CONFIDENCE;
+the firmware levels are VERIFIED. See `docs/acc.md`.
+
 ### PD3/PD4 receive/transmit supply correlation
 
 The X6100 service manual identifies separate middle-board rails:
@@ -247,8 +252,8 @@ RX transition. This correspondence is VERIFIED.
 - Identify the external two-channel device from PCB markings or bus
   capture and recover its electrical transfer function.
 - Confirm PD3/PD4 as `+5R`/`+5T` enables by continuity measurement.
-- Resolve PE2, PE8, PE9, PG11, and the PE12 CW-key output to schematic
-  nets.
+- Resolve PE8, PE9, PG11, and the PE12 CW-key output to schematic nets.
+- Confirm PE2 continuity through the ACC `TRX` interface circuit.
 - Assign the PCA9535 output-1 / PD14 logical signal to its physical
   board net.
 - Measure the required settling time represented by the PE10 callback

@@ -103,9 +103,12 @@ DAC2 receives a piecewise-constant 12-bit code:
 | >28–50 MHz | `0xB26` |
 | >50 MHz | `0xC43` |
 
-Codes and boundaries: VERIFIED. An analog tuning/bias voltage role is
-HIGH CONFIDENCE; the exact circuit is unknown. Machine-readable
-boundaries are in `analysis/frequency_control/frequency_bands.csv`.
+Codes, boundaries, and DAC2 routing to PA5: VERIFIED. At a 3.3 V DAC
+reference the codes form the approximately 230 mV-per-step staircase
+specified for the external ACC `BAND_V` contact. Identifying this
+output as ACC `BAND_V` is therefore HIGH CONFIDENCE. The complete
+correlation is documented in `docs/acc.md`; machine-readable boundaries
+are in `analysis/frequency_control/frequency_bands.csv`.
 
 ## Synthesizer identification
 
@@ -222,4 +225,5 @@ CONFIDENCE.
 - Correlate internal receive/transmit offset storage with the complete
   wire-register update path.
 - Map the recovered RF output codes to physical relay/filter names.
-- Identify the circuit driven by the frequency-dependent DAC2 voltage.
+- Confirm PA5 continuity and loaded voltage scaling at the ACC
+  `BAND_V` contact.

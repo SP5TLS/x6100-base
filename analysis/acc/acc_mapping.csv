@@ -1,0 +1,5 @@
+signal,contact,stm32_resource,behavior,confidence
+TRX,tip,PE2,RX low and TX high,HIGH CONFIDENCE
+BAND_V,first ring,DAC2 PA5,frequency-dependent approximately 230 mV steps,HIGH CONFIDENCE
+ALC_V,second ring,ADC1 channel 2 PA2,fast TX ALC correction input,HIGH CONFIDENCE
+GND,sleeve,board ground,connector common,VERIFIED externally
