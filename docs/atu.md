@@ -4,7 +4,7 @@
 
 This document records the recovered use of the fast VSWR measurement
 by the automatic antenna-tuner code in BASE 1.1.9. Relay-search
-algorithms and persistent tuner memories remain to be reconstructed.
+algorithms, output mapping, and result publication are also covered.
 
 ## Immediate VSWR getter
 
@@ -76,6 +76,52 @@ and component values need board evidence.
 
 The complete mapping is exported in
 `analysis/atu/relay_bit_mapping.csv`.
+
+## Physical network evidence
+
+The X6100 service manual identifies the board as `X6100 LPF&ATU V1.2`
+and provides photographs of both sides. In the separately outlined
+antenna-tuner area, the component side visibly contains relay-switched
+toroidal inductors, while the corresponding area `A` on the reverse
+side contains the switched capacitor arrays. The manual separately
+instructs technicians to check ATU relays and coils and to inspect the
+reverse-side capacitors. Existence of distinct inductor and capacitor
+banks on this board: VERIFIED from the
+[X6100 service manual](https://www.manualslib.com/guide/3740642/xiegu-x6100-hf-transceiver-series-manual.html).
+
+The firmware exposes two seven-bit banks and one topology bit. Their
+cardinality matches a 7L + 7C L-network with a relay selecting which
+side receives the shunt bank: HIGH CONFIDENCE. This establishes the
+hardware structure required by an independent implementation, but does
+not identify which logical bank is L and which is C.
+
+The search algorithm cannot safely resolve that last assignment:
+both banks use the same candidate set, the same `0...127` limits, and
+the same final bidirectional refinement. Search order is an
+implementation choice and is not electrical evidence. The reviewed
+X6100Control 1.1.6 source likewise retains only the aggregate names
+`x6100_atu_network` and `atu_params`; it does not label either byte L
+or C. Bank assignment therefore remains unresolved rather than being
+inferred from conventional packing order.
+
+### Minimal measurement to assign the banks
+
+The mapping can be completed without running an automatic tune:
+
+1. Use register 17 to apply one logical bit at a time, with ATU enabled
+   and the other bank cleared.
+2. Repeat for both topology-bit values into a known non-radiating test
+   load and at the lowest safe stimulus power.
+3. Observe the antenna-port impedance with a VNA, or trace relay
+   continuity on an unpowered board.
+4. A bank that inserts increasing series reactance is L; a bank that
+   adds topology-dependent shunt susceptance is C.
+5. Record each bit's measured inductance or capacitance rather than
+   assuming a binary progression.
+
+Directly connecting an LCR meter to a powered RF path or switching the
+network at normal transmit power is not required and should be
+avoided.
 
 ## Search algorithm
 
@@ -175,6 +221,9 @@ symbol is assigned.
 - Preserve the two seven-bit banks and topology bit as separate logical
   fields; do not expose the permuted board-output word as the public
   network representation.
+- Model the physical tuner as two seven-element component banks plus a
+  topology selector, but keep provisional `bank_direct` and
+  `bank_permuted` names until the measurement above assigns L and C.
 - Treat `atu_params` as the result-notification path and register 17 as
   the path for reapplying a stored network.
 - Reproduce coarse selection, validated measurements, local refinement,

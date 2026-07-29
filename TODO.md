@@ -108,6 +108,8 @@
 -   [x] Recover ATU state packing, relay-bit permutation, and search phases
 -   [x] Recover ATU result publication and register-17 reapplication path
 -   [ ] Assign ATU banks to L/C and recover component values
+    - Firmware and X6100Control semantics exhausted; requires VNA,
+      continuity, or board-component measurement.
 -   [ ] Locate Linux-side per-frequency ATU persistence
 -   [x] Audit direct VSWR consumers for a firmware hard-trip path
 -   [ ] Identify any hardware or external-controller SWR protection
