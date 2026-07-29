@@ -96,9 +96,8 @@ AIRCR value construction and `SYSRESETREQ` use: VERIFIED.
 One verified entry into this path is protocol register `0x0030`
 (`sple_atue_trx`) bit 16 (`power_off`). The bit makes
 `FUN_0802AF0C` return true and thereby exits the main superloop; it is
-not itself an immediate GPIO write. The subsequent PD4/PD3/PD2
-sequence and PG4 wait are therefore part of the protocol-visible
-power-off contract: VERIFIED.
+not itself an immediate GPIO write. See `docs/shutdown.md` for the
+authoritative GPIO and reset sequence.
 
 Interpretation as the final stage of a controlled shutdown/restart path
 is HIGH CONFIDENCE. Whether external power actually remains present

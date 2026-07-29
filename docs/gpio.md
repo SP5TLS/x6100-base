@@ -173,20 +173,11 @@ levels, PE9 is their complement, and the variant callback follows their
 asserted/deasserted state. The firmware-level four-signal PA enable
 tuple is VERIFIED; its individual schematic nets remain unknown.
 
-Protocol register `0x0030` (`sple_atue_trx`) bit 16 (`power_off`) makes
-the update function terminate the main control loop. It does not write
-a GPIO directly. The main routine then clears PD4, waits five seconds,
-clears PD3, waits three seconds, and clears PD2 before waiting for PG4
-to become high. It subsequently clears PE11 and requests a system
-reset.
-
-The control-flow edge, pins, levels, and ordering are VERIFIED.
-Interpretation as an ordered power-rail shutdown is HIGH CONFIDENCE;
-the service manual's complementary `+5R`/`+5T` rails correlate with
-PD3 and PD4 respectively at HIGH CONFIDENCE. PD2 is the strongest
-candidate support-power or power-hold output and PG4 its power/status
-feedback: HIGH CONFIDENCE functional roles. Their exact board-net
-names remain unresolved, so neither receives a final symbol name.
+Protocol register `0x0030` bit 16 enters an ordered GPIO shutdown
+rather than writing one pin directly. The GPIO sequence, delays,
+power-control interpretation, and final reset are centralized in
+`docs/shutdown.md`. Initial GPIO configuration and safe levels are in
+`docs/startup.md`.
 
 ## Linux-board GPIO correlation
 

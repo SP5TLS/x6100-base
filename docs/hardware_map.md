@@ -210,22 +210,9 @@ were found: HIGH CONFIDENCE architecture.
 
 ### Shutdown
 
-The verified direct sequence includes:
-
-1. clear PD4;
-2. wait five seconds;
-3. clear PD3;
-4. wait three seconds;
-5. clear PD2;
-6. wait for PG4 to become high;
-7. clear PE11 and request a Cortex-M system reset.
-
-The sequence is entered when register `0x0030` bit 16 (`power_off`)
-makes the main update function return true: VERIFIED. Treating it as
-ordered rail shutdown is HIGH CONFIDENCE. PD2 is the strongest
-candidate for the remaining support-power/power-hold output and PG4
-for power/status feedback: HIGH CONFIDENCE roles. Exact board-net names
-remain unresolved.
+Register `0x0030` bit 16 enters the ordered PD4/PD3/PD2 rail shutdown,
+PG4 feedback wait, and final system reset. The complete authoritative
+sequence and confidence assignments are in `docs/shutdown.md`.
 
 ## Implementation boundary
 

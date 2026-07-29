@@ -136,9 +136,107 @@ performs PA calibration checks, and does not normally return. Its
 position after the runtime initializer strongly supports the `main`
 hypothesis. No final rename has been performed.
 
+## GPIO initialization sequence
+
+GPIO setup is not performed by one isolated call. `FUN_08034178`
+first executes an early power/battery service phase and then calls the
+main board initializer `FUN_080317B4`. The following call order is
+VERIFIED:
+
+1. `FUN_08032500` establishes the early power/charger GPIO state.
+2. `FUN_080317B4` invokes `FUN_08031480`, followed by the central GPIO
+   initializer `FUN_0803158C`.
+3. `FUN_080317B4` initializes the DMA, protocol, USART, interrupt, ADC,
+   DAC, ATU, and remaining board subsystems.
+4. After `FUN_080317B4` returns, `FUN_08034178` applies explicit safe
+   output levels before PA-bias validation and entry into the
+   superloop.
+
+### Early power and charger pins
+
+`FUN_08032500` runs before the central GPIO table. Its ordered GPIO
+contract is:
+
+1. configure PF11 and PF12 as outputs;
+2. configure PE13 and PG4 as inputs;
+3. configure PD3 and PD4 as outputs;
+4. drive PF11 high, PF12 low, and PD4 low;
+5. initialize the selected charger backend and apply the saved charger
+   policy;
+6. during its service loop, toggle PD3 for charging samples or hold it
+   high for the recovered full condition;
+7. leave PF11 high when returning.
+
+Pins, directions, levels, and ordering are VERIFIED. PF12 is the
+runtime charger-enable output at HIGH CONFIDENCE. Exact PF11 and PE13
+board nets and the reason for early PD3 reuse remain unresolved. The
+complete battery behavior is in `docs/charger.md`.
+
+### Central GPIO table
+
+`FUN_0803158C` first enables the clocks for GPIOA through GPIOG and the
+system-configuration block. It then configures pins in this port order:
+
+1. debug pins PA13/PA14;
+2. GPIOD output group;
+3. GPIOE output/input groups;
+4. GPIOF group;
+5. GPIOG input/output groups;
+6. high-speed PB0/PB1 and PC5 serial-control pins;
+7. PE10 and the later GPIOG output group;
+8. remaining GPIOA, GPIOB, GPIOC, GPIOE, GPIOF, GPIOG, and GPIOD
+   control/input/analog groups.
+
+The call order and register targets are VERIFIED. The resulting
+direction map is:
+
+| Direction or mode | Pins | Confidence |
+|---|---|---|
+| output | PD2, PD3, PD4 | VERIFIED |
+| output | PE2, PE7, PE8, PE9, PE10, PE11, PE12, PE14, PE15 | VERIFIED |
+| output retained from early phase | PF11, PF12 | VERIFIED |
+| output | PG6, PG12 | VERIFIED |
+| high-speed output | PB0, PB1, PC5 | VERIFIED |
+| output | PA3 | VERIFIED |
+| input | PA11, PA12, PB8, PB9, PD0, PE3, PE13 | VERIFIED |
+| input | PF13, PF14, PF15, PG0, PG1, PG4, PG6, PG8, PG11 | VERIFIED |
+| analog | PA0, PA1, PA2, PA4, PA5, PA6, PA7, PC4 | VERIFIED |
+| alternate function 2 | PD12 | VERIFIED |
+
+PG6 appears in both groups because it is deliberately reconfigured.
+PG11 is initially an input and is later made an output by one
+hardware-variant backend. Full pull, speed, output-type, and
+reconfiguration evidence is retained in `docs/gpio.md`.
+
+### Explicit safe levels after board initialization
+
+After the board initializer returns, `FUN_08034178` performs additional
+direct writes. The relevant ordered state is:
+
+1. PE15 low and PG8 output latch low before audio/IQ startup;
+2. initialize timers and main runtime state;
+3. drive PG0 and PG1 high;
+4. call the installed hardware-variant callback with argument `1`;
+5. drive PD2 high and PF11 low;
+6. set both PA-bias device channels to zero;
+7. assert the PA-calibration control subset while validating both bias
+   channels with temporary nonzero codes;
+8. return both bias codes to zero and place the PA/RX-TX tuple into its
+   normal RX-safe state before entering the superloop.
+
+The direct GPIO writes, callback arguments, and bias values are
+VERIFIED. Their aggregate purpose as safe startup/PA-validation states
+is HIGH CONFIDENCE. The complete PA tuple and transition ordering are
+documented in `docs/pa_control.md`; codec reset is documented in
+`docs/i2c.md`.
+
+The matching power-off path is intentionally documented separately in
+`docs/shutdown.md`.
+
 ## Remaining work
 
 - Recover the complete call graph rooted at `FUN_08034178`.
 - Correlate RAM ranges with linker sections and global references.
+- Confirm exact PF11, PE13, PD2, and PG4 board-net names.
 - Apply candidate or final names in the persistent Ghidra project only
   after the evidence review.
