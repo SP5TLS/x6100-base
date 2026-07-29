@@ -444,13 +444,36 @@ The complete set of bits consumed by the BASE 1.1.9 update block is:
 | 13 | `atu_tune` | execute the blocking ATU tune transaction |
 | 14 | `modem_trx` | set TX-source mask `0x40` and route IN3R |
 | 15 | `calibration_trx` | set TX-source mask `0x100` |
-| 16 | `power_off` | request exit from the main control loop |
+| 16 | `power_off` | request the ordered GPIO shutdown path |
 | 18 | `iptt` | set TX-source mask `0x01` |
 
 Bit extraction and the listed control-flow effects are VERIFIED.
 Historical labels are HIGH CONFIDENCE except `atu_tune`, whose
 Linux/BASE handshake is VERIFIED. No other bit has a direct consumer
 in this update block: HIGH CONFIDENCE.
+
+Bit 16 does not directly write one GPIO inside the register-update
+function. It makes `FUN_0802AF0C` return true, which terminates the
+main control loop in `FUN_08034178`. The main routine then performs the
+common shutdown sequence:
+
+1. quiesce protocol, DMA, audio, PA, and peripheral state;
+2. clear PD4, wait 5000 timer units;
+3. clear PD3, wait 3000 timer units;
+4. clear PD2;
+5. wait until GPIOG input PG4 is high;
+6. clear PE11, wait 100 timer units, and request a Cortex-M system
+   reset.
+
+The bit-to-control-flow edge, GPIO pins, levels, and ordering are
+VERIFIED. PD4 and PD3 are the candidate `+5T` and `+5R` rail enables
+respectively: HIGH CONFIDENCE. PD2 is the strongest candidate for the
+remaining support-power or power-hold output, and PG4 for its
+power/status feedback: HIGH CONFIDENCE functional roles, but exact
+board-net names remain unresolved. Thus a compatible implementation
+must reproduce the complete sequence rather than treating
+`power_off` as an immediate write to a single known GPIO. See
+`docs/gpio.md` and `docs/watchdog.md`.
 
 The split bit selects the inactive VFO only during an ordinary
 transmission. ATU (`0x10`) and calibration (`0x100`) TX sources retain

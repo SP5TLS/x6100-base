@@ -30,6 +30,9 @@
 
 -   [x] RCC / clocks
 -   [x] GPIO modes, peripheral pins, shift chains, and shutdown sequence
+-   [x] Trace register `0x0030` bit 16 (`power_off`) into the ordered
+    PD4/PD3/PD2 shutdown and PG4 feedback wait
+-   [ ] Confirm exact PD2 power-hold and PG4 power/status board nets
 -   [x] DMA
 -   [x] ADC topology, DMA acquisition, and ADC2 filtering
 -   [x] DAC initialization and frequency-dependent DAC2 control

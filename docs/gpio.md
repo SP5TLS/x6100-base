@@ -123,7 +123,7 @@ names are not yet known:
 | --- | --- | --- |
 | PB2 | toggled at entry/exit of the fast DMA1 DSP handler | VERIFIED |
 | PG15 | sampled and debounced by TIM2 | VERIFIED |
-| PG4 | sampled during normal operation and awaited during final shutdown | VERIFIED |
+| PG4 | sampled during normal operation and awaited high during final shutdown | VERIFIED behavior; HIGH CONFIDENCE power/status feedback role |
 | PE8, PE9, PE11, PE14 | changed during startup, PA calibration, DSP operation, or shutdown | VERIFIED |
 | PE15 | low during early startup, high immediately before TLV320AIC3204 initialization | VERIFIED levels; HIGH CONFIDENCE codec reset |
 | PE10 | low-delay-high pulse after external PA-bias device writes | VERIFIED |
@@ -131,7 +131,8 @@ names are not yet known:
 | PE12 | per-sample active-low CW/RF envelope output; otherwise forced high | HIGH CONFIDENCE role; VERIFIED behavior |
 | PD3 / PD4 | complementary RX/TX outputs; candidate `+5R` / `+5T` rail enables | HIGH CONFIDENCE roles; VERIFIED levels |
 | PE2 | candidate ACC `TRX`; low in RX and high in TX | HIGH CONFIDENCE role; VERIFIED levels |
-| PD2, PD3, PD4 | sequenced low during shutdown | VERIFIED |
+| PD2 | final output cleared after PD4/PD3 delays when register `0x0030` bit 16 requests shutdown | VERIFIED behavior; HIGH CONFIDENCE support-power/power-hold role |
+| PD3, PD4 | sequenced low during shutdown; candidate `+5R`/`+5T` enables | VERIFIED levels; HIGH CONFIDENCE rail roles |
 | PF11 | configured as output and held high by the charger/battery startup loop; exact net unknown | VERIFIED behavior |
 | PF12 | active-high runtime charger enable; also mirrors the expander-backed variant | HIGH CONFIDENCE role; VERIFIED levels |
 | PE13 | sampled by the charger/battery startup loop as part of its full/charging decision | VERIFIED behavior; physical net unresolved |
@@ -172,11 +173,20 @@ levels, PE9 is their complement, and the variant callback follows their
 asserted/deasserted state. The firmware-level four-signal PA enable
 tuple is VERIFIED; its individual schematic nets remain unknown.
 
-The main routine clears PD4, waits five seconds, clears PD3, waits three
-seconds, then clears PD2 before its final shutdown wait. Interpretation
-as an ordered power-rail shutdown sequence is HIGH CONFIDENCE; the
-service manual's complementary `+5R`/`+5T` rails correlate with PD3
-and PD4 respectively at HIGH CONFIDENCE. PD2 remains unknown.
+Protocol register `0x0030` (`sple_atue_trx`) bit 16 (`power_off`) makes
+the update function terminate the main control loop. It does not write
+a GPIO directly. The main routine then clears PD4, waits five seconds,
+clears PD3, waits three seconds, and clears PD2 before waiting for PG4
+to become high. It subsequently clears PE11 and requests a system
+reset.
+
+The control-flow edge, pins, levels, and ordering are VERIFIED.
+Interpretation as an ordered power-rail shutdown is HIGH CONFIDENCE;
+the service manual's complementary `+5R`/`+5T` rails correlate with
+PD3 and PD4 respectively at HIGH CONFIDENCE. PD2 is the strongest
+candidate support-power or power-hold output and PG4 its power/status
+feedback: HIGH CONFIDENCE functional roles. Their exact board-net
+names remain unresolved, so neither receives a final symbol name.
 
 ## Linux-board GPIO correlation
 
@@ -258,6 +268,9 @@ and PB9's exact physical PTT control, remain unresolved. See
   filters.
 - Identify power, PA-enable, charger, and reset nets from the board
   schematic or controlled measurements.
+- Confirm by continuity or voltage capture that PD2 is the final
+  support-power/power-hold output and identify the source observed by
+  PG4 during register-`0x0030` bit-16 shutdown.
 - Identify the physical nets behind PE13 and PF11 and reconcile the
   early PD3 charge-loop reuse with its normal `+5R` role.
 - Document initial and shutdown levels for every output pin.

@@ -46,3 +46,4 @@ gpio_input,speaker/phone detect,PF15,stable-low gain selection,S/P jack detectio
 gpio_input,early charge full/status,PE13,active-low sample,early FULL condition,early service,VERIFIED behavior; physical net unresolved,docs/charger.md
 gpio_unknown,early power/status output,PF11,output held high,early service control,early service,VERIFIED behavior; role unresolved,docs/charger.md
 gpio_unknown,shutdown/power status,PG4,input polled,boot and final shutdown condition,startup/shutdown,VERIFIED behavior; role unresolved,docs/gpio.md
+gpio_control,shutdown support power,"PD2; PG4","register 0x0030 bit 16 exits loop; clear PD2 after PD4/PD3 delays; wait PG4 high",candidate power-hold output and power/status feedback,shutdown,VERIFIED sequence; HIGH CONFIDENCE functional roles; exact nets unresolved,docs/gpio.md

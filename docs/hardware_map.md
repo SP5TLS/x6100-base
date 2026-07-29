@@ -140,6 +140,7 @@ does not use IWDG or WWDG: VERIFIED. See `docs/interrupts.md`,
 | codec reset | PE15 active-low | audio startup | HIGH CONFIDENCE role; VERIFIED lifecycle |
 | PA-bias commit | PE10 low-delay-high | changed bias write | HIGH CONFIDENCE role; VERIFIED waveform |
 | charger enable | PF12 high or PCA9535 bit 1 low | startup/runtime | HIGH CONFIDENCE role; VERIFIED levels |
+| shutdown request | register `0x0030` bit 16 exits superloop; PD4 low, 5 s, PD3 low, 3 s, PD2 low; wait PG4 high | controlled shutdown | VERIFIED sequence; HIGH CONFIDENCE PD2 power-hold and PG4 feedback roles |
 | primary RF index | PCA9535 one-hot mask or PD9/10/11/13 binary | frequency change | VERIFIED |
 | secondary RF/ATU | SPI6 24-bit word; PG12 high-to-low latch | frequency/tune | VERIFIED |
 | software RF chains | PC5 data, PB0 clock, PB1 or PG6 latch | startup/frequency | VERIFIED protocol; HIGH CONFIDENCE relay role |
@@ -216,10 +217,15 @@ The verified direct sequence includes:
 3. clear PD3;
 4. wait three seconds;
 5. clear PD2;
-6. wait on the remaining power/status condition.
+6. wait for PG4 to become high;
+7. clear PE11 and request a Cortex-M system reset.
 
-Treating this as ordered rail shutdown is HIGH CONFIDENCE. Exact PD2
-and PG4 physical net names remain unresolved.
+The sequence is entered when register `0x0030` bit 16 (`power_off`)
+makes the main update function return true: VERIFIED. Treating it as
+ordered rail shutdown is HIGH CONFIDENCE. PD2 is the strongest
+candidate for the remaining support-power/power-hold output and PG4
+for power/status feedback: HIGH CONFIDENCE roles. Exact board-net names
+remain unresolved.
 
 ## Implementation boundary
 
