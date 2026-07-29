@@ -127,7 +127,8 @@
 -   [ ] DC removal
 -   [x] Adaptive IQ imbalance correction
 -   [x] Complex frequency shift
--   [ ] Export and validate all RX FIR/biquad coefficients
+-   [x] Export and validate all RX rate-conversion FIR coefficients
+-   [ ] Map runtime-selected RX biquad coefficient tables
 -   [x] AGC topology, look-ahead, bounds, and bypass
 -   [x] SSB/CW/AM/NFM demodulation topology
 -   [ ] Recover optional RX block noise-reduction transform

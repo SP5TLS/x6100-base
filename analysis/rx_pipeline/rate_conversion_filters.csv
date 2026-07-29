@@ -1,0 +1,5 @@
+flash_address,factor,taps,objects,rx_use,coefficient_file,confidence
+0x0803E3E4,8,64,"0x2000665C; 0x200068A8",SSB/CW I and Q decimation,analysis/tx_filters/rate_conversion_fir_64.csv,VERIFIED
+0x0803E3E4,8,64,0x20006C30,common audio interpolation,analysis/tx_filters/rate_conversion_fir_64.csv,VERIFIED
+0x0803E354,4,36,"0x200063C4; 0x20006510",AM/NFM I and Q decimation,analysis/rx_pipeline/fir_decimate_4x_36.csv,VERIFIED
+0x0803E2C4,2,36,0x20006AF4,AM/NFM post-demodulation decimation,analysis/rx_pipeline/fir_decimate_2x_36.csv,VERIFIED

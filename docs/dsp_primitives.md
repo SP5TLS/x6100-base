@@ -47,8 +47,10 @@ and integer factors are VERIFIED; interpreting the initialization
 constants as physical sample rates still requires a hardware clock
 measurement. See `docs/rx_pipeline.md`.
 
-The complete RX coefficient sets still need to be exported and
-independently checked.
+All RX rate-conversion FIR coefficient sets are exported and
+independently checked for symmetry and representative response. Runtime
+RX biquad table selection remains to be completed. See
+`docs/rx_pipeline.md`.
 
 ## Biquad processing
 

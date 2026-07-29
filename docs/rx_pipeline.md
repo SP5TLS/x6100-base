@@ -162,6 +162,40 @@ Linux-facing mode mapping and is HIGH CONFIDENCE:
 | 6 | AM | 4 then 2 | complex magnitude |
 | 7 | NFM | 4 then 2 | phase-difference discriminator |
 
+## Exact rate-conversion FIRs
+
+All RX rate-conversion coefficient arrays and their instance parameters
+are now exported. The mapping is VERIFIED:
+
+| Flash coefficients | Factor | Taps | RX instances and use |
+|---:|---:|---:|---|
+| `0x0803E3E4` | 8 decimation | 64 | `0x2000665C`, `0x200068A8`: SSB/CW I and Q |
+| `0x0803E3E4` | 8 interpolation | 64 | `0x20006C30`: common audio output |
+| `0x0803E354` | 4 decimation | 36 | `0x200063C4`, `0x20006510`: AM/NFM I and Q |
+| `0x0803E2C4` | 2 decimation | 36 | `0x20006AF4`: AM/NFM real demodulator output |
+
+The factor-8 array is shared with the already exported TX
+rate-conversion path and is stored in
+`analysis/tx_filters/rate_conversion_fir_64.csv`. The two 36-tap arrays
+are in `analysis/rx_pipeline/fir_decimate_4x_36.csv` and
+`analysis/rx_pipeline/fir_decimate_2x_36.csv`. A machine-readable object
+map is in `analysis/rx_pipeline/rate_conversion_filters.csv`.
+
+All three arrays are exactly symmetric linear-phase FIRs: VERIFIED from
+the exported values. Independent numerical evaluation gives:
+
+| Array | Coefficient sum | Half-output-rate response |
+|---|---:|---:|
+| factor-8, 64 taps | `1.057501116` | `-6.020600 dB` at 6.25 kHz in the 100-kHz domain |
+| factor-4, 36 taps | `0.942498868` | `-6.020600 dB` at 12.5 kHz in the 100-kHz domain |
+| factor-2, 36 taps | `0.942498897` | `-6.020600 dB` at 6.25 kHz in the 25-kHz domain |
+
+The sums and responses are reproducible calculations from the exact
+exports, not additional firmware semantics. An independent
+implementation may use these arrays directly or use an equivalently
+validated anti-alias/interpolation design if bit-for-bit compatibility
+is unnecessary.
+
 ### SSB and digital SSB
 
 Each complex component passes through its own factor-8 FIR decimator and
@@ -274,8 +308,8 @@ are assigned here without evidence.
 
 ## Remaining evidence work
 
-- Export and independently validate all RX FIR and runtime biquad
-  coefficient sets.
+- Export and independently validate the runtime-selected RX biquad
+  coefficient sets. Rate-conversion FIRs are complete.
 - Determine whether converter DC removal exists elsewhere or is wholly
   provided by later channel filtering.
 - Resolve every common audio filter to its control field and response.
