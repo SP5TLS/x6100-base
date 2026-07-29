@@ -178,6 +178,21 @@ as an ordered power-rail shutdown sequence is HIGH CONFIDENCE; the
 service manual's complementary `+5R`/`+5T` rails correlate with PD3
 and PD4 respectively at HIGH CONFIDENCE. PD2 remains unknown.
 
+## Linux-board GPIO correlation
+
+The current OEM Linux application uses `gpiochip0` line 203 as an
+active-low software CW output and also holds legacy sysfs GPIO 203 low
+while resetting BASE into IAP: VERIFIED. It pulses sysfs GPIO 204 high
+then low for IAP entry; identification as BASE reset is HIGH
+CONFIDENCE, with exact levels and sequence VERIFIED.
+
+This establishes a shared inter-board CW/IAP-strap signal for Linux
+GPIO 203 at HIGH CONFIDENCE. It does not by itself identify which
+STM32 input pin receives that signal; the existing PF13/PF14 KEY-jack
+mapping remains a separate, BASE-side result. Full Linux evidence and
+the update sequence are in `docs/linux_hardware_interface.md` and
+`docs/base_firmware_update.md`.
+
 The user manual exposes an ACC `TRX` contact, and the service manual
 directs technicians to check its MCU-controlled switching level. PE2 is
 the only remaining direct GPIO in the central RX/TX transition with

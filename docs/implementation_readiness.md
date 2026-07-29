@@ -88,8 +88,9 @@ sample cadence off-target.
 
 | Driver | Minimum contract | Status |
 | --- | --- | --- |
-| I2C3 slave | register windows, framing, boot handshake | mostly recovered |
-| USART6 flow | 4136-byte packet, CRC, 1.5-Mbaud DMA | recovered |
+| I2C3 slave | register windows, framing, boot handshake | recovered on BASE and current OEM Linux |
+| USART6 flow | 4136-byte packet and CRC | recovered; physical baud conflict must be measured |
+| BASE IAP | GPIO boot/reset, commands, 1K XMODEM | Linux side recovered; BASE post-transfer exit unresolved |
 | control dispatcher | apply only documented register consumers | partially complete |
 
 Linux integration is not required for the first electrical bring-up.

@@ -1,0 +1,7 @@
+interface,linux_endpoint,parameter,operation,evidence,confidence
+BASE control I2C,/dev/i2c-0,7-bit address 0x72,16-bit big-endian byte offset followed by payload,MainWidget 0x000649D4-0x000649E0 and ui2c_* 0x00072414-0x000729B8,VERIFIED
+BASE control I2C,/dev/i2c-0,I2C_RDWR ioctl 0x0707,one-message write transaction,ui2c_write 0x00072414,VERIFIED
+BASE control I2C,/dev/i2c-0,I2C_RDWR ioctl 0x0707,offset-only write transaction then separate read transaction,ui2c_read 0x0007269C,VERIFIED
+BASE flow UART,/dev/ttyS1,termios speed token 0x1009,8-bit raw mode without parity or hardware flow control,xradio_create 0x0009292C and uart_create 0x0006F784,VERIFIED token and device; HIGH CONFIDENCE 8-N-1
+CW and IAP strap,gpiochip0 line 203,active low,libgpiod output for CW and sysfs output during IAP,MorseSender::slot_worker 0x0006E704 and xradio_start_xmodem 0x000933EC,VERIFIED
+BASE reset,sysfs GPIO 204,high then low,pulse during IAP entry,xradio_start_xmodem 0x000933EC,HIGH CONFIDENCE role; VERIFIED sequence

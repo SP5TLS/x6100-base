@@ -21,7 +21,7 @@ Relevant handlers:
 
 Local project:
 
-`/home/master/r1cbu/x6100/X6100Control`
+`X6100Control`
 
 Reviewed revision:
 
@@ -33,14 +33,24 @@ the association with BASE firmware 1.1.6 was supplied by the project
 owner. Its names are therefore historical evidence, not automatically
 final names for BASE 1.1.9.
 
+A second, version-matched Linux reference is now available:
+
+`x6100_ui_v100`
+
+It comes from Linux firmware 1.2 and is paired with BASE 1.1.9
+according to the project owner. The ELF is not stripped and directly
+confirms `/dev/i2c-0`, address `0x72`, current control framing,
+`/dev/ttyS1`, and the BASE IAP path: VERIFIED binary evidence. See
+`docs/linux_hardware_interface.md` and `docs/base_firmware_update.md`.
+
 ## Transports
 
 X6100Control uses two transports:
 
 | Purpose | Linux device | Parameters | 1.1.9 status |
 | --- | --- | --- | --- |
-| Control register file | `/dev/i2c-0` | slave address `0x72` | VERIFIED |
-| IQ and telemetry flow | `/dev/ttyS1` | historical: 1,152,000 baud; BASE 1.1.9: 1,500,000 baud | VERIFIED format; VERIFIED baud-version difference |
+| Control register file | `/dev/i2c-0` | slave address `0x72` | VERIFIED in both Linux implementations and BASE |
+| IQ and telemetry flow | `/dev/ttyS1` in both reviewed Linux implementations | Linux token: 1,152,000; BASE 1.1.9 initializer: 1,500,000 | VERIFIED path/tokens; unresolved physical-rate conflict |
 
 ## I2C control framing
 
@@ -61,6 +71,11 @@ byte becomes the high address byte and the second becomes the low
 address byte. Subsequent bytes are stored sequentially into RAM.
 
 Framing and byte order: VERIFIED for BASE 1.1.9.
+
+The current OEM Linux application independently uses the same framing.
+Its read path performs an offset-only write and the read as two
+separate `I2C_RDWR` ioctls, with a STOP between them: VERIFIED. BASE
+must preserve the selected offset across that STOP.
 
 ### BASE I2C3 initialization
 
@@ -652,19 +667,23 @@ Reusable evidence exports:
 UART flow packet compatibility between the reviewed historical
 implementation and BASE 1.1.9: VERIFIED.
 
-### Baud-rate version difference
+### Baud-rate conflict
 
-X6100Control configures `/dev/ttyS1` for 1,152,000 baud.
+Both X6100Control and the current OEM `x6100_ui_v100` configure
+`/dev/ttyS1` with the Linux termios value for 1,152,000 baud:
+VERIFIED historical source and VERIFIED current numeric token.
 
 In BASE 1.1.9, `FUN_08033210` initializes:
 
 - USART1 at 115,200 baud;
 - USART6 at 1,500,000 baud.
 
-The flow producer uses USART6, so BASE 1.1.9's flow baud rate is
-1,500,000. This is a VERIFIED protocol difference from the reviewed
-X6100Control implementation and must be accounted for by a compatible
-Linux client.
+The flow producer uses USART6. The BASE initializer and both Linux
+clients therefore disagree even though the current OEM application is
+paired with BASE 1.1.9. This is an unresolved physical-rate conflict,
+not a verified version difference. Measure the shipped UART and verify
+the exact target termios and BASE clock/divisor behavior before choosing
+a compatibility rate.
 
 ## Remaining work
 

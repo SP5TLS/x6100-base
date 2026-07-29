@@ -14,9 +14,11 @@ i2c_device,TLV320AIC3204,7-bit 0x18,"paged register interface; 32-bit master I2S
 i2c_device,PCA9535-compatible expander,7-bit 0x20,16-bit GPIO output image,RF band and board-variant controls,startup/runtime,HIGH CONFIDENCE family; VERIFIED protocol,docs/rf_switching.md
 i2c_device,auxiliary audio/IQ support,7-bit 0x4A,fixed six-write startup contract,unconditional support function,startup,VERIFIED contract; MEDIUM CONFIDENCE support role,docs/i2c.md
 i2c_device,alternate I/Q backend,7-bit 0x4C,fixed four-write fallback contract,CS4272 fallback,startup,HIGH CONFIDENCE role; device unknown,docs/i2c.md
-i2c,I2C3,"PA8 SCL; PC9 SDA; AF4","400 kHz slave; own address 0x72",Linux control register service,runtime,VERIFIED,docs/protocol.md
+i2c,I2C3,"PA8 SCL; PC9 SDA; AF4; Linux /dev/i2c-0","400 kHz slave; own address 0x72; STOP-separated Linux reads",Linux control register service,runtime,VERIFIED on both sides,docs/linux_hardware_interface.md
 serial,USART1,"PA9 TX; PA10 RX; AF7","115200 8-N-1",diagnostic/stdio,startup/runtime,HIGH CONFIDENCE role; VERIFIED configuration,docs/usart.md
-serial,USART6,"PC6 TX; PC7 RX; AF8","1500000 8-N-1",Linux IQ/telemetry flow,runtime,VERIFIED,docs/usart.md
+serial,USART6,"PC6 TX; PC7 RX; AF8; Linux /dev/ttyS1","BASE initializer 1500000; Linux termios token 0x1009",Linux IQ/telemetry flow and IAP,runtime,VERIFIED role; unresolved physical baud,docs/usart.md
+linux_gpio,GPIO203,"gpiochip0 line 203; legacy sysfs GPIO203",active-low runtime CW; low IAP strap across reset,Linux software CW and BASE IAP entry,runtime/update,VERIFIED sequence; HIGH CONFIDENCE shared role,docs/linux_hardware_interface.md
+linux_gpio,GPIO204,legacy sysfs GPIO204,high then low pulse,BASE IAP reset,update,VERIFIED sequence; HIGH CONFIDENCE reset role,docs/base_firmware_update.md
 i2s,SPI2/I2S2 plus I2S2ext,"PD12-PD15 AF5 within the recovered I2S pin set","32-bit stereo; slave RX/TX; external clocks",audio sample pair,startup/runtime,VERIFIED role and format; exact signal labels deferred,docs/spi_i2s.md
 i2s,SPI3/I2S3 plus I2S3ext,"PA15 AF6; PC10 AF6; PC11 AF5; PC12 AF6","32-bit stereo; slave RX/TX; external clocks",complex I/Q sample pair,startup/runtime,VERIFIED role and format; exact signal labels deferred,docs/spi_i2s.md
 spi,SPI6 output chain,"PG13 SCK AF5; PG14 MOSI AF5; PG12 latch",24-bit high-byte-first; latch high then low,ATU relays and secondary RF index,startup/runtime,VERIFIED,docs/atu.md

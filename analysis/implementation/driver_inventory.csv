@@ -15,8 +15,9 @@ D13,I2S/DMA,"four synchronized circular double buffers; 128 stereo frames per ba
 D14,LO synthesizer,"frequency formulas; 5P49V60 register programming; ordered commit",3 receive RF path,recovered,"keep TX disabled during initial frequency validation",docs/frequency_control.md
 D15,RF switching,"primary variant backend; secondary SPI6 image; GPIO shift chains",3 receive RF path,recovered,"preserve unrelated expander/SPI6 bits",docs/rf_switching.md
 D16,RX DSP,"DC removal; IQ correction; shift; filtering; AGC; demodulation",3 receive radio,incomplete,"not a hardware-safety gate but blocks usable receiver",TODO.md
-D17,Linux control,"I2C3 register service; boot handshake; writable/read windows",4 Linux integration,mostly recovered,"validate bounds before accepting writes",docs/protocol.md
-D18,Linux flow,"USART6 DMA packet; flags; telemetry; CRC",4 Linux integration,recovered,"preserve 4136-byte framing and 1.5-Mbaud timing",docs/protocol.md
+D17,Linux control,"I2C3 register service; boot handshake; writable/read windows",4 Linux integration,recovered on both sides,"validate bounds and preserve STOP-separated offset reads",docs/linux_hardware_interface.md
+D18,Linux flow,"USART6 DMA packet; flags; telemetry; CRC",4 Linux integration,recovered except physical baud,"preserve 4136-byte framing and measure 1.5M versus 1.152M conflict",docs/usart.md
+D25,BASE updater,"GPIO203/204 IAP entry; r/p commands; 1K XMODEM",6 productization,Linux side recovered,"resolve BASE post-transfer exit and validate on sacrificial hardware",docs/base_firmware_update.md
 D19,key and PTT,"TIM3 debounce; CW inputs; PTT arbitration; TIM4 capture if required",5 transmit preparation,partially recovered,"ignore unresolved inputs until explicitly enabled",docs/tx_pipeline.md
 D20,PA bias and TX GPIO,"two-channel bias writes; PE10 pulse; ordered RX/TX tuple",5 transmit preparation,protocol recovered; transfer function incomplete,"bench-only with PA inhibited until currents are measured",docs/pa_control.md
 D21,TX DSP and ALC,"mode generators; interpolation; ALC; complex output",5 transmit preparation,topology recovered; absolute units incomplete,"dummy load and external power/SWR monitoring required",docs/tx_pipeline.md

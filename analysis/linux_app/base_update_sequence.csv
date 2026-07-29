@@ -1,0 +1,14 @@
+step,action,timeout_or_delay,success_condition,confidence
+1,Suspend normal BASE UART receive thread and drain input,100 ms delay before drain,n/a,VERIFIED
+2,Export GPIO 203; output; drive low,n/a,n/a,VERIFIED
+3,Export GPIO 204; output; drive high,n/a,n/a,VERIFIED
+4,Wait and drain UART,100 ms delay,n/a,VERIFIED
+5,Drive GPIO 204 low and unexport it,n/a,n/a,VERIFIED
+6,Wait for BASE IAP greeting,1 second per attempt; up to 51 attempts,received byte is ASCII A or a,VERIFIED
+7,Drive GPIO 203 high and unexport it,always executed,n/a,VERIFIED
+8,Send ASCII r,60 seconds,any nonzero response byte,VERIFIED
+9,Send ASCII p,1 second,any nonzero response byte,VERIFIED
+10,Wait for XMODEM start,10 seconds,second byte of an exactly two-byte read is ASCII C or c,VERIFIED
+11,Send 1K XMODEM packets,10 seconds per packet,ACK 0x06 after every packet,VERIFIED
+12,Send EOT 0x04,10 seconds,ACK 0x06,VERIFIED
+13,Resume normal BASE UART receive thread,n/a,n/a,VERIFIED

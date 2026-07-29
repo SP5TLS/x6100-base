@@ -49,8 +49,9 @@ final symbol name.
 
 ## USART6 Linux flow
 
-USART6 uses PC6/PC7 at 1,500,000 baud. The historical X6100Control
-project opens Linux `/dev/ttyS1` for the matching IQ/telemetry stream.
+USART6 uses PC6/PC7 at 1,500,000 baud. Both the historical
+X6100Control project and the current OEM `x6100_ui_v100` application
+open Linux `/dev/ttyS1` for the matching IQ/telemetry stream: VERIFIED.
 The packet construction and format are documented in
 `docs/protocol.md`.
 
@@ -78,13 +79,20 @@ unknown. No Linux-side writer was found in the reviewed historical
 X6100Control revision, so it must not yet be described as a command
 channel.
 
-## Version difference
+## Linux baud-rate conflict
 
-The historical X6100Control code for the older firmware generation uses
-1,152,000 baud. BASE 1.1.9 writes the explicit constant 1,500,000 to
-the USART6 initialization structure.
+The historical X6100Control code uses 1,152,000 baud. More
+significantly, `x6100_ui_v100`, supplied as the Linux firmware 1.2
+application paired with BASE 1.1.9, passes termios token `0x1009` to
+`cfsetispeed` and `cfsetospeed`. Under Linux UAPI definitions that token
+is `B1152000`: VERIFIED numeric token; HIGH CONFIDENCE decoded rate.
 
-Baud-rate change between the reviewed implementations: VERIFIED.
+BASE 1.1.9 nevertheless writes the explicit value 1,500,000 to its
+USART6 initialization structure: VERIFIED. These two observations are
+in conflict and neither has been discarded. The actual wire rate, exact
+target termios definition, and clock-dependent BASE divisor must be
+checked on hardware before an independent implementation selects a
+rate.
 
 ## Reproducible evidence
 
@@ -92,3 +100,4 @@ Baud-rate change between the reviewed implementations: VERIFIED.
 - `analysis/usart/usart6_refs.csv`;
 - `analysis/usart/usart_dma_callers.csv`;
 - `analysis/usart/usart1_send_callers.csv`.
+- `analysis/linux_app/hardware_interfaces.csv`.

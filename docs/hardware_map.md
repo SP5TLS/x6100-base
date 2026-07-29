@@ -51,9 +51,9 @@ recalculate divisors if it does not reproduce the 250-MHz setting. See
 | I2C2 | same | PCA9535-compatible device at `0x20` | board-variant RF and PA/charger outputs | HIGH CONFIDENCE family; VERIFIED protocol |
 | I2C2 | same | device at `0x4A` | unconditional fixed audio/IQ support startup | VERIFIED contract; MEDIUM CONFIDENCE support role |
 | I2C2 | same | device at `0x4C` | fallback for the CS4272 I/Q backend | HIGH CONFIDENCE role; exact IC unresolved |
-| I2C3 | PA8/PC9 AF4, 400-kHz slave at `0x72` | Linux control service | register writes, reads, boot handshake, calibration windows | VERIFIED |
+| I2C3 | PA8/PC9 AF4, 400-kHz slave at `0x72`; OEM Linux `/dev/i2c-0` | Linux control service | register writes, STOP-separated reads, boot handshake, calibration windows | VERIFIED on both sides |
 | USART1 | PA9/PA10 AF7, 115200 8-N-1 | diagnostic endpoint | formatted debug/stdio traffic | HIGH CONFIDENCE |
-| USART6 | PC6/PC7 AF8, 1500000 8-N-1 | Linux flow endpoint | 4136-byte IQ/telemetry packets | VERIFIED |
+| USART6 | PC6/PC7 AF8; OEM Linux `/dev/ttyS1` | Linux flow and IAP endpoint | 4136-byte IQ/telemetry packets and firmware transfer | VERIFIED role; unresolved 1.5M/1.152M rate conflict |
 | SPI6 | PG13 SCK, PG14 MOSI AF5; PG12 GPIO latch | output-only 24-bit chain | ATU and secondary RF relay image | VERIFIED |
 
 I2C address notation in this table is conventional 7-bit notation.

@@ -80,7 +80,18 @@
 
 -   [x] I2C3 control transport and framing
 -   [x] Verify UART IQ/telemetry flow against BASE 1.1.9
--   [x] Identify UART baud-rate change to 1,500,000
+-   [x] Recover BASE 1.1.9 explicit USART6 1,500,000-baud initializer
+-   [x] Audit current OEM Linux 1.2 hardware layer (`x6100_ui_v100`)
+-   [x] Confirm current OEM `/dev/i2c-0` address `0x72` and
+    STOP-separated read framing
+-   [x] Confirm current OEM `/dev/ttyS1` BASE flow endpoint
+-   [x] Recover Linux GPIO 203 software-CW/IAP-strap sharing and GPIO
+    204 reset sequence
+-   [x] Recover BASE IAP commands and complete 1K XMODEM sender contract
+-   [ ] Resolve current OEM Linux termios `0x1009` versus BASE 1.1.9
+    1,500,000-baud initializer by hardware measurement
+-   [ ] Recover BASE IAP post-transfer jump/reset behavior from
+    boot-resident code or hardware observation
 -   [x] Verify ATU tune flag and Linux boot handshake
 -   [x] Recover UART flow packet layout and metadata producers
 -   [x] Trace `vfoa_freq`/`vfob_freq` through LO synthesizer programming
@@ -185,6 +196,8 @@
 -   [x] watchdog.md
 -   [ ] dma.md
 -   [x] protocol.md (transport and historical 1.1.6 register map)
+-   [x] linux_hardware_interface.md
+-   [x] base_firmware_update.md
 -   [x] rtos.md
 -   [ ] rx_pipeline.md
 -   [x] tx_pipeline.md (initial mode handoff and input-gain stages)

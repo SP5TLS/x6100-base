@@ -1,0 +1,9 @@
+field,size,value_or_rule,confidence
+start,1,0x02 STX,VERIFIED
+packet_number,1,starts at 1; low byte increments and wraps,VERIFIED
+packet_number_complement,1,bitwise complement of packet-number byte,VERIFIED
+payload,1024,firmware bytes; final packet padded with 0xFF,VERIFIED
+crc,2,CRC-16 polynomial 0x1021 init 0; high byte first,VERIFIED
+receiver_start,2,exactly two bytes read; second must be C or c,VERIFIED
+packet_response,1,ACK 0x06 accepted; NAK 0x15 CAN 0x18 timeout or another byte aborts without retry,VERIFIED
+end,1,EOT 0x04 followed by ACK 0x06,VERIFIED
