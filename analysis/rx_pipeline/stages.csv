@@ -1,0 +1,14 @@
+order,stage,input_rate,output_rate,block_in,block_out,evidence,confidence
+1,SPI3/I2S3 packed complex input,100000,100000,128,128,FUN_08024528 halfword swap and signed conversion,VERIFIED
+2,Q31 to float scaling,100000,100000,128,128,FUN_08024528 multiplier 4.656612e-10,VERIFIED
+3,adaptive IQ imbalance correction,100000,100000,128,128,FUN_08024528 state 0x2000B6EC..0x2000B714,HIGH CONFIDENCE
+4,optional complex frequency shift,100000,100000,128,128,FUN_08024528 state 0x2000BF74..0x2000BF84,HIGH CONFIDENCE
+5a,SSB/CW complex FIR decimation,100000,12500,128,16,FUN_08035C88 objects 0x2000665C and 0x200068A8,VERIFIED
+5b,AM/NFM complex FIR decimation,100000,25000,128,32,FUN_08035C88 objects 0x200063C4 and 0x20006510,VERIFIED
+6a,SSB/CW phasing demodulation,12500,12500,16,16,100-sample I delay and 101-tap Q Hilbert FIR,HIGH CONFIDENCE
+6b,AM envelope demodulation,25000,25000,32,32,sqrt(I*I+Q*Q),VERIFIED
+6c,NFM phase-difference discriminator,25000,25000,32,32,FUN_080210C4,HIGH CONFIDENCE
+7,AM/NFM FIR decimation,25000,12500,32,16,FUN_08035C88 object 0x20006AF4,VERIFIED
+8,audio filtering and optional AGC,12500,12500,16,16,FUN_08024528 audio loop,HIGH CONFIDENCE
+9,optional block noise reduction,12500,12500,128,128,FUN_08022C30 and 128-sample input blocks,MEDIUM CONFIDENCE
+10,audio FIR interpolation,12500,100000,16,128,FUN_08035364 object 0x20006C30,VERIFIED

@@ -1,0 +1,9 @@
+mode,historical_name,first_decimation,demodulator,sideband_combination,agc
+0,LSB,8,phasing,sum delayed-I and Hilbert-Q,optional
+1,LSB_DIG,8,phasing,sum delayed-I and Hilbert-Q,optional
+2,USB,8,phasing,difference delayed-I and Hilbert-Q,optional
+3,USB_DIG,8,phasing,difference delayed-I and Hilbert-Q,optional
+4,CW,8,CW complex beat oscillator,difference filtered-I and filtered-Q,optional
+5,CWR,8,CW complex beat oscillator,sum filtered-I and filtered-Q,optional
+6,AM,4 then 2,envelope,not applicable,optional
+7,NFM,4 then 2,phase difference,not applicable,bypassed

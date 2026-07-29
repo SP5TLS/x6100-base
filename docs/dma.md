@@ -96,9 +96,11 @@ reset at a block boundary. The handler then converts two input channels,
 sums them, and applies the first TX digital gain before subsequent
 processing. See `docs/tx_pipeline.md`.
 
-The exact sample rate still requires recovery of the I2S clock
-configuration. Buffer size and double-buffer scheduling alone are
-VERIFIED.
+Firmware rate constants and the RX rate-conversion graph establish
+100-kHz, 25-kHz, and 12.5-kHz processing domains. Their use in the
+algorithm is VERIFIED. Absolute physical sample rate still requires an
+I2S clock measurement; buffer size and double-buffer scheduling alone
+do not prove it. The RX block contract is in `docs/rx_pipeline.md`.
 
 ## DMA2 serial paths
 

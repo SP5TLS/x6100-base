@@ -77,12 +77,14 @@ assumptions are recalculated.
 | four-stream I2S DMA | synchronized double buffers | recovered |
 | LO generator | divider calculation and ordered commit | recovered |
 | RF switching | variant primary index and shared SPI6 image | recovered |
-| RX DSP | I/Q input through demodulated audio | incomplete |
+| RX DSP | input, I/Q correction, frequency shift, all mode demodulators, AGC, and rate graph recovered; coefficients, optional noise reduction, and final mixer incomplete | partial |
 
-The RX DSP row is the primary functional blocker for a useful
-receiver. Hardware acquisition can still be validated before it is
-complete by capturing raw I/Q banks and comparing spectrum, phase, and
-sample cadence off-target.
+The principal RX topology is documented in `docs/rx_pipeline.md`.
+Exact RX coefficient exports, any distinct converter-DC removal, the
+optional noise-reduction transform, and the final audio mixer remain
+functional blockers to a faithful receiver. Hardware acquisition can
+still be validated by capturing raw I/Q banks and comparing spectrum,
+phase, polarity, gain, and sample cadence off-target.
 
 ### Linux integration
 

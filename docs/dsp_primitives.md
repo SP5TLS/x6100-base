@@ -38,9 +38,17 @@ Firmware initialization also establishes rate constants of 100 kHz,
 Together these establish that the signal path contains explicit
 multi-rate FIR processing: VERIFIED.
 
-An 8:1 conversion between the 100-kHz and 12.5-kHz domains is HIGH
-CONFIDENCE. The exact call sites belonging to RX versus TX and the
-filter coefficients used by each mode still need to be separated.
+The RX call sites are now separated. SSB/CW use a direct factor-8
+complex decimator. AM/NFM use factor 4 before demodulation and factor 2
+after it. All modes therefore produce 16 audio samples at the
+12.5-kHz-domain rate from each 128-sample input block, and a factor-8
+interpolator returns 128 samples to the output domain. The call topology
+and integer factors are VERIFIED; interpreting the initialization
+constants as physical sample rates still requires a hardware clock
+measurement. See `docs/rx_pipeline.md`.
+
+The complete RX coefficient sets still need to be exported and
+independently checked.
 
 ## Biquad processing
 

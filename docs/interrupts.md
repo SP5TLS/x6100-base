@@ -64,8 +64,12 @@ Peripheral identity and interrupt dispatch: VERIFIED.
 
 Use as a DMA-driven DSP processing engine: HIGH CONFIDENCE.
 
-The exact RX/TX sub-pipelines and buffer formats remain unresolved. No
-behavioral name beyond the standard IRQ handler name is assigned.
+The RX and TX branches and their principal buffer formats have now been
+separated; see `docs/rx_pipeline.md` and `docs/tx_pipeline.md`. Some
+optional processing and final mixer semantics remain unresolved. No
+behavioral name beyond the standard IRQ handler name is assigned
+because this single IRQ implements both directions and several audio
+mixers.
 
 ## TIM2
 
