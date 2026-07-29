@@ -40,6 +40,8 @@
 -   [ ] Trace board-level electrical functions of `0x4A` and `0x4C`
 -   [x] Identify TLV320AIC3204 as 32-bit I2S BCLK/WCLK master
 -   [x] Recover PE15 TLV320AIC3204 reset lifecycle (HIGH CONFIDENCE role)
+-   [x] Export complete ordered TLV320AIC3204 startup contract and
+    decode its power, routing, mute, and gain phases
 -   [x] Map TLV320AIC3204 control helpers to analog routing, gain,
     MICBIAS, and ADC/DAC mute semantics
 -   [x] Correlate codec IN1L/IN2L/IN2R and gain controls with built-in

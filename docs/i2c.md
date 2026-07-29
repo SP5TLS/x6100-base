@@ -119,6 +119,47 @@ Clock-programming algorithm and register writes: VERIFIED.
 The startup path requests a 100,000-Hz converter rate. This matches the
 raw DSP rate constant recovered in `docs/spi_i2s.md`: HIGH CONFIDENCE.
 
+### Complete codec startup contract
+
+All writes in `FUN_0802f9a4`, including redundant page selections and
+volume writes, are exported in exact execution order in
+`analysis/i2c/tlv320aic3204_startup_sequence.csv`. There are 58 ordered
+steps when the clock helper succeeds, including the helper call and
+the explicit 10-ms delay: VERIFIED.
+
+The sequence has these hardware phases:
+
+1. software-reset the codec and calculate/program the 100-kHz
+   converter clock;
+2. configure 32-bit master I2S, CLKOUT, DAC processing block PRB_P25,
+   and ADC processing block PRB_R1;
+3. select the internal analog supply arrangement, Class-AB outputs,
+   quick-charge timing, and reference power-up behavior;
+4. power both ADCs and initially unmute them at 0-dB digital gain;
+5. power HPL, HPR, LOL, LOR, and both mixer amplifiers, route the left
+   and right DACs to all four outputs, but keep every output driver
+   muted;
+6. power both DACs, disable DAC volume soft-step, unmute both DAC
+   channels, and set their digital volumes to 0 dB;
+7. raise only the left ADC digital volume to +54 dB;
+8. establish initial analog input routes.
+
+Register identities, values, ordering, and the state transitions above
+are VERIFIED against the firmware and TI register guide.
+
+The initial input state is noteworthy. IN2L alone is connected to the
+left MICPGA through 10 kOhm. IN2R and IN3R are simultaneously connected
+to the right MICPGA through separate 10-kOhm paths. The runtime routing
+helper later replaces these complete routing registers when choosing a
+microphone, USB-card line input, or MAIN-board modem input: VERIFIED.
+
+Only four clock/interface writes (`P0_R4`, `P0_R29`, `P0_R30`, and
+`P0_R27`) are conditional on `FUN_0802f0ec` returning success. The
+10-ms wait and all remaining analog/converter setup still execute when
+that helper reports failure: VERIFIED. A compatible implementation
+should normally abort or report the clock failure, but reproducing OEM
+behavior requires preserving this continuation.
+
 ### Operational audio-codec controls
 
 The small helpers following the clock-programming routine have now

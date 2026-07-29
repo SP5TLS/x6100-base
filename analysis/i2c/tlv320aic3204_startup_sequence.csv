@@ -1,0 +1,59 @@
+order,condition,page,register,value,semantic,confidence
+1,always,0,0x00,0x00,select page 0,VERIFIED
+2,always,0,0x01,0x01,software reset,VERIFIED
+3,always,dynamic,dynamic,dynamic,"call FUN_0802f0ec for 100000-Hz converter clock; this helper selects and writes PLL/divider registers",VERIFIED
+4,clock helper returns 1,0,0x00,0x00,select page 0,VERIFIED
+5,clock helper returns 1,0,0x04,0x43,PLL clock-source and divider input configuration,VERIFIED
+6,clock helper returns 1,0,0x1D,0x00,Clock Setting Register 12 default,VERIFIED
+7,clock helper returns 1,0,0x1E,"cached code OR 0x80",power BCLK divider with cached divisor,VERIFIED
+8,clock helper returns 1,0,0x1B,0x3C,32-bit I2S with BCLK and WCLK outputs,VERIFIED
+9,always,delay,delay,10 ms,wait after serial-clock setup,VERIFIED
+10,always,0,0x00,0x00,select page 0,VERIFIED
+11,always,0,0x19,0x06,Clock Setting Register 10,VERIFIED
+12,always,0,0x1A,0x82,power CLKOUT divider with divisor 2,VERIFIED
+13,always,0,0x37,0x06,route auxiliary clock output on MISO/MFP4,VERIFIED
+14,always,0,0x3C,0x19,select DAC processing block PRB_P25,VERIFIED
+15,always,0,0x3D,0x01,select ADC processing block PRB_R1,VERIFIED
+16,always,1,0x00,0x01,select page 1,VERIFIED
+17,always,1,0x01,0x08,disable weak AVDD-to-DVDD connection,VERIFIED
+18,always,1,0x0A,0x03,power HPL/HPR from LDOIN and select 1.8-to-3.6-V range,VERIFIED
+19,always,1,0x3D,0x00,select ADC power mode PTM_R4,VERIFIED
+20,always,1,0x03,0x00,left DAC Class-AB and PTM_P3/P4 defaults,VERIFIED
+21,always,1,0x04,0x00,right DAC Class-AB and PTM_P3/P4 defaults,VERIFIED
+22,always,1,0x47,0x32,set analog-input quick-charge time to 6.4 ms,VERIFIED
+23,always,1,0x7B,0x05,reference power-up configuration,VERIFIED
+24,always,0,0x00,0x00,select page 0,VERIFIED
+25,always,0,0x51,0xC0,power both ADC channels,VERIFIED
+26,always,0,0x52,0x00,unmute both ADC channels with 0-dB fine gain,VERIFIED
+27,always,0,0x53,0x00,set left ADC digital volume to 0 dB,VERIFIED
+28,always,0,0x54,0x00,set right ADC digital volume to 0 dB,VERIFIED
+29,always,1,0x00,0x01,select page 1,VERIFIED
+30,always,1,0x09,0x3F,power HPL HPR LOL LOR and both mixer amplifiers,VERIFIED
+31,always,1,0x0C,0x08,route left DAC reconstruction output to HPL,VERIFIED
+32,always,1,0x0D,0x08,route right DAC reconstruction output to HPR,VERIFIED
+33,always,1,0x0E,0x08,route left DAC reconstruction output to LOL,VERIFIED
+34,always,1,0x0F,0x08,route right DAC reconstruction output to LOR,VERIFIED
+35,always,1,0x10,0x40,mute HPL driver at 0-dB gain code,VERIFIED
+36,always,1,0x11,0x40,mute HPR driver at 0-dB gain code,VERIFIED
+37,always,1,0x12,0x40,mute LOL driver at 0-dB gain code,VERIFIED
+38,always,1,0x13,0x40,mute LOR driver at 0-dB gain code,VERIFIED
+39,always,1,0x14,0x25,configure headphone slow-start and common-mode timing,VERIFIED
+40,always,0,0x00,0x00,select page 0,VERIFIED
+41,always,0,0x3F,0xD6,power both DACs with normal left/right data and disabled volume soft-step,VERIFIED
+42,always,0,0x40,0x00,unmute both DAC channels and keep independent volumes,VERIFIED
+43,always,0,0x41,0x00,set left DAC digital volume to 0 dB,VERIFIED
+44,always,0,0x42,0x00,set right DAC digital volume to 0 dB,VERIFIED
+45,always,0,0x00,0x00,reselect page 0,VERIFIED
+46,always,0,0x53,0x6C,set left ADC digital volume to +54 dB,VERIFIED
+47,always,0,0x00,0x00,reselect page 0,VERIFIED
+48,always,0,0x54,0x00,set right ADC digital volume to 0 dB,VERIFIED
+49,always,0,0x00,0x00,reselect page 0,VERIFIED
+50,always,0,0x41,0x00,reassert left DAC digital volume 0 dB,VERIFIED
+51,always,0,0x00,0x00,reselect page 0,VERIFIED
+52,always,0,0x42,0x00,reassert right DAC digital volume 0 dB,VERIFIED
+53,always,1,0x00,0x01,select page 1,VERIFIED
+54,always,1,0x34,0x10,route IN2L to left MICPGA positive input through 10 kohm,VERIFIED
+55,always,1,0x36,0x40,route common mode to left MICPGA negative input through 10 kohm,VERIFIED
+56,always,1,0x00,0x01,reselect page 1,VERIFIED
+57,always,1,0x37,0x14,route IN2R and IN3R to right MICPGA positive input through 10 kohm each,VERIFIED
+58,always,1,0x39,0x80,route common mode to right MICPGA negative input through 20 kohm,VERIFIED
