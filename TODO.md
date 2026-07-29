@@ -36,9 +36,9 @@
 -   [x] SPI / full-duplex I2S
 -   [x] I2C1/I2C2 masters, codec, variants, and I2C3 slave
 -   [x] Identify I2C2 address `0x10` as CS4272 and decode its startup
--   [ ] Identify I2C2 audio-path devices at `0x4A` and `0x4C`
-    - TLV320AIC3109-Q1 at `0x4C` excluded by incompatible registers:
-      VERIFIED.
+-   [x] Recover complete startup-only control contract for `0x4A`/`0x4C`
+-   [ ] Trace board-level electrical functions of `0x4A` and `0x4C`
+-   [x] Identify TLV320AIC3204 as 32-bit I2S BCLK/WCLK master
 -   [x] Recover SPI2 audio and SPI3 I/Q signal roles from DMA processing
 -   [x] Assign CS4272/alternate converter to SPI3/I2S3 (HIGH CONFIDENCE)
 -   [ ] Verify converter-to-I2S board nets by schematic or signal tracing

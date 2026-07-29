@@ -60,6 +60,12 @@ not use it as their serial-clock source.
 
 External I2S clock ownership: VERIFIED.
 
+TLV320AIC3204 page-0 register `0x1B` receives `0x3C`, selecting 32-bit
+I2S and making BCLK and WCLK outputs. The TLV320AIC3204 is therefore
+the serial-clock master and the STM32 is the slave: VERIFIED. Whether
+the same clocks are distributed to both converter pairs requires
+board-net tracing.
+
 ## DMA framing
 
 Each DMA bank contains 512 halfwords. A stereo frame with two 32-bit
@@ -144,9 +150,9 @@ Exact I2C payloads and device evidence are documented in `docs/i2c.md`.
 ## Independent-implementation guidance
 
 An independent implementation must treat the external sample clock as
-authoritative. It should measure or configure the attached converter
-before fixing sample-rate constants, and must keep all four I2S DMA
-streams phase-aligned at bank boundaries.
+authoritative. It must configure the TLV320AIC3204 dividers and
+master-I2S direction before relying on BCLK/WCLK, and must keep all four
+I2S DMA streams phase-aligned at bank boundaries.
 
 ## Reproducible evidence
 

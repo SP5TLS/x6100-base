@@ -126,6 +126,11 @@ user-facing meaning of every helper remains to be correlated with the
 codec register guide and Linux control fields before final names are
 assigned.
 
+Startup writes page-0 register `0x1B = 0x3C`. This selects 32-bit I2S
+format and makes both BCLK and WCLK outputs: VERIFIED against the
+TLV320AIC3204 register map. The codec is therefore the serial-clock
+master while both STM32 I2S peripherals are slaves.
+
 Primary device references:
 
 - TI TLV320AIC3204 product page:
@@ -201,7 +206,14 @@ The five-byte block is copied directly from firmware address
 `0x0803E0BC`; it is not an inferred register/value pair. Exact payloads
 and ordering: VERIFIED. The device is independent of the converter
 variant selection and is initialized before I2S DMA is enabled:
-VERIFIED. Its identity and physical role remain unknown.
+VERIFIED.
+
+Firmware-level role of `0x4A`: an unconditional startup-configuration
+companion of the audio/IQ subsystem: VERIFIED. BASE 1.1.9 contains no
+reads, later writes, gain changes, frequency changes, or mode-dependent
+accesses to this address: VERIFIED. Firmware alone cannot distinguish
+whether its autonomous hardware function is routing, conditioning,
+conversion, or board-specific control.
 
 If the initial CS4272 write is not acknowledged, `FUN_080244b4` instead
 sends this sequence to address byte `0x98` (7-bit `0x4C`):
@@ -220,6 +232,11 @@ audio startup path, `0x4C` is an alternate sample-converter or closely
 coupled converter-control implementation: HIGH CONFIDENCE. Its exact IC
 identity remains unknown; no device name is assigned.
 
+BASE 1.1.9 contains no reads or runtime writes to `0x4C`: VERIFIED.
+It is managed only as a fixed startup backend. Firmware ignores the
+return value of all four fallback transfers, so their failure does not
+abort startup.
+
 The TI TLV320AIC3109-Q1 was checked as a candidate because it can appear
 at address `0x4C`. It is excluded: VERIFIED. With no preceding page
 selection, the candidate would be on page 0, where register `0x11` is
@@ -235,7 +252,33 @@ Primary exclusion reference:
 
 The machine-readable transaction record is
 `analysis/i2c/i2c2_aux_startup_sequences.csv`; audited device candidates
-are recorded in `analysis/i2c/i2c2_device_candidate_audit.csv`.
+are recorded in `analysis/i2c/i2c2_device_candidate_audit.csv`, and the
+complete ordered policy is in
+`analysis/i2c/i2c2_audio_startup_policy.csv`.
+
+### Required startup transaction contract
+
+The complete firmware-visible control policy is:
+
+1. hold PG8 low;
+2. initialize both STM32 I2S pairs and their DMA streams;
+3. drive PE15 low, wait 1 ms, then drive it high;
+4. initialize TLV320AIC3204 at `0x18`, including 100-kHz dividers and
+   32-bit master-I2S operation;
+5. wait 100 ms;
+6. send the fixed six-transfer sequence to `0x4A`, ignoring results;
+7. enable the DMA/I2S sample machinery, then drive PG8 high;
+8. probe `0x10` using payload `07 03`;
+9. on success, send the remaining seven CS4272 writes;
+10. on failure, wait 10 ms and send the four fixed writes to `0x4C`.
+
+Order, branch, delays, payload lengths, and absence of reads: VERIFIED.
+For `0x4A` and `0x4C`, reproducing these bytes and timing is the complete
+control interface currently observable from firmware.
+
+`FUN_08031890` performs a raw transaction: START, address byte, supplied
+payload bytes, STOP, then an internal post-transfer delay. It does not
+insert an implicit register address: VERIFIED.
 
 ## I2C3 Linux control slave
 
@@ -265,15 +308,16 @@ See `docs/protocol.md` for:
 - Preserve TLV320AIC3204 page selection and clock-divider ordering.
 - Probe and configure the CS4272 at `0x10`; select the still-unidentified
   `0x4C` backend only when the CS4272 probe fails.
+- Treat `0x4A` and `0x4C` as fixed startup protocols; no OEM runtime
+  controls exist for them.
 - Keep I2C3 in slave mode at address `0x72`; it is not part of the
   master peripheral bus.
 
 ## Remaining work
 
 - Recover the I2C1 battery block layout and checksum/version fields.
-- Identify the I2C2 devices at 7-bit addresses `0x4A` and `0x4C`.
-- Compare the remaining candidates by complete register semantics, not
-  by slave address alone; TLV320AIC3109-Q1 is already excluded.
+- Determine the board-level electrical functions of `0x4A` and the
+  `0x4C` fallback by tracing signals; their MCU control is recovered.
 - Verify the HIGH CONFIDENCE CS4272-to-SPI3/I2S3 board connection by
   schematic or direct signal tracing.
 - Map every TLV320AIC3204 helper to its codec register semantics.

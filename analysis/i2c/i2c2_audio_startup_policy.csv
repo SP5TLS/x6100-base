@@ -1,0 +1,14 @@
+order,operation,result_use,confidence
+1,drive PG8 low,not applicable,VERIFIED
+2,configure STM32 SPI2/I2S2 SPI3/I2S3 and DMA,not applicable,VERIFIED
+3,drive PE15 low,not applicable,VERIFIED
+4,delay 1 ms,not applicable,VERIFIED
+5,drive PE15 high,not applicable,VERIFIED
+6,initialize TLV320AIC3204 at 0x18 including 100-kHz dividers and 32-bit master I2S,individual transfer results ignored,VERIFIED
+7,delay 100 ms,not applicable,VERIFIED
+8,send fixed six-transfer startup protocol to 0x4A,all results ignored,VERIFIED
+9,enable I2S DMA/sample machinery,not applicable,VERIFIED
+10,drive PG8 high,not applicable,VERIFIED
+11,write 07 03 to 0x10,result selects converter backend,VERIFIED
+12a,if successful send remaining seven CS4272 writes to 0x10,results ignored,VERIFIED
+12b,if failed delay 10 ms then send four fixed writes to 0x4C,results ignored,VERIFIED
