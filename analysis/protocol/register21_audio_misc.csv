@@ -1,0 +1,9 @@
+bits,historical_label,recovered_effect,confidence
+0..1,micsel,"cache values 0..3; runtime audio routing implements 0=IN1L with MICBIAS 1=IN2L and 2=automatic selection",VERIFIED decode and routes; HIGH CONFIDENCE labels
+2..3,pttmode,"cache values 0..3 at control-object offset 0x19; no downstream reader recovered",VERIFIED cache; HYPOTHESIS effective role
+4,chge,"set or clear bit 0 of persistent control word at 0x2000E984; no direct charger GPIO write in this update path",VERIFIED operation; HIGH CONFIDENCE historical charger-enable label
+5,spmode,"combine with debounced active-low PF15; when both select speaker mode apply receive-audio scalar 0.05",VERIFIED gain path; HIGH CONFIDENCE S/P role
+6,auxiqgen,"on either edge call the board-variant output callback with constant 1; backend is PCA9535 bit 15 or direct PD15",VERIFIED behavior and backends; HYPOTHESIS historical physical label
+7,unused,"no effect in the recovered register-21 update block",HIGH CONFIDENCE
+8..15,sqlthr,"convert unsigned byte directly to float; zero disables the recovered squelch detector and positive values set its comparison threshold",VERIFIED
+16..31,unused,"no effect in the recovered register-21 update block",HIGH CONFIDENCE

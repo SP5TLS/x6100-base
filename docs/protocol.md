@@ -188,6 +188,41 @@ with PF15 and changes the receive-audio scalar by a factor of `0.05`.
 The detailed path is exported in
 `analysis/i2c/audio_spmode_path.csv`.
 
+The remaining register-21 fields have now been audited:
+
+| Bits | Historical label | BASE 1.1.9 behavior |
+| ---: | --- | --- |
+| `2...3` | `pttmode` | cached as a two-bit value; no reader recovered |
+| 4 | `chge` | set/clear bit 0 of persistent word `0x2000E984` |
+| 6 | `auxiqgen` | on either edge, call a variant output with constant 1 |
+| `8...15` | `sqlthr` | unsigned squelch threshold converted directly to float |
+
+Extraction and the listed operations are VERIFIED. The `pttmode`
+effective role remains HYPOTHESIS because the cached byte has no
+recovered downstream reader.
+
+Bit 4 does not directly toggle a charger GPIO in this update path. It
+modifies the persisted control bit that startup also reads while
+initializing the board and battery-management subsystem: VERIFIED.
+The historical charger-enable interpretation is HIGH CONFIDENCE, but
+the later physical switching sequence remains to be recovered.
+
+Bit 6 does not forward the requested zero/one state. Whenever its
+value differs from the cached value, firmware calls the selected board
+callback with the constant argument 1. One backend sets PCA9535 bit 15;
+the other sets PD15: VERIFIED. Startup initially calls the same
+callback with 0 and later with 1. The historical `auxiqgen` name is
+therefore only a HYPOTHESIS for the physical net.
+
+The squelch helper stores the byte as an unscaled floating-point
+threshold and separately records whether it is positive. Zero disables
+the recovered detector; positive values enable comparison with
+hysteresis in the DMA audio path: VERIFIED.
+
+Bits 7 and `16...31` have no observed effect in the update block:
+HIGH CONFIDENCE. Exact field behavior is exported in
+`analysis/protocol/register21_audio_misc.csv`.
+
 IN3R is identified as the MAIN/Linux-board playback path with HIGH
 CONFIDENCE by correlation with `x6100_base_patch` commit `4413870` and
 the `x6100_gui` platform-sound playback path. This is an endpoint
