@@ -13,7 +13,7 @@ FUN_0803022c,5,0x20,0x10,04 00,only if probe succeeds,CS4272 DAC Channel A Volum
 FUN_0803022c,6,0x20,0x10,05 00,only if probe succeeds,CS4272 DAC Channel B Volume,VERIFIED
 FUN_0803022c,7,0x20,0x10,06 10,only if probe succeeds,CS4272 ADC Control: I2S format,VERIFIED
 FUN_0803022c,8,0x20,0x10,07 02,only if probe succeeds,CS4272 Mode Control 2: control port enabled and power up,VERIFIED
-FUN_080244b4,1,0x98,0x4C,10 00,only if 0x10 probe fails,unknown alternate-converter write,VERIFIED
-FUN_080244b4,2,0x98,0x4C,10 C2,after 10 ms delay,unknown alternate-converter write,VERIFIED
+FUN_080244b4,1,0x98,0x4C,10 00,only if 0x10 probe fails and after caller delay of 10 ms,unknown alternate-converter write,VERIFIED
+FUN_080244b4,2,0x98,0x4C,10 C2,after a second 10 ms delay,unknown alternate-converter write,VERIFIED
 FUN_080244b4,3,0x98,0x4C,11 80,after preceding write,unknown alternate-converter write,VERIFIED
 FUN_080244b4,4,0x98,0x4C,14 00,after preceding write,unknown alternate-converter write,VERIFIED

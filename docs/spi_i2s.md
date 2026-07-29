@@ -151,7 +151,10 @@ VERIFIED; endpoint names are cross-correlated with X6100Control,
 If the CS4272 probe fails, startup configures an unidentified device at
 I2C2 address `0x4C` instead. The mutually exclusive branch and its
 placement in audio startup identify it as an alternate sample-converter
-implementation: HIGH CONFIDENCE.
+implementation: HIGH CONFIDENCE. The fallback has a 10-ms delay before
+its first write and another 10-ms delay between its first and second
+writes; exact bytes and result handling are documented in
+`docs/i2c.md`: VERIFIED.
 
 Exact I2C payloads and device evidence are documented in `docs/i2c.md`.
 

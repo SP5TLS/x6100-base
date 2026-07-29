@@ -1,0 +1,19 @@
+order,condition,operation,address_byte,address_7bit,payload_or_delay,result_handling,confidence
+1,always after TLV320AIC3204 startup,delay,N/A,N/A,100 ms,N/A,VERIFIED
+2,always,write,0x94,0x4A,00 00,ignored,VERIFIED
+3,always,write,0x94,0x4A,20 01,ignored,VERIFIED
+4,always,write,0x94,0x4A,00 00 80 3F 00,ignored,VERIFIED
+5,always,write,0x94,0x4A,0B 00,ignored,VERIFIED
+6,always,delay,N/A,N/A,1 ms,N/A,VERIFIED
+7,always,write,0x94,0x4A,0D 01,ignored,VERIFIED
+8,always,delay,N/A,N/A,1 ms,N/A,VERIFIED
+9,always,write,0x94,0x4A,0E 01,ignored,VERIFIED
+10,always,delay,N/A,N/A,1 ms,N/A,VERIFIED
+11,always after I2S DMA setup,write/probe,0x20,0x10,07 03,"zero selects CS4272 branch; nonzero selects fallback",VERIFIED
+12a,probe returned zero,write remaining CS4272 sequence,0x20,0x10,"01 81; 02 00; 03 49; 04 00; 05 00; 06 10; 07 02",individual results ignored,VERIFIED
+12b.1,probe returned nonzero,delay,N/A,N/A,10 ms,N/A,VERIFIED
+12b.2,probe returned nonzero,write,0x98,0x4C,10 00,ignored,VERIFIED
+12b.3,probe returned nonzero,delay,N/A,N/A,10 ms,N/A,VERIFIED
+12b.4,probe returned nonzero,write,0x98,0x4C,10 C2,ignored,VERIFIED
+12b.5,probe returned nonzero,write,0x98,0x4C,11 80,ignored,VERIFIED
+12b.6,probe returned nonzero,write,0x98,0x4C,14 00,ignored,VERIFIED

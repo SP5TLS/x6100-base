@@ -53,6 +53,8 @@
 -   [x] Recover SPI2 audio and SPI3 I/Q signal roles from DMA processing
 -   [x] Verify CS4272 as zero-IF I/Q converter and assign SPI3/I2S3
 -   [x] Assign `0x4C` fallback to the same I/Q interface (HIGH CONFIDENCE)
+-   [x] Export exact `0x4A`/`0x4C` startup bytes, both fallback delays,
+    branch condition, and ignored transfer results
 -   [x] Audit PG8 around converter startup; it remains an input and is
     not a verified reset line
 -   [x] USART

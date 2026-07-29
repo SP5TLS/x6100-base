@@ -378,6 +378,7 @@ Primary device reference:
 `0x94` (7-bit `0x4A`) during audio startup:
 
 ```text
+delay 100 ms after TLV320AIC3204 startup
 00 00
 20 01
 00 00 80 3F 00
@@ -391,7 +392,12 @@ delay 1 ms
 
 The five-byte block is copied directly from firmware address
 `0x0803E0BC`; it is not an inferred register/value pair. Exact payloads
-and ordering: VERIFIED. The device is independent of the converter
+and ordering: VERIFIED. Transfer results from all six writes are
+ignored. There is no delay between the first four writes; the three
+1-ms delays occur after `0B 00`, after `0D 01`, and after `0E 01`:
+VERIFIED.
+
+The device is independent of the converter
 variant selection and is initialized before I2S DMA is enabled:
 VERIFIED.
 
@@ -414,12 +420,18 @@ If the initial CS4272 write is not acknowledged, `FUN_080244b4` instead
 sends this sequence to address byte `0x98` (7-bit `0x4C`):
 
 ```text
+delay 10 ms after failed CS4272 probe
 10 00
 delay 10 ms
 10 C2
 11 80
 14 00
 ```
+
+Both 10-ms delays are real and distinct: one is in the caller before
+entering the fallback helper, and the second is inside the helper
+between `10 00` and `10 C2`: VERIFIED. There are no delays between the
+last three writes, and all four return values are ignored: VERIFIED.
 
 Exact fallback sequence: VERIFIED. Because this branch is mutually
 exclusive with successful CS4272 initialization and occurs in the same
@@ -450,7 +462,9 @@ The machine-readable transaction record is
 `analysis/i2c/i2c2_aux_startup_sequences.csv`; audited device candidates
 are recorded in `analysis/i2c/i2c2_device_candidate_audit.csv`, and the
 complete ordered policy is in
-`analysis/i2c/i2c2_audio_startup_policy.csv`.
+`analysis/i2c/i2c2_audio_startup_policy.csv`. A transfer-by-transfer
+timeline including every delay and return-value decision is in
+`analysis/i2c/i2c2_aux_ordered_timeline.csv`.
 
 ### Required startup transaction contract
 
@@ -469,11 +483,14 @@ The complete firmware-visible control policy is:
    still remains an input;
 8. probe `0x10` using payload `07 03`;
 9. on success, send the remaining seven CS4272 writes;
-10. on failure, wait 10 ms and send the four fixed writes to `0x4C`.
+10. on failure, wait 10 ms, write `10 00` to `0x4C`, wait another
+    10 ms, then write `10 C2`, `11 80`, and `14 00` without further
+    delays.
 
 Order, branch, delays, payload lengths, and absence of reads: VERIFIED.
-For `0x4A` and `0x4C`, reproducing these bytes and timing is the complete
-control interface currently observable from firmware.
+For `0x4A` and `0x4C`, reproducing these bytes, timing, branch condition,
+and ignored-result behavior is the complete control interface currently
+observable from firmware.
 
 The PG8 ODR writes must not be described as converter reset control.
 Central GPIO initialization configures PG8 as a pulled-down input, and
@@ -524,7 +541,9 @@ See `docs/protocol.md` for:
   OEM behavior by reading MAX17205 Status/FStat before accepting data.
 - Determine the board-level electrical functions of `0x4A` and the
   `0x4C` fallback by tracing signals; their MCU control is recovered.
-- Trace the subordinate `0x4A` support function and determine whether
-  the `0x4C` fallback is a converter or a converter-side controller.
+- Determine by board tracing whether `0x4A` is routing, conditioning,
+  or another support function, and whether `0x4C` is the converter
+  itself or a converter-side controller. Firmware provides no further
+  discriminator.
 - Verify whether the hardware-variant branch is selected by board
   revision, device presence, or another condition.

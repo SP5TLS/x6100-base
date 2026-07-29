@@ -11,4 +11,4 @@ order,operation,result_use,confidence
 10,set GPIOG ODR bit 8 while PG8 is configured as input,no physical reset drive observed,VERIFIED
 11,write 07 03 to 0x10,result selects converter backend,VERIFIED
 12a,if successful send remaining seven CS4272 writes to 0x10,results ignored,VERIFIED
-12b,if failed delay 10 ms then send four fixed writes to 0x4C,results ignored,VERIFIED
+12b,"if failed delay 10 ms; write 10 00 to 0x4C; delay 10 ms; send remaining three fixed writes",results ignored,VERIFIED
