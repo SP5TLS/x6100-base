@@ -35,6 +35,9 @@
 -   [x] DAC initialization and frequency-dependent DAC2 control
 -   [x] SPI / full-duplex I2S
 -   [x] I2C1/I2C2 masters, codec, variants, and I2C3 slave
+-   [x] Identify I2C2 address `0x10` as CS4272 and decode its startup
+-   [ ] Identify I2C2 audio-path devices at `0x4A` and `0x4C`
+-   [ ] Map CS4272/alternate converter to the exact I2S peripheral pair
 -   [x] USART
 -   [x] Timers
 -   [x] Confirm no application IWDG/WWDG use and document software reset

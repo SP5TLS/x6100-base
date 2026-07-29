@@ -1,0 +1,19 @@
+function,order,address_byte,address_7bit,payload,condition,interpretation,confidence
+FUN_08030754,1,0x94,0x4A,00 00,always during audio startup,unknown register/value write,VERIFIED
+FUN_08030754,2,0x94,0x4A,20 01,always during audio startup,unknown register/value write,VERIFIED
+FUN_08030754,3,0x94,0x4A,00 00 80 3F 00,always during audio startup,five-byte block sourced at 0x0803E0BC,VERIFIED
+FUN_08030754,4,0x94,0x4A,0B 00,always during audio startup,unknown register/value write,VERIFIED
+FUN_08030754,5,0x94,0x4A,0D 01,after 1 ms delay,unknown register/value write,VERIFIED
+FUN_08030754,6,0x94,0x4A,0E 01,after 1 ms delay,unknown register/value write,VERIFIED
+FUN_0803022c,1,0x20,0x10,07 03,probe and hold powered down,CS4272 Mode Control 2: control port enabled and power down,VERIFIED
+FUN_0803022c,2,0x20,0x10,01 81,only if probe succeeds,CS4272 double-speed slave I2S DAC mode,VERIFIED
+FUN_0803022c,3,0x20,0x10,02 00,only if probe succeeds,CS4272 DAC Control,VERIFIED
+FUN_0803022c,4,0x20,0x10,03 49,only if probe succeeds,CS4272 DAC Volume and Mixing Control,VERIFIED
+FUN_0803022c,5,0x20,0x10,04 00,only if probe succeeds,CS4272 DAC Channel A Volume,VERIFIED
+FUN_0803022c,6,0x20,0x10,05 00,only if probe succeeds,CS4272 DAC Channel B Volume,VERIFIED
+FUN_0803022c,7,0x20,0x10,06 10,only if probe succeeds,CS4272 ADC Control: I2S format,VERIFIED
+FUN_0803022c,8,0x20,0x10,07 02,only if probe succeeds,CS4272 Mode Control 2: control port enabled and power up,VERIFIED
+FUN_080244b4,1,0x98,0x4C,10 00,only if 0x10 probe fails,unknown alternate-converter write,VERIFIED
+FUN_080244b4,2,0x98,0x4C,10 C2,after 10 ms delay,unknown alternate-converter write,VERIFIED
+FUN_080244b4,3,0x98,0x4C,11 80,after preceding write,unknown alternate-converter write,VERIFIED
+FUN_080244b4,4,0x98,0x4C,14 00,after preceding write,unknown alternate-converter write,VERIFIED

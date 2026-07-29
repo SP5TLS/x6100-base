@@ -107,6 +107,21 @@ isolated from the large DMA handler.
 
 Ordering and function relationships: VERIFIED.
 
+## External converter variant
+
+One supported converter is a Cirrus Logic CS4272 at I2C2 address
+`0x10`: VERIFIED from its complete register map and startup sequence.
+Firmware configures it for double-speed, slave, I2S operation, which is
+consistent with the recovered 100,000-Hz raw rate: HIGH CONFIDENCE.
+
+If the CS4272 probe fails, startup configures an unidentified device at
+I2C2 address `0x4C` instead. The mutually exclusive branch and its
+placement in audio startup identify it as an alternate sample-converter
+implementation: HIGH CONFIDENCE. The exact association of either
+variant with SPI2/I2S2 or SPI3/I2S3 remains unresolved.
+
+Exact I2C payloads and device evidence are documented in `docs/i2c.md`.
+
 ## Independent-implementation guidance
 
 An independent implementation must treat the external sample clock as
@@ -118,5 +133,6 @@ streams phase-aligned at bank boundaries.
 
 - `analysis/i2s/rcc_plli2s_refs.csv`;
 - `analysis/i2s/sample_rate_refs.csv`;
+- `analysis/i2c/i2c2_aux_startup_sequences.csv`;
 - `analysis/dma/audio_dma_callers.csv`;
 - `analysis/dma/dma1_stream3_refs.csv`.

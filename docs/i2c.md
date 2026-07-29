@@ -36,7 +36,7 @@ must be shifted right once to obtain the conventional 7-bit address.
 | I2C1 | `0x6C` | `0x36` | battery telemetry block |
 | I2C1 | `0xD4` | `0x6A` | five-output LO clock generator |
 | I2C2 | `0x40` | `0x20` | 16-bit RF-control GPIO expander |
-| I2C2 | `0x20` | `0x10` | hardware-variant device |
+| I2C2 | `0x20` | `0x10` | CS4272 stereo ADC/DAC |
 | I2C2 | `0x30` | `0x18` | TLV320AIC3204 audio codec |
 | I2C2 | `0x94` | `0x4A` | auxiliary startup configuration |
 | I2C2 | `0x98` | `0x4C` | fallback hardware-variant configuration |
@@ -141,24 +141,85 @@ PCA9535-compatible GPIO expander. Device-family identification:
 HIGH CONFIDENCE. It provides one of two primary RF-band output
 implementations; see `docs/rf_switching.md`.
 
-`FUN_08030754` sends a fixed startup sequence to address byte `0x94`
-(7-bit `0x4A`). The writes include register/value pairs and one
-five-byte block. The device is initialized alongside the audio path,
-but its identity and physical role are unknown: VERIFIED transactions,
-unknown semantics.
+### CS4272 at `0x10`
 
-`FUN_0803022c` probes address byte `0x20` (7-bit `0x10`) by writing
-register/value pairs for registers 0 through 7. If the first transfer
-succeeds, startup returns without performing the later `0x98`
-configuration. If it fails, four two-byte writes are sent to address
-byte `0x98` (7-bit `0x4C`).
+`FUN_0803022c` writes this sequence to address byte `0x20` (7-bit
+`0x10`):
 
-Mutually exclusive `0x10`/`0x4C` startup branches: VERIFIED.
+| Register | Value | CS4272 register |
+| ---: | ---: | --- |
+| `0x07` | `0x03` | Mode Control 2 |
+| `0x01` | `0x81` | Mode Control 1 |
+| `0x02` | `0x00` | DAC Control |
+| `0x03` | `0x49` | DAC Volume and Mixing Control |
+| `0x04` | `0x00` | DAC Channel A Volume |
+| `0x05` | `0x00` | DAC Channel B Volume |
+| `0x06` | `0x10` | ADC Control |
+| `0x07` | `0x02` | Mode Control 2 |
 
-Interpretation as support for two board or peripheral variants is HIGH
-CONFIDENCE. Interpreting either device as a specific codec, amplifier,
-clock generator, or power IC would currently be a HYPOTHESIS and is
-not used for naming.
+The address, complete contiguous register map, and register meanings
+match the Cirrus Logic CS4272. Device identification: VERIFIED.
+
+The first write enables the control port while keeping the converter
+powered down. Register `0x01 = 0x81` selects double-speed, slave, I2S
+DAC operation; register `0x06 = 0x10` selects I2S ADC data; and the
+last write clears the power-down bit while retaining control-port
+operation. These field interpretations are VERIFIED against the
+CS4272 data sheet.
+
+Double-speed mode covers 50–100 kHz, so this configuration independently
+supports the recovered 100,000-Hz raw DSP rate. The CS4272 is the
+external stereo sample converter for one high-rate I2S path: HIGH
+CONFIDENCE. The exact SPI2-versus-SPI3 attachment still requires pin or
+data-flow correlation.
+
+Primary device reference:
+
+- Cirrus Logic CS4272 data sheet:
+  <https://statics.cirrus.com/pubs/proDatasheet/CS4272_F2.pdf>
+
+### Devices at `0x4A` and `0x4C`
+
+`FUN_08030754` always sends the following payloads to address byte
+`0x94` (7-bit `0x4A`) during audio startup:
+
+```text
+00 00
+20 01
+00 00 80 3F 00
+0B 00
+delay 1 ms
+0D 01
+delay 1 ms
+0E 01
+delay 1 ms
+```
+
+The five-byte block is copied directly from firmware address
+`0x0803E0BC`; it is not an inferred register/value pair. Exact payloads
+and ordering: VERIFIED. The device is independent of the converter
+variant selection and is initialized before I2S DMA is enabled:
+VERIFIED. Its identity and physical role remain unknown.
+
+If the initial CS4272 write is not acknowledged, `FUN_080244b4` instead
+sends this sequence to address byte `0x98` (7-bit `0x4C`):
+
+```text
+10 00
+delay 10 ms
+10 C2
+11 80
+14 00
+```
+
+Exact fallback sequence: VERIFIED. Because this branch is mutually
+exclusive with successful CS4272 initialization and occurs in the same
+audio startup path, `0x4C` is an alternate sample-converter or closely
+coupled converter-control implementation: HIGH CONFIDENCE. Its exact IC
+identity remains unknown; no device name is assigned.
+
+The machine-readable transaction record is
+`analysis/i2c/i2c2_aux_startup_sequences.csv`.
 
 ## I2C3 Linux control slave
 
@@ -186,16 +247,17 @@ See `docs/protocol.md` for:
 - Program the I2C1 clock generator from the public 5P49V60
   specification and preserve the firmware's ordered LO update.
 - Preserve TLV320AIC3204 page selection and clock-divider ordering.
-- Detect the `0x10`/`0x4C` hardware variant rather than configuring both
-  devices unconditionally.
+- Probe and configure the CS4272 at `0x10`; select the still-unidentified
+  `0x4C` backend only when the CS4272 probe fails.
 - Keep I2C3 in slave mode at address `0x72`; it is not part of the
   master peripheral bus.
 
 ## Remaining work
 
 - Recover the I2C1 battery block layout and checksum/version fields.
-- Identify the I2C2 devices at 7-bit addresses `0x10`, `0x4A`, and
-  `0x4C`.
+- Identify the I2C2 devices at 7-bit addresses `0x4A` and `0x4C`.
+- Correlate the CS4272 with the exact SPI2/I2S2 or SPI3/I2S3 sample
+  interface.
 - Map every TLV320AIC3204 helper to its codec register semantics.
 - Verify whether the hardware-variant branch is selected by board
   revision, device presence, or another condition.
