@@ -188,7 +188,8 @@
 -   [x] Export call graph
 -   [x] Export direct function callers
 -   [x] Export raw interrupt table
--   [ ] Export globals
+-   [x] Export Ghidra global data labels with types, memory blocks, and
+    exact reference counts
 -   [ ] Find peripheral register accesses
 -   [ ] Generate Markdown documentation
 

@@ -163,3 +163,39 @@ Run it with:
 
 Body ranges may overlap when Ghidra models shared chunks or thunks.
 They are evidence for recovered executable coverage, not a linker map.
+
+## Reproducible global-object export
+
+`ghidra_scripts/ExportGlobals.java` exports every global-namespace,
+non-function label for which Ghidra has created data at the exact
+address. The current result is
+`analysis/memory/globals.csv`: 3184 rows, including 2323
+flash-resident objects, 855 SRAM objects, and six apparent CCMRAM
+objects.
+
+The rows are VERIFIED exports of the current Ghidra database, not
+VERIFIED source-language variables. In particular:
+
+- names such as `DAT_...` are generated placeholders;
+- `undefined*` records Ghidra's current data width, not a recovered C
+  type;
+- one logical object may have multiple interior labels;
+- the six CCMRAM rows are known false-positive address constants, as
+  established by the instruction-level audit above.
+
+Each row contains address, current symbol name and source, memory
+block, initialization state, current data type and length, and the
+number of references to the exact address. This makes the table useful
+for automated cross-reference triage without promoting guessed names
+or types.
+
+Run it with:
+
+```sh
+GHIDRA_INSTALL=ghidra-directory \
+JAVA_HOME=jdk-directory \
+./tools/run_headless_globals.sh analysis/memory/globals.csv
+```
+
+All headless wrappers require these environment variables. Repository
+scripts contain no workstation-specific installation paths.
