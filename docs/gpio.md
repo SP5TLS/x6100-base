@@ -159,8 +159,9 @@ identified.
 The primary RF-band callback has now been resolved. One implementation
 uses a PCA9535-compatible I2C2 expander; the other writes the index as
 a binary value on PD9, PD10, PD11, and PD13. A secondary one-hot RF
-index is transmitted through SPI6, with PG12 used by its completion
-path. Exact mappings are documented in `docs/rf_switching.md`.
+index and all ATU controls share a 24-bit SPI6 output image. PG13 is
+SCK, PG14 is MOSI, and PG12 is the output latch. Exact mappings are
+documented in `docs/rf_switching.md` and `docs/atu.md`.
 
 ## Inputs serviced by TIM3
 

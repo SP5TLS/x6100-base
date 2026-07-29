@@ -77,6 +77,62 @@ and component values need board evidence.
 The complete mapping is exported in
 `analysis/atu/relay_bit_mapping.csv`.
 
+## Physical output interface
+
+The ATU relays are not driven by individual STM32 GPIO pins. They share
+a 24-bit serial board-control image at `0x2000C6E4` with the secondary
+RF sub-band selector:
+
+| Control-word bits | Owner |
+| --- | --- |
+| 0...6 | direct ATU bank |
+| 7...13 | frequency-dependent secondary RF bank |
+| 14...19 | six bits of the permuted ATU bank |
+| 20 | ATU topology |
+| 21 | remaining bit of the permuted ATU bank |
+| 22...23 | no recovered assignment |
+
+Word address, ownership, and preservation of unrelated fields during
+each update: VERIFIED.
+
+`FUN_08032CF4` configures the physical serial interface:
+
+| Signal | STM32 resource | Configuration |
+| --- | --- | --- |
+| serial clock | PG13 / SPI6 SCK | AF5 |
+| serial data | PG14 / SPI6 MOSI | AF5 |
+| output latch | PG12 | GPIO output |
+
+SPI6 base address `0x40015400`, alternate-function selection, and GPIO
+roles: VERIFIED. No receive data is used; this is an output-only
+control chain.
+
+The output object at `0x2000C6E0` contains the pending word, last-sent
+word, SPI6 base pointer, and commit callback. On a changed word,
+`FUN_08030144` performs:
+
+1. set PG12 high;
+2. write bits 23...16 to SPI6 DR;
+3. wait for TX-ready;
+4. write bits 15...8;
+5. wait for TX-ready;
+6. write bits 7...0;
+7. wait for TX-ready;
+8. clear PG12;
+9. cache the transmitted word.
+
+Byte order, three writes, ready waits, PG12 pulse, and unchanged-word
+suppression: VERIFIED. `FUN_080301B0` initializes the same object and,
+when SPI6 is active, emits an all-zero three-byte image using the same
+PG12 high-to-low latch sequence.
+
+The firmware does not reveal the exact serial relay-driver ICs between
+the FPC interface and the coils. For an independent controller, the
+required MCU-visible electrical protocol is nevertheless complete:
+SPI6 clock/data plus the PG12 latch around one 24-bit, high-byte-first
+update.
+Reusable disassembly exports are stored under `analysis/atu/`.
+
 ## Physical network evidence
 
 The X6100 service manual identifies the board as `X6100 LPF&ATU V1.2`
@@ -103,6 +159,13 @@ X6100Control 1.1.6 source likewise retains only the aggregate names
 `x6100_atu_network` and `atu_params`; it does not label either byte L
 or C. Bank assignment therefore remains unresolved rather than being
 inferred from conventional packing order.
+
+This unresolved label is not a blocker for a compatible tuner
+implementation. The OEM search treats both banks as opaque integer
+controls and minimizes measured VSWR; it does not calculate complex
+impedance or use component values. Reproducing the two bank values,
+topology bit, relay mapping, settling delays, and VSWR feedback is
+sufficient: HIGH CONFIDENCE.
 
 ### Minimal measurement to assign the banks
 
@@ -221,6 +284,10 @@ symbol is assigned.
 - Preserve the two seven-bit banks and topology bit as separate logical
   fields; do not expose the permuted board-output word as the public
   network representation.
+- Maintain one shared 24-bit output image so ATU changes preserve
+  secondary RF-bank bits 7...13.
+- Emit changed images on SPI6 in high/middle/low byte order while PG12
+  is high, then clear PG12 to latch the outputs.
 - Model the physical tuner as two seven-element component banks plus a
   topology selector, but keep provisional `bank_direct` and
   `bank_permuted` names until the measurement above assigns L and C.
@@ -233,8 +300,9 @@ symbol is assigned.
 
 ## Remaining work
 
-- Assign the two banks to inductors/capacitors and recover component
-  values from schematic or measurement.
+- Optionally assign the two banks to inductors/capacitors and recover
+  component values for electrical documentation; the search algorithm
+  does not require them.
 - Name tune result states 1 and 3 from an independent consumer.
 - Locate the Linux-side owner of any per-frequency tuner memory.
 - Identify whether protection exists in hardware or another firmware

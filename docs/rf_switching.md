@@ -140,10 +140,12 @@ sets exactly one. The complete frequency mapping is:
 | >30 MHz | 6 | 7 |
 
 The image is transmitted as three bytes through SPI6 at `0x40015400`.
-The transfer completion path drives PG12 low. One-hot selection,
-exact integer boundaries, three-byte transfer, SPI6 peripheral, and
-PG12 operation: VERIFIED. The same intervals are included in
-`analysis/frequency_control/frequency_bands.csv`.
+PG13 is SPI6 SCK, PG14 is SPI6 MOSI, and PG12 is a GPIO latch driven
+high before the three bytes and low afterward. One-hot selection,
+exact integer boundaries, byte order, SPI6 peripheral, and GPIO
+operation: VERIFIED. The complete shared ATU/RF output interface is
+documented in `docs/atu.md`; the same frequency intervals are included
+in `analysis/frequency_control/frequency_bands.csv`.
 
 Interpretation as another bank of RF relays or filter switches is HIGH
 CONFIDENCE because the selected bit follows tuned-frequency subregions
