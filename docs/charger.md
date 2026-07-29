@@ -147,12 +147,55 @@ HYPOTHESIS alternatives.
 PF13 has no charger role. It is consumed by the TIM3 telegraph-key
 input path: VERIFIED separation.
 
+### Early MAX17205 transaction contract
+
+The early object at `0x200002D0` is a MAX17205 fuel-gauge interface:
+VERIFIED by the embedded error strings naming `max17205` and
+`max172xx`, together with the accessed register addresses. This
+identification is useful for interpreting the transactions but is not
+required by an independent implementation.
+
+The normal early reads are:
+
+| Operation | Register | Conversion | Failure fallback | Confidence |
+| --- | ---: | --- | ---: | --- |
+| reported capacity | `0x1F` | unsigned 16-bit value converted directly to float | `1800.0` | VERIFIED |
+| pack voltage | `0xDA` | unsigned 16-bit × `1.25` mV | `8000` mV | VERIFIED |
+
+The early display percentage is
+`clamp(capacity * 100 / 1800, 0, 100)`, and capacity `>= 1800` is one
+of the two `FULL` conditions: VERIFIED.
+
+If either read fails, `FUN_08030528` sends three three-byte writes in
+this order:
+
+```
+60 0F 00    register 0x60 = 0x000F
+BA 0B 09    register 0xBA = 0x090B
+BD 22 32    register 0xBD = 0x3222
+```
+
+Byte ordering, values, and order are VERIFIED. Firmware strings
+describe these writes as device reset, hibernate configuration, and
+battery-pack configuration respectively: VERIFIED OEM descriptions.
+There are no delays between the three writes and their individual
+failures only produce diagnostic messages.
+
+These operations configure and read a fuel gauge. They do not program
+charger current or voltage and must not be confused with the separate
+PF12/PCA9535 binary charger-enable path: VERIFIED separation.
+
+The reusable Ghidra exports are stored beside the machine-readable
+sequence in `analysis/charger/`.
+
 ## Independent implementation guidance
 
 A compatible implementation needs:
 
 - the register-21 `chge` policy bit and persistent default;
 - the I2C1 `0x36` block read and exact field scaling;
+- the early MAX17205 `0x1F`/`0xDA` reads and ordered recovery writes
+  when reproducing the pre-Linux service loop;
 - external-power and 90/98 capacity hysteresis;
 - the selected active-low expander-bit or active-high PF12 backend;
 - charging-active telemetry publication.

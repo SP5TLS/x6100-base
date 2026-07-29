@@ -1,0 +1,6 @@
+operation,function,register,wire_payload,result_or_conversion,error_behavior,confidence
+read capacity,FUN_08030478,0x1F,"read 2 bytes","unsigned raw value returned as float; early loop treats 1800 as full-scale capacity","return 1800.0",VERIFIED
+read pack voltage,FUN_080304C0,0xDA,"read 2 bytes","unsigned raw * 1.25 mV","return 8000 mV",VERIFIED
+recovery write,FUN_08030528,0x60,"60 0F 00","write value 0x000F","print device reset failure",VERIFIED
+recovery write,FUN_08030528,0xBA,"BA 0B 09","write value 0x090B","print hibernate config failure",VERIFIED
+recovery write,FUN_08030528,0xBD,"BD 22 32","write value 0x3222","print battery pack config failure",VERIFIED

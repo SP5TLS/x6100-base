@@ -79,6 +79,14 @@ A battery-pack controller or pack-side MCU role for address `0x36` is
 HIGH CONFIDENCE. The device protocol and IC identity are unknown, so no
 final device name is assigned.
 
+The early pre-Linux service loop also uses a distinct MAX17205
+fuel-gauge object. It reads capacity register `0x1F`, pack-voltage
+register `0xDA`, and on failure writes registers `0x60`, `0xBA`, and
+`0xBD` in a fixed recovery sequence: VERIFIED. This early interface and
+the runtime `0x36` block reader are separate firmware objects; whether
+they ultimately reach the same physical pack subsystem cannot be
+proved from their object layout alone.
+
 On transfer failure, `FUN_08031cfc`:
 
 - disables I2C1;
