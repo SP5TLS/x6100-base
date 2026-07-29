@@ -92,8 +92,9 @@
 -   [x] Recover BASE IAP commands and complete 1K XMODEM sender contract
 -   [ ] Resolve current OEM Linux termios `0x1009` versus BASE 1.1.9
     1,500,000-baud initializer by hardware measurement
--   [ ] Recover BASE IAP post-transfer jump/reset behavior from
-    boot-resident code or hardware observation
+-   [x] Bound BASE IAP post-transfer behavior: Linux sends no command
+    after EOT ACK, and the exact jump/reset path resides in the missing
+    `0x08000000`–`0x0801FFFF` boot-resident range
 -   [x] Verify ATU tune flag and Linux boot handshake
 -   [x] Recover UART flow packet layout and metadata producers
 -   [x] Trace `vfoa_freq`/`vfob_freq` through LO synthesizer programming

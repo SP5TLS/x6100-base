@@ -15,6 +15,14 @@
 The image extent is derived from the load address plus the exact binary
 size.
 
+The file contains no bytes for `0x08000000`–`0x0801FFFF`: VERIFIED.
+That omitted 128 KiB range includes separately accessed persistent
+blocks at `0x08004000` and `0x08008000`, and with HIGH CONFIDENCE also
+contains the boot-resident IAP path that selects the application at
+`0x08020000`. Its internal code/data subdivision and the IAP
+post-transfer jump/reset mechanism cannot be recovered from this
+application-only image.
+
 The vector table contains 108 words: 16 Cortex-M core entries followed
 by 92 STM32F427 external interrupt entries. Code begins immediately at
 `0x080201B0`: VERIFIED.
@@ -118,6 +126,9 @@ load image. Calibration framing is documented in `docs/protocol.md`.
 - exact internal subdivision of the combined read-only flash region;
 - exact role of the second runtime-array word at `0x0807C5CC`;
 - meaning of the final 48-byte image trailer;
+- executable and persistent-data subdivision below `0x08020000`;
+- exact boot-resident IAP post-transfer validation and application
+  entry mechanism;
 - retained or backup-memory use by the bootloader;
 - worst-case stack and dynamic-allocation high-water marks.
 

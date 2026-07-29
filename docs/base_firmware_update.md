@@ -119,9 +119,49 @@ image-verification request follows XMODEM in this code path: VERIFIED.
 
 Consequently, the BASE IAP implementation itself must decide how and
 when to leave the bootloader after the final ACK: HIGH CONFIDENCE.
-That behavior cannot be recovered from the Linux application alone and
-must be found in the BASE-resident IAP/boot code or observed on
-hardware.
+
+The supplied decrypted BASE file is not a complete flash dump. Its
+first word is the application initial MSP and its second word is the
+application reset vector. Ghidra maps that first byte at `0x08020000`,
+and the application itself installs `0x08020000` in `SCB->VTOR`:
+VERIFIED. The file therefore contains only
+`0x08020000`–`0x0807FB70`; it contains no bytes for
+`0x08000000`–`0x0801FFFF`: VERIFIED.
+
+The older 1.1.6 reverse-engineering project independently maps its
+application vector table at the same `0x08020000`: VERIFIED. The
+encrypted `.xgf` and decrypted `.bin` supplied for 1.1.9 also have the
+same 392048-byte extent. The container does not carry an appended copy
+of the omitted flash range: VERIFIED extent.
+
+The missing 128 KiB range is the expected location of the custom code
+that runs after the GPIO-strap reset and selects the application vector
+table. It also contains separately addressed persistent blocks at
+`0x08004000` and `0x08008000`, so the whole omitted range must not be
+labelled as executable bootloader code. Presence of boot-resident
+entry/exit code somewhere in that range: HIGH CONFIDENCE; its exact
+boundaries: unknown.
+
+No BASE-side XMODEM receiver or final-EOT control path can therefore be
+traced in the supplied application image. The observable software
+contract ends as follows:
+
+1. BASE acknowledges EOT with `0x06`.
+2. The Linux updater issues no further BASE command or reset.
+3. Linux immediately returns ownership of the UART to the normal
+   packet worker.
+
+Steps 1–3: VERIFIED from the Linux updater. Automatic return to the
+normal BASE application is required by the OEM workflow and is
+therefore HIGH CONFIDENCE. Whether the omitted code uses
+`SYSRESETREQ`, a direct vector-table jump, a watchdog, or another
+mechanism remains unknown. The application's own verified
+`SYSRESETREQ` path is the controlled power-off path and is not evidence
+for IAP completion.
+
+Recovering the exact mechanism requires a dump or executable image of
+`0x08000000`–`0x0801FFFF`. It is not recoverable from either supplied
+application binary or the Linux ELF: VERIFIED evidence boundary.
 
 ## Independent updater checklist
 
@@ -134,8 +174,10 @@ hardware.
 7. Require the two-byte XMODEM start ending in `C` or `c`.
 8. Send 1024-byte, `0xFF`-padded CRC packets and require ACK.
 9. Send EOT and require ACK.
-10. Resume normal UART handling only after resolving the post-transfer
-    boot behavior on real hardware.
+10. Resume normal UART handling after the final ACK; tolerate the
+    application startup interval before requiring normal packets.
 
-Steps 1–9 reproduce the recovered OEM Linux behavior: VERIFIED. Step
-10 deliberately keeps the unresolved BASE-side exit behavior explicit.
+Steps 1–10 reproduce the recovered OEM Linux behavior: VERIFIED. An
+independent BASE bootloader must define and test its own post-EOT
+validation and application-entry policy because the OEM mechanism is
+not present in the available artifacts.

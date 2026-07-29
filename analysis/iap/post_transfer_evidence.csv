@@ -1,0 +1,7 @@
+artifact,evidence,conclusion,confidence
+X6100_BBFW_V1.1.9_251127001.bin,"392048 bytes; first two words 0x20030000 and 0x08034A19; mapped at 0x08020000","application-only extent is 0x08020000-0x0807FB70",VERIFIED
+X6100_BBFW_V1.1.9_251127001.xgf,"same 392048-byte extent as decrypted application","container does not append the omitted lower flash range",VERIFIED
+X6100_BBFW_V1.1.6_221112001.bin.xml,"vector-table memory section starts at 0x08020000","older 1.1.6 application uses the same base",VERIFIED
+x6100_ui_v100,"after EOT ACK the updater resumes its normal UART worker without another command or reset","Linux delegates bootloader exit to BASE",VERIFIED
+BASE lower flash,"no bytes for 0x08000000-0x0801FFFF occur in the supplied application file","exact OEM IAP EOT handler and application-entry mechanism are unavailable",VERIFIED
+OEM update workflow,"normal UART worker is resumed immediately after successful transfer","BASE returns to its normal application automatically",HIGH CONFIDENCE

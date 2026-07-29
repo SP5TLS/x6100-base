@@ -93,7 +93,7 @@ comparing those properties off-target.
 | --- | --- | --- |
 | I2C3 slave | register windows, framing, boot handshake | recovered on BASE and current OEM Linux |
 | USART6 flow | 4136-byte packet and CRC | recovered; physical baud conflict must be measured |
-| BASE IAP | GPIO boot/reset, commands, 1K XMODEM | Linux side recovered; BASE post-transfer exit unresolved |
+| BASE IAP | GPIO boot/reset, commands, 1K XMODEM | Linux contract recovered; exact OEM post-transfer mechanism is outside the application image |
 | control dispatcher | apply only documented active/partially-active register fields; preserve cached/unused slots | recovered |
 
 Linux integration is not required for the first electrical bring-up.
