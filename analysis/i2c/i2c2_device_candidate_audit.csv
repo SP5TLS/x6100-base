@@ -1,0 +1,3 @@
+address_7bit,candidate,evidence,result,confidence
+0x10,Cirrus Logic CS4272,"address and complete register 0x01-0x07 startup map match",identified,VERIFIED
+0x4C,TI TLV320AIC3109-Q1,"candidate page-0 register 0x11 requires 0xFF and register 0x14 is read-only/reset 0x78; firmware writes 0x80 and 0x00 without selecting another page",excluded,VERIFIED

@@ -220,8 +220,22 @@ audio startup path, `0x4C` is an alternate sample-converter or closely
 coupled converter-control implementation: HIGH CONFIDENCE. Its exact IC
 identity remains unknown; no device name is assigned.
 
+The TI TLV320AIC3109-Q1 was checked as a candidate because it can appear
+at address `0x4C`. It is excluded: VERIFIED. With no preceding page
+selection, the candidate would be on page 0, where register `0x11` is
+reserved and must be written as `0xFF`, while register `0x14` is
+read-only with reset value `0x78`. The firmware instead writes
+`0x11 = 0x80` and `0x14 = 0x00`. Address coincidence alone is therefore
+not valid identification evidence.
+
+Primary exclusion reference:
+
+- TI TLV320AIC3109-Q1 data sheet:
+  <https://www.ti.com/lit/ds/symlink/tlv320aic3109-q1.pdf>
+
 The machine-readable transaction record is
-`analysis/i2c/i2c2_aux_startup_sequences.csv`.
+`analysis/i2c/i2c2_aux_startup_sequences.csv`; audited device candidates
+are recorded in `analysis/i2c/i2c2_device_candidate_audit.csv`.
 
 ## I2C3 Linux control slave
 
@@ -258,6 +272,8 @@ See `docs/protocol.md` for:
 
 - Recover the I2C1 battery block layout and checksum/version fields.
 - Identify the I2C2 devices at 7-bit addresses `0x4A` and `0x4C`.
+- Compare the remaining candidates by complete register semantics, not
+  by slave address alone; TLV320AIC3109-Q1 is already excluded.
 - Verify the HIGH CONFIDENCE CS4272-to-SPI3/I2S3 board connection by
   schematic or direct signal tracing.
 - Map every TLV320AIC3204 helper to its codec register semantics.
