@@ -1,6 +1,6 @@
-buffer_address,offset,width,signedness,conversion,destination,interpretation,confidence
-0x2000BF9C,0x0C,2,unsigned,"raw * 0.0039",0x20000110,capacity percentage used by 90 and 98 thresholds,VERIFIED arithmetic; HIGH CONFIDENCE quantity
-0x2000BFA0,0x10,2,signed,"raw / 256",0x20000118,current or status-like telemetry,VERIFIED arithmetic; HYPOTHESIS quantity
-0x2000BFA6,0x16,2,signed,"raw * 0.15625",0x20000114,current or status-like telemetry,VERIFIED arithmetic; HYPOTHESIS quantity
-0x2000C144,0x1B4,2,unsigned,"raw * 1.25",0x200000F4,battery voltage-like value,VERIFIED arithmetic; HIGH CONFIDENCE quantity
-ADC2 source 0,N/A,N/A,unsigned,"raw * 4.835165",0x200000F0,external supply voltage-like value,VERIFIED arithmetic; HIGH CONFIDENCE quantity
+buffer_address,offset,MAX17205_register,width,signedness,firmware_conversion,destination,firmware_consumers,Linux_flow,confidence
+0x2000BF9C,0x0C,0x06 RepSOC,2,unsigned,"raw * 0.0039",0x20000110,"90/98 charger thresholds; capacity setter","flow offset 0x100E: integer percentage byte",VERIFIED
+0x2000BFA0,0x10,0x08 Temp,2,signed,"raw / 256",0x20000118,no downstream reader recovered,not published,VERIFIED
+0x2000BFA6,0x16,0x0B AvgCurrent,2,signed,"raw * 0.15625",0x20000114,no downstream reader recovered,not published,VERIFIED register and arithmetic; HIGH CONFIDENCE 10 mOhm sense scale
+0x2000C144,0x1B4,0xDA Batt,2,unsigned,"raw * 1.25 mV",0x200000F4,"external-power hysteresis; voltage setter","flow offset 0x100D: internal mV * 0.01",VERIFIED
+ADC2 source 0,N/A,N/A,N/A,unsigned,"raw * 4.835165",0x200000F0,"external-power hysteresis; voltage setter","flow offset 0x100C: internal mV-like value * 0.01",VERIFIED arithmetic and path; HIGH CONFIDENCE physical quantity

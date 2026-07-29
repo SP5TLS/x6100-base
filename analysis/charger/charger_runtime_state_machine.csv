@@ -1,7 +1,10 @@
 phase,condition,operation,hardware_effect,confidence
-schedule,"call counter has not reached 5000","increment counter and return","none",VERIFIED
-sample,"counter reaches 5000 and phase is read","I2C1 combined read: address byte 0x6C; register 0x00; destination 0x2000BF90; length 0x200","read battery telemetry block from 7-bit address 0x36",VERIFIED
-sample,"I2C read succeeds","decode offsets 0x0C; 0x10; 0x16; 0x1B4 and sample ADC2 source 0","update capacity; current/status-like values; battery voltage; external voltage",VERIFIED arithmetic; HIGH CONFIDENCE physical quantities
+schedule,"primary call counter has not reached 5000","increment counter and return","none",VERIFIED
+sample,"primary counter reaches 5000 and phase is read","I2C1 combined read: address byte 0x6C; register 0x00; destination 0x2000BF90; length 0x200","read all 256 two-byte MAX17205 registers from 7-bit address 0x36; set phase to evaluate",VERIFIED
+defer,"phase is evaluate and secondary counter has not reached 20","increment secondary counter and retain evaluate phase","no I2C read and no charger decision",VERIFIED
+evaluate,"phase is evaluate and secondary counter reaches 20","publish capacity; sample ADC2; run charger and external-power decisions; return phase to read","next block read occurs at the following primary 5000-call tick",VERIFIED
+sample,"I2C read succeeds","decode RepSOC 0x06; Temp 0x08; AvgCurrent 0x0B; Batt 0xDA","update capacity; temperature; average current; battery voltage; set sample-valid",VERIFIED
+sample_failure,"I2C read fails","increment failure counter; clear all four decoded values; clear sample-valid; set phase to evaluate","no register-level validation or retry in this function",VERIFIED
 policy,"register 21 bit 4 chge is zero","request charger inactive","callback 0x2000C6C8=0; PF12 low; publish inactive",VERIFIED
 source,"chge is one but external power state is absent","request charger inactive","callback 0x2000C6C8=0; PF12 low; publish inactive",VERIFIED
 start,"chge is one; external power is present; charger is inactive; capacity is below 90","request charger active","callback 0x2000C6C8=1; PF12 high; publish active",VERIFIED

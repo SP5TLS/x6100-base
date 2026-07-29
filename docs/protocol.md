@@ -598,9 +598,9 @@ labels.
 | `0x1009` | 1 | TX power, tenths | `TIM3_IRQHandler` saturates `FUN_0802442c() * 10` to 8 bits | HIGH CONFIDENCE |
 | `0x100A` | 1 | VSWR, tenths | `TIM3_IRQHandler` saturates `FUN_08024454() * 10` to 8 bits | HIGH CONFIDENCE |
 | `0x100B` | 1 | ALC level | converted from `FUN_08024440()` to an 8-bit value | HIGH CONFIDENCE |
-| `0x100C` | 1 | external voltage | producer scales an internal measurement by `0.01` | HIGH CONFIDENCE |
-| `0x100D` | 1 | battery voltage | producer scales an internal measurement by `0.01` | HIGH CONFIDENCE |
-| `0x100E` | 1 | battery capacity | battery monitor converts its percentage-like value to 8 bits | HIGH CONFIDENCE |
+| `0x100C` | 1 | external voltage | ADC2-derived internal value × `0.01`; tenths of a volt | VERIFIED path; HIGH CONFIDENCE unit |
+| `0x100D` | 1 | battery voltage | MAX17205 `Batt` millivolts × `0.01`; tenths of a volt | VERIFIED |
+| `0x100E` | 1 | battery capacity | integer conversion of MAX17205 `RepSOC` | VERIFIED |
 | `0x100F` | 1 | reserved | copied with the preceding three bytes | VERIFIED layout |
 | `0x1010` | 4 | ATU parameters | topology and two seven-bit bank values supplied by the ATU sequence; high byte retained | VERIFIED |
 | `0x1014` | 12 | reserved | no packet-builder writes observed | HIGH CONFIDENCE |

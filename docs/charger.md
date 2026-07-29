@@ -3,8 +3,9 @@
 ## Scope
 
 This document describes the firmware-visible behavior needed for an
-independent implementation. It intentionally does not assign an exact
-part number to the charger or battery-pack controller.
+independent implementation. The fuel gauge is identified as MAX17205;
+the separate charger IC does not need to be identified because firmware
+controls it only through a binary enable line.
 
 The two relevant routines are the early service loop
 `FUN_08032500` and the runtime controller `FUN_0802d878`. The exact
@@ -27,9 +28,9 @@ hardware: HIGH CONFIDENCE semantic role; VERIFIED data flow.
 
 ## Battery telemetry transaction
 
-Every 5000 calls the runtime routine alternates between acquiring a
-battery block and evaluating charger state. The acquisition is an I2C1
-combined write/repeated-start/read:
+The runtime routine has two nested dividers. Every 5000 calls it
+services its current phase. The read phase performs an I2C1 combined
+write/repeated-start/read:
 
 ```
 address byte = 0x6C (7-bit address 0x36)
@@ -41,20 +42,61 @@ length       = 0x200 bytes
 Transaction parameters and ordering are VERIFIED. The decoded fields
 used by this routine are:
 
-| Offset | Conversion | Firmware use | Confidence |
+The 512 bytes are a contiguous snapshot of the 256 two-byte registers
+on the MAX17205 primary `0x00`–`0xFF` page: VERIFIED by the device
+address, embedded `max17205` strings, register numbers, and matching
+scale factors. Buffer offset is therefore `register × 2`.
+
+| Offset | Register | Firmware conversion and use | Confidence |
 | ---: | --- | --- | --- |
-| `0x0C` | unsigned 16-bit × `0.0039` | capacity compared with 90 and 98 | VERIFIED arithmetic; HIGH CONFIDENCE quantity |
-| `0x10` | signed 16-bit ÷ `256` | published telemetry | VERIFIED arithmetic; HYPOTHESIS quantity |
-| `0x16` | signed 16-bit × `0.15625` | published telemetry | VERIFIED arithmetic; HYPOTHESIS quantity |
-| `0x1B4` | unsigned 16-bit × `1.25` | battery-voltage-like value | VERIFIED arithmetic; HIGH CONFIDENCE quantity |
+| `0x0C` | `0x06 RepSOC` | unsigned × `0.0039`; 90/98 thresholds and Linux capacity | VERIFIED |
+| `0x10` | `0x08 Temp` | signed ÷ `256`; stored but no downstream reader recovered | VERIFIED |
+| `0x16` | `0x0B AvgCurrent` | signed × `0.15625`; stored but no downstream reader recovered | VERIFIED register/arithmetic; HIGH CONFIDENCE 10-mΩ sense scaling |
+| `0x1B4` | `0xDA Batt` | unsigned × `1.25` mV; power detection and Linux battery voltage | VERIFIED |
 
 ADC2 source 0 is separately multiplied by `4.835165` and treated as an
 external-supply-voltage-like value: VERIFIED arithmetic; HIGH
 CONFIDENCE physical interpretation.
 
-The exact meanings of the two signed telemetry fields remain unknown.
-An independent implementation should preserve their signed arithmetic
-and scaling without inventing names.
+On a successful read the four values are decoded and the sample-valid
+byte is set. On failure the failure counter at `0x200000DC` is
+incremented, all four decoded values are cleared, and sample-valid is
+cleared: VERIFIED.
+
+The evaluate phase does not run on the next 5000-call tick. A secondary
+modulo-20 counter delays it for 20 such ticks. Only then does firmware
+publish capacity, sample ADC2, make charger/power decisions, and return
+to the read phase. The next block read occurs on the following
+5000-call tick: VERIFIED. Thus an exact implementation must preserve
+the `5000 × 20` deferred evaluation, not model the phases as simple
+alternation.
+
+No other byte in the 512-byte buffer has a direct firmware read.
+Specifically, BASE 1.1.9 does not inspect the MAX17205 Status register,
+device/version identification, initialization-ready state, or any
+checksum after the bulk transfer: VERIFIED direct-reference audit.
+The I2C transaction return code is the only validation applied to this
+snapshot.
+
+The complete direct-reference audit is
+`analysis/charger/max17205_block_refs.csv`.
+
+### Linux telemetry path
+
+`RepSOC` is converted to unsigned integer and its low byte is written to
+flow offset `0x100E`: VERIFIED. For valid 0–100% data this is the
+integer battery percentage.
+
+The internal external- and battery-voltage values are each multiplied
+by `0.01`, converted to unsigned integer, and truncated to one byte.
+They are published at flow offsets `0x100C` and `0x100D` respectively:
+VERIFIED. With the recovered millivolt internal scale, the bytes
+represent tenths of a volt: HIGH CONFIDENCE.
+
+`Temp` and `AvgCurrent` are decoded into globals but no downstream
+reader or Linux-flow setter was recovered. They are not published by
+the BASE 1.1.9 flow packet: VERIFIED direct-reference and call-path
+audit.
 
 ## Runtime charger state machine
 
@@ -181,8 +223,10 @@ battery-pack configuration respectively: VERIFIED OEM descriptions.
 There are no delays between the three writes and their individual
 failures only produce diagnostic messages.
 
-These operations configure and read a fuel gauge. They do not program
-charger current or voltage and must not be confused with the separate
+These operations configure and read the same register family used by
+the runtime `0x36` bulk snapshot: VERIFIED protocol correlation. They
+do not program charger current or voltage and must not be confused with
+the separate
 PF12/PCA9535 binary charger-enable path: VERIFIED separation.
 
 The reusable Ghidra exports are stored beside the machine-readable

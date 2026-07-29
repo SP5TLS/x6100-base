@@ -62,6 +62,8 @@
     hysteresis, and ordered PF12/PCA9535 actuation; exclude PF13
 -   [x] Recover early MAX17205 capacity/voltage reads and ordered
     reset/hibernate/pack-configuration recovery writes
+-   [x] Map the runtime `0x36`/512-byte MAX17205 snapshot, its four
+    consumed registers, failure behavior, cadence, and Linux fields
 -   [ ] Identify the physical PE13 and PF11 nets and reconcile early
     PD3 charge-loop reuse with its normal `+5R` role
 

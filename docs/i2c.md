@@ -33,7 +33,7 @@ must be shifted right once to obtain the conventional 7-bit address.
 
 | Bus | Address byte in firmware | 7-bit address | Observed use |
 | --- | ---: | ---: | --- |
-| I2C1 | `0x6C` | `0x36` | battery telemetry block |
+| I2C1 | `0x6C` | `0x36` | MAX17205 fuel gauge |
 | I2C1 | `0xD4` | `0x6A` | five-output LO clock generator |
 | I2C2 | `0x40` | `0x20` | 16-bit RF-control GPIO expander |
 | I2C2 | `0x20` | `0x10` | CS4272 stereo ADC/DAC |
@@ -66,26 +66,20 @@ destination         = 0x2000BF90
 length              = 0x200 bytes
 ```
 
-It extracts fields at offsets `0x0C`, `0x10`, `0x16`, and `0x1B4`,
-using exact scale factors `0.0039`, `1/256`, `0.15625`, and `1.25`.
-The first field drives the 90/98 charger hysteresis, while the last is
-used as a battery-voltage-like value: VERIFIED arithmetic; HIGH
-CONFIDENCE physical quantities. The two signed middle fields remain
-semantically unresolved.
+The block is the complete 256-word MAX17205 primary `0x00`–`0xFF`
+register page. Firmware reads `RepSOC`, `Temp`, `AvgCurrent`, and
+`Batt` at buffer offsets `0x0C`, `0x10`, `0x16`, and `0x1B4`:
+VERIFIED by device address, embedded OEM strings, register mapping, and
+scale factors.
 
 The complete transaction, field table, charger state machine, and
 physical GPIO/expander actuation are documented in `docs/charger.md`.
-A battery-pack controller or pack-side MCU role for address `0x36` is
-HIGH CONFIDENCE. The device protocol and IC identity are unknown, so no
-final device name is assigned.
 
-The early pre-Linux service loop also uses a distinct MAX17205
-fuel-gauge object. It reads capacity register `0x1F`, pack-voltage
+The early pre-Linux service loop uses another software object for the
+same MAX17205 register protocol. It reads capacity register `0x1F`,
+pack-voltage
 register `0xDA`, and on failure writes registers `0x60`, `0xBA`, and
-`0xBD` in a fixed recovery sequence: VERIFIED. This early interface and
-the runtime `0x36` block reader are separate firmware objects; whether
-they ultimately reach the same physical pack subsystem cannot be
-proved from their object layout alone.
+`0xBD` in a fixed recovery sequence: VERIFIED.
 
 On transfer failure, `FUN_08031cfc`:
 
@@ -512,8 +506,8 @@ See `docs/protocol.md` for:
 
 - Keep I2C1 recovery available; a failed pack transaction currently
   resets and clocks the physical bus before retrying later.
-- Treat the I2C1 512-byte block as an external protocol, not as a C
-  structure to copy blindly.
+- Treat the I2C1 512-byte block as a MAX17205 register snapshot, not as
+  an OEM C structure.
 - Program the I2C1 clock generator from the public 5P49V60
   specification and preserve the firmware's ordered LO update.
 - Preserve TLV320AIC3204 page selection and clock-divider ordering.
@@ -526,7 +520,8 @@ See `docs/protocol.md` for:
 
 ## Remaining work
 
-- Recover the I2C1 battery block layout and checksum/version fields.
+- Determine whether an independent implementation should improve on
+  OEM behavior by reading MAX17205 Status/FStat before accepting data.
 - Determine the board-level electrical functions of `0x4A` and the
   `0x4C` fallback by tracing signals; their MCU control is recovered.
 - Trace the subordinate `0x4A` support function and determine whether
