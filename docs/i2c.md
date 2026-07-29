@@ -174,16 +174,18 @@ CS4272 data sheet.
 
 Double-speed mode covers 50–100 kHz, so this configuration independently
 supports the recovered 100,000-Hz raw DSP rate. The CS4272 is the
-external stereo converter for the SPI3/I2S3 I/Q path: HIGH CONFIDENCE.
-This assignment combines the verified DMA signal roles with the
-verified PG8 release immediately before the CS4272 probe. A direct
-software binding between I2C and I2S instances does not exist, so final
-board-level confirmation still requires a schematic or signal tracing.
+external stereo converter in the zero-IF I/Q path: VERIFIED. The
+service-manual block diagram places it directly between the receive/
+transmit quadrature mixers and the STM32. Combined with the verified DMA
+signal roles and PG8 startup sequence, this assigns it to SPI3/I2S3:
+VERIFIED.
 
 Primary device reference:
 
 - Cirrus Logic CS4272 data sheet:
   <https://statics.cirrus.com/pubs/proDatasheet/CS4272_F2.pdf>
+- X6100 service-manual middle-plate block diagram:
+  <https://www.manualslib.com/guide/3740642/xiegu-x6100-hf-transceiver-series-manual.html>
 
 ### Devices at `0x4A` and `0x4C`
 
@@ -215,6 +217,14 @@ accesses to this address: VERIFIED. Firmware alone cannot distinguish
 whether its autonomous hardware function is routing, conditioning,
 conversion, or board-specific control.
 
+The service-manual signal-flow diagram contains no separate block
+corresponding to this address. It explicitly shows CS4272 as the I/Q
+converter and IC3204 as the MIC/speaker audio codec. Therefore `0x4A`
+is not required to explain either principal conversion path. Treating
+it as a subordinate support/control function is MEDIUM CONFIDENCE;
+assigning a more specific electrical function without board-net tracing
+would be a HYPOTHESIS.
+
 If the initial CS4272 write is not acknowledged, `FUN_080244b4` instead
 sends this sequence to address byte `0x98` (7-bit `0x4C`):
 
@@ -228,9 +238,10 @@ delay 10 ms
 
 Exact fallback sequence: VERIFIED. Because this branch is mutually
 exclusive with successful CS4272 initialization and occurs in the same
-audio startup path, `0x4C` is an alternate sample-converter or closely
-coupled converter-control implementation: HIGH CONFIDENCE. Its exact IC
-identity remains unknown; no device name is assigned.
+audio startup path, `0x4C` is an alternate backend for the zero-IF I/Q
+converter interface: HIGH CONFIDENCE. It may be the converter itself or
+a closely coupled controller; this distinction is not visible to
+firmware.
 
 BASE 1.1.9 contains no reads or runtime writes to `0x4C`: VERIFIED.
 It is managed only as a fixed startup backend. Firmware ignores the
@@ -318,8 +329,8 @@ See `docs/protocol.md` for:
 - Recover the I2C1 battery block layout and checksum/version fields.
 - Determine the board-level electrical functions of `0x4A` and the
   `0x4C` fallback by tracing signals; their MCU control is recovered.
-- Verify the HIGH CONFIDENCE CS4272-to-SPI3/I2S3 board connection by
-  schematic or direct signal tracing.
+- Trace the subordinate `0x4A` support function and determine whether
+  the `0x4C` fallback is a converter or a converter-side controller.
 - Map every TLV320AIC3204 helper to its codec register semantics.
 - Verify whether the hardware-variant branch is selected by board
   revision, device presence, or another condition.

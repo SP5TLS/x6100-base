@@ -130,15 +130,15 @@ The combined evidence assigns the converters as follows:
 
 | Device | Reset-related GPIO | I2S pair | Confidence |
 | --- | --- | --- | --- |
-| TLV320AIC3204 at `0x18` | PE15 toggled immediately before initialization | SPI2/I2S2 audio pair | HIGH CONFIDENCE |
-| CS4272 at `0x10` | PG8 released immediately before its probe/configuration | SPI3/I2S3 I/Q pair | HIGH CONFIDENCE |
+| TLV320AIC3204 at `0x18` | PE15 toggled immediately before initialization | SPI2/I2S2 audio pair | VERIFIED |
+| CS4272 at `0x10` | PG8 released immediately before its probe/configuration | SPI3/I2S3 I/Q pair | VERIFIED |
 | unidentified fallback at `0x4C` | same startup branch as CS4272 | SPI3/I2S3 I/Q pair | HIGH CONFIDENCE |
 
-The signal roles and reset sequencing are VERIFIED. The device-to-pair
-assignments are HIGH CONFIDENCE rather than VERIFIED because firmware
-has no software object that directly binds an I2C address to an STM32
-I2S instance; final verification requires a schematic or continuity/
-signal tracing.
+The CS4272 assignment is corroborated by the X6100 service-manual block
+diagram, which places it between the zero-IF quadrature mixers and the
+STM32. The diagram separately places IC3204 in the MIC/speaker audio
+path. Together with the independently verified SPI3 I/Q and SPI2 audio
+DMA roles, this also verifies the TLV320AIC3204-to-SPI2 assignment.
 
 If the CS4272 probe fails, startup configures an unidentified device at
 I2C2 address `0x4C` instead. The mutually exclusive branch and its

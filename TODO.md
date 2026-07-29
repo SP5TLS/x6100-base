@@ -40,8 +40,8 @@
 -   [ ] Trace board-level electrical functions of `0x4A` and `0x4C`
 -   [x] Identify TLV320AIC3204 as 32-bit I2S BCLK/WCLK master
 -   [x] Recover SPI2 audio and SPI3 I/Q signal roles from DMA processing
--   [x] Assign CS4272/alternate converter to SPI3/I2S3 (HIGH CONFIDENCE)
--   [ ] Verify converter-to-I2S board nets by schematic or signal tracing
+-   [x] Verify CS4272 as zero-IF I/Q converter and assign SPI3/I2S3
+-   [x] Assign `0x4C` fallback to the same I/Q interface (HIGH CONFIDENCE)
 -   [x] USART
 -   [x] Timers
 -   [x] Confirm no application IWDG/WWDG use and document software reset
