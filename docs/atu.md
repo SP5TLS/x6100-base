@@ -250,7 +250,8 @@ The winning relays remain physically applied after the search, while
 the three-byte logical result is reported to Linux. Persistent
 per-frequency storage, if supported by the complete radio, is therefore
 the responsibility of Linux-side software or another component:
-HIGH CONFIDENCE.
+HIGH CONFIDENCE. Linux-side persistence is outside this BASE
+reverse-engineering scope and is not a remaining work item.
 
 Direct-reference evidence is exported in
 `analysis/atu/tune_result_refs.csv`.
@@ -300,10 +301,6 @@ symbol is assigned.
 
 ## Remaining work
 
-- Optionally assign the two banks to inductors/capacitors and recover
-  component values for electrical documentation; the search algorithm
-  does not require them.
 - Name tune result states 1 and 3 from an independent consumer.
-- Locate the Linux-side owner of any per-frequency tuner memory.
 - Identify whether protection exists in hardware or another firmware
   component.

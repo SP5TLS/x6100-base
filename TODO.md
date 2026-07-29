@@ -178,10 +178,6 @@
 -   [x] Recover ATU state packing, relay-bit permutation, and search phases
 -   [x] Recover ATU result publication and register-17 reapplication path
 -   [x] Recover physical ATU output through SPI6 and PG12 latch
--   [ ] Optionally assign ATU banks to L/C and recover component values
-    - Non-blocking for implementation: OEM tuning treats both banks as
-      opaque controls and minimizes measured VSWR.
--   [ ] Locate Linux-side per-frequency ATU persistence
 -   [x] Audit direct VSWR consumers for a firmware hard-trip path
 -   [ ] Identify any hardware or external-controller SWR protection
 

@@ -208,8 +208,7 @@ Exit criteria:
 
 1. Enable low-power tune sessions and fresh VSWR handshakes.
 2. Validate all ATU bits without needing L/C names.
-3. Add independent per-frequency tuner persistence if desired.
-4. Verify shutdown GPIO ordering, watchdog option bytes, and reset
+3. Verify shutdown GPIO ordering, watchdog option bytes, and reset
    behavior.
 
 ## Blocking gaps
