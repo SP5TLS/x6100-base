@@ -1,0 +1,41 @@
+/* 080240b4 FUN_080240b4 */
+
+void FUN_080240b4(int *param_1)
+
+{
+  int iVar1;
+  int iVar2;
+  bool bVar3;
+  bool bVar4;
+
+  iVar1 = *param_1;
+  iVar2 = param_1[1];
+  bVar3 = DAT_2000859c == iVar1;
+  if (bVar3) {
+    iVar1 = DAT_2000859c;
+  }
+  DAT_2000859c = iVar1;
+  bVar4 = DAT_200085a0 != iVar2;
+  iVar1 = param_1[2];
+  if (bVar4) {
+    DAT_200085a0 = iVar2;
+  }
+  iVar2 = param_1[3];
+  if (DAT_200085a4 == iVar1) {
+    if (iVar2 == DAT_200085a8) {
+      if (!bVar4 && bVar3) {
+        return;
+      }
+      goto LAB_080240f4;
+    }
+  }
+  else {
+    DAT_200085a4 = iVar1;
+    if (DAT_200085a8 == iVar2) goto LAB_080240f4;
+  }
+  DAT_200085a8 = iVar2;
+LAB_080240f4:
+  FUN_08037970(s_filter1__04ld___04ld___filter2___0803cef8);
+  DAT_200085b4 = DAT_200085b4 | 1;
+  return;
+}

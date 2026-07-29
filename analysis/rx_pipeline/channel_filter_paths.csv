@@ -1,0 +1,17 @@
+mode_group,object,rate,filter_role,cutoff_source,confidence
+LSB/LSB_DIG/USB/USB_DIG,0x20006D7C,12500,pre-demod low-pass,6600 Hz clamped to highest table entry,VERIFIED
+LSB/LSB_DIG/USB/USB_DIG,0x20006E48,12500,pre-demod low-pass,6600 Hz clamped to highest table entry,VERIFIED
+CW/CWR,0x20006D7C,12500,pre-demod low-pass,3000 Hz,VERIFIED
+CW/CWR,0x20006E48,12500,pre-demod low-pass,3000 Hz,VERIFIED
+AM,0x20006D7C,25000,pre-demod low-pass,"max(abs(filter1_low),abs(filter2_low))",VERIFIED
+AM,0x20006E48,25000,pre-demod low-pass,"min(abs(filter1_high),abs(filter2_high))",VERIFIED
+NFM,0x20006D7C,25000,pre-demod low-pass,7500 Hz,VERIFIED
+NFM,0x20006E48,25000,pre-demod low-pass,7500 Hz,VERIFIED
+SSB/CW,0x20006FE0,12500,pre-AGC low-pass,filter1_high,VERIFIED
+SSB/CW,0x20007178,12500,pre-AGC low-pass,filter2_high,VERIFIED
+SSB/CW,0x20006F14,12500,post-AGC high-pass,filter1_low,VERIFIED
+SSB/CW,0x200070AC,12500,post-AGC high-pass,filter2_low,VERIFIED
+AM/NFM,0x20006FE0,12500,pre-AGC low-pass,12000 Hz clamped to highest table entry,VERIFIED
+AM/NFM,0x20007178,12500,pre-AGC low-pass,12000 Hz clamped to highest table entry,VERIFIED
+AM/NFM,0x20006F14,12500,post-AGC high-pass,0 Hz clamped to lowest table entry,VERIFIED
+AM/NFM,0x200070AC,12500,post-AGC high-pass,0 Hz clamped to lowest table entry,VERIFIED

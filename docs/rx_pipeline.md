@@ -196,6 +196,101 @@ implementation may use these arrays directly or use an equivalently
 validated anti-alias/interpolation design if bit-for-bit compatibility
 is unnecessary.
 
+## Runtime channel-filter selection
+
+Protocol registers 44 through 47 provide four signed frequency edges:
+
+| Register | Address | DSP state |
+|---:|---:|---:|
+| 44 `filter1_low` | `0x00B0` | `0x2000859C` |
+| 45 `filter1_high` | `0x00B4` | `0x200085A0` |
+| 46 `filter2_low` | `0x00B8` | `0x200085A4` |
+| 47 `filter2_high` | `0x00BC` | `0x200085A8` |
+
+`FUN_080240B4` copies all four values and sets filter-dirty bit 0 when
+any changes. Register routing and dirty behavior are VERIFIED.
+
+The firmware uses two families of precomputed five-stage biquads:
+
+- the pointer table at `0x20001484` supplies high-pass sections;
+- the pointer table at `0x20002414` supplies low-pass sections.
+
+Each selected source entry contains five six-float sections plus a
+final gain. The loader negates the two feedback terms in each section
+for the runtime direct-form-I representation. Structure, table
+selection, and conversion are VERIFIED.
+
+For requested cutoff `f` and processing rate `Fs`, the table index is:
+
+```text
+index = trunc((2*f/Fs - 0.002) * 995)
+index = clamp(index, 0, 995)
+```
+
+The arithmetic and bounds are VERIFIED. An independent implementation
+does not need the complete OEM table: an equivalent stable five-stage
+high-pass or low-pass design at the requested edge can implement the
+functional contract. Exact OEM entries matter only for sample-level
+matching.
+
+### Predemodulation component filters
+
+Objects `0x20006D7C` and `0x20006E48` filter the two decimated complex
+components before mode demodulation:
+
+| Modes | Rate | Object 1 cutoff | Object 2 cutoff |
+|---|---:|---:|---:|
+| LSB/LSB_DIG/USB/USB_DIG | 12.5 ksample/s | 6600 Hz, clamped to highest low-pass entry | same |
+| CW/CWR | 12.5 ksample/s | 3000 Hz low-pass | same |
+| AM | 25 ksample/s | `max(abs(filter1_low), abs(filter2_low))` | `min(abs(filter1_high), abs(filter2_high))` |
+| NFM | 25 ksample/s | 7500 Hz low-pass | same |
+
+Calls, constants, absolute-value operations, min/max decisions, and
+rates are VERIFIED. The 6600-Hz request lies above the 12.5-ksample/s
+Nyquist limit and selects the clamped table endpoint; functionally it
+leaves the SSB component bandwidth to the later audio filters.
+
+### Postdemodulation SSB/CW filters
+
+Modes 0 through 5 apply all four user edges at 12.5 ksample/s:
+
+| Object | Position relative to AGC | Type | Edge |
+|---:|---|---|---:|
+| `0x20006FE0` | before | low-pass | `filter1_high` |
+| `0x20007178` | before | low-pass | `filter2_high` |
+| `0x20006F14` | after | high-pass | `filter1_low` |
+| `0x200070AC` | after | high-pass | `filter2_low` |
+
+This produces two cascaded upper-edge sections before AGC and two
+lower-edge sections after AGC. Object ordering and edge routing are
+VERIFIED. The purpose of the duplicated filter1/filter2 pairs as two
+independently configured skirts is HIGH CONFIDENCE.
+
+AM and NFM instead load cutoff 0 into both high-pass objects and
+12,000 Hz into both low-pass objects at the 12.5-ksample/s rate. Both
+requests clamp to table endpoints and functionally bypass the
+user-configured postdemodulation bandpass: HIGH CONFIDENCE functional
+effect, VERIFIED requests and table bounds.
+
+The complete mapping is also available in
+`analysis/rx_pipeline/channel_filter_paths.csv`.
+
+## DC-removal conclusion
+
+No dedicated complex-input DC estimator or subtractor exists between
+Q31 conversion and demodulation in `FUN_08024528`: HIGH CONFIDENCE
+after complete inspection of that branch. The adaptive I/Q stage
+corrects cross-correlation and amplitude imbalance but does not track
+or subtract a mean: VERIFIED equations.
+
+For SSB/CW, nonzero `filter1_low` and `filter2_low` values suppress DC
+later in the real audio path through the two high-pass biquads. NFM has
+the explicit postdemodulation recurrence
+`y[n]=x[n]-x[n-1]+0.9*y[n-1]`. AM has no separately identified
+converter-DC cancellation stage. An independent implementation may add
+complex DC blocking as a deliberate improvement, but it is not part of
+the recovered OEM front-end contract.
+
 ### SSB and digital SSB
 
 Each complex component passes through its own factor-8 FIR decimator and
@@ -310,8 +405,6 @@ are assigned here without evidence.
 
 - Export and independently validate the runtime-selected RX biquad
   coefficient sets. Rate-conversion FIRs are complete.
-- Determine whether converter DC removal exists elsewhere or is wholly
-  provided by later channel filtering.
 - Resolve every common audio filter to its control field and response.
 - Recover `FUN_08022C30` sufficiently to implement the optional
   noise-reduction path.

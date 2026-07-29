@@ -128,7 +128,10 @@
 -   [x] Adaptive IQ imbalance correction
 -   [x] Complex frequency shift
 -   [x] Export and validate all RX rate-conversion FIR coefficients
--   [ ] Map runtime-selected RX biquad coefficient tables
+-   [x] Map runtime-selected RX biquad tables, protocol edges, and
+    mode-dependent cutoff rules
+-   [x] Determine dedicated complex-input DC removal behavior
+    (none found; later mode-dependent high-pass stages documented)
 -   [x] AGC topology, look-ahead, bounds, and bypass
 -   [x] SSB/CW/AM/NFM demodulation topology
 -   [ ] Recover optional RX block noise-reduction transform

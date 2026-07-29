@@ -436,6 +436,29 @@ The device is on I2C1 at address byte `0xC6` (7-bit address `0x63`).
 The transaction framing and the complete ordered RX/TX hardware
 sequence are documented in `docs/pa_control.md`.
 
+### Registers 44...47: RX filter edges
+
+Addresses:
+
+| Register | Address | Historical label |
+|---:|---:|---|
+| 44 | `0x00B0` | `filter1_low` |
+| 45 | `0x00B4` | `filter1_high` |
+| 46 | `0x00B8` | `filter2_low` |
+| 47 | `0x00BC` | `filter2_high` |
+
+All four values are copied as signed 32-bit frequency edges.
+`FUN_080240B4` sets an RX filter-dirty flag whenever any value changes:
+VERIFIED.
+
+SSB/CW use the two low values for cascaded postdemodulation high-pass
+sections and the two high values for cascaded low-pass sections. AM
+instead derives its two predemodulation component low-pass cutoffs as
+the maximum absolute low edge and minimum absolute high edge. NFM
+does not use the four values in its recovered filter selection.
+Branches, signed/absolute operations, and routing are VERIFIED. See
+`docs/rx_pipeline.md` for objects, rates, and table-index calculation.
+
 ### Register 53: power-synchronization setting
 
 Address: `0x00D4`
